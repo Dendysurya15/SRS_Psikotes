@@ -432,6 +432,9 @@ if ($status_s == 1) {
 
     <script>
         var timer_ = <?= $d; ?>;
+        $("body").on("contextmenu", function(e) {
+            return false;
+        });
 
         function Pesan() {
             $('#soal_2').click();
