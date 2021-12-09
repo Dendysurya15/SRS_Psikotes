@@ -1,0 +1,96 @@
+Room
+  - Tampilkan daftar room dalam bentuk tabel
+  - Tambahkan kolom deskripsi pada tabel room 
+  - Tampilkan deskripsi pada tabel daftar room (daftar room hanya deskripsi singkat)
+
+ -> Detail room
+    -> Tambah room
+     - Jadikan Link Zoom, Meeting ID, Password Zoom dalam satu row dengan Label Input Zoom Info
+     - Cek inputan user jam_selesai > jam_mulai, apabila sebaliknya munculkan pesan error
+     - Melakukan pengecekan apakah user sudah pernah dikirimi email sebelumnya
+     - Apabila jadwal dilakukan tes psikotes (Tanggal/Jam) berubah maka dilakukan pengiriman email ulang untuk menginfokan perubahan jadwal
+
+Skor
+  - Tampilkan daftar skor dalam bentuk tabel
+  - 
+
+
+
+WARNA UNTUK BUTTON
+ - MERAH untuk button logout, hapus,
+ - BIRU	untuk button add, start tes
+ - HIJAU update, selesai kerja soal
+
+
+Soal Yang Masih Belum Lengkap
+RA :
+ NO 77 - Soal tidak ada
+ NO 76 - Kunci Jawaban Salah
+ NO 75 - Kunci Jawaban Salah
+ NO 73 - Kunci Jawaban Salah
+
+ZR :
+ NO 99 - Kunci Jawaban Salah
+ NO 94 - Kunci Jawaban Salah
+
+LOGIN ROOM:
+Mengubah status peserta menjadi 1 agar user tidak dapat login kembali (Akun hanya dapat digunakan 1 kali)
+
+
+
+emailnya kepak lutfi, bu yane, cc pak fizrul, pak budi, pak ibnu
+dengan hormat sehubungan dengan pengembangan web psikotest kami merencanakan simulasi psikotest pada tanggal 02 Juni 2021 08:00 kali ini, 
+feedback dari simulasi ini sangat diharapkan dari user untuk proses perbaikan, penyelesaian, serta serah terima web psikotest ini. Kami harap atas kerja sama 
+dan partisifasinya.
+Sekian terima kasih
+
+
+
+
+
+SIMULASI TANGGAL 03/06/2021
+- Multiple sharescreen tidak tersedia di aplikasi meeting
+- Pengecekan jam mulai dan selesai tes harus 
+- Pilihan untuk soal 1 diperbesar
+- Contoh soal 5 radio lebih 1
+- itu soal 5 Kotak pernyataan dengan setuju dan tidak setuju soal 5 kurang mepet dan kurang lurus, butuh pembatas antar soal
+- button Submit diganti dengan kirim jawaban/answer 
+
+- Buat fungsi untuk mengecek jawaban user sudah terjawab semua
+  - ketika button submit diklik maka akan muncul pesan soal mana saja yang belum dijawab
+
+- font Modul 8 nomor soal dan pernyataan perlu diperbesar dan textarea diubah menjadi paragrafh
+
+- Font tiap soal dibuat lebih 
+
+- Admin punya kontrol di button test psikotest
+
+- Soalnya dikunci untuk defaultnya, dan admin dapat membuka soalnya
+
+- Mencegah pembajakan soal (screenshot, record)
+
+- Detail peserta ditampilkan dalam bentuk tabel
+
+- Modul dengan jenis pernyataan harus dicek karena wajib diisi semua
+
+
+
+
+Revisi
+- Contoh tiap soal ditambah jadi 3
+
+SOAL 1
+ - Option diperbesar
+ - 
+
+
+
+CATATAN Simulasi Tanggal 11/06/2021
+1. button enter auto submit
+2. tiap soal harus ditambahkan deskripsi untuk menjelaskan pengerjaan soal
+3. format pengiriman informasi ke peserta diganti
+
+
+
+
+

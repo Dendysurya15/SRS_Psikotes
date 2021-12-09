@@ -1,0 +1,19 @@
+LOGIN ROOM
+    1. Select Tabel Peserta Berdasarkan Username & Password
+    2. Login 'BERHASIL'
+        2.1 Dapatkan data peserta dengan Select Tabel Peserta Berdasarkan Username & Password
+        2.2 Buat Session
+            2.2.1 select data durasi dari Tabel soal dengan nama Modul 1            
+            $_SESSION['w_selesai']  = strtotime(jam_sekarang) + durasi_kerja_soal;
+            $_SESSION['i_peserta]   = rowPeserta['peserta'];
+            $_SESSION['i_room']     = rowPeserta['room_id'];
+        2.3 Lakukan Insert Jawaban
+            2.3 Insert Berhasil
+                $_SESSION['']
+
+    2. Login 'GAGAL'
+        header('location:../auth/login?status=0');
+
+
+SOAL 1
+    1. SELEC

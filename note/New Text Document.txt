@@ -1,0 +1,10 @@
+soal_1=>0;
+soal_2=>0;
+soal_3=>0;
+soal_4=>0;
+soal_5=>0;
+soal_6=>0;
+soal_7=>0;
+soal_8=>0;
+soal_9=>0;
+soal_10=>0;
