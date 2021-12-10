@@ -72,6 +72,10 @@ $resRoom    = $soal->DetailRoom($_SESSION['i_room']);
 $rowRoom    = $resRoom->fetch_assoc();
 $statSoal   = $rowRoom['status_soal'];
 
+$skor  = $soal->Skor($_SESSION['i_room']);
+$namaPeserta    = $skor->fetch_assoc();
+$namaPeserta = $namaPeserta['nama_peserta'];
+
 $arr_s1     = explode(';', $statSoal);
 
 $arr_s2     = explode('=', $arr_s1[0]);
@@ -117,7 +121,7 @@ if ($status_s == 1) {
                     <a class="nav-link" data-widget="pushmenu" href="#" role="hover"><i class="fas fa-bars"></i></a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
-                    <a class="nav-link">Selamat datang! <?= $status_s; ?></a>
+                    <a class="nav-link">Selamat datang! <?= $namaPeserta; ?> </a>
                 </li>
 
             </ul>
@@ -551,6 +555,5 @@ if ($status_s == 1) {
         -webkit-touch-callout: none;
         -moz-user-select: none;
         -ms-user-select: none;
-        color: red
     }
 </style>

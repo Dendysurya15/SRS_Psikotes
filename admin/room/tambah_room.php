@@ -41,13 +41,21 @@ if (isset($_GET['status'])) {
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="exampleInputLink">Link Zoom</label>
-                                            <input type="text" class="form-control" id="exampleInputLink" placeholder="Masukan Link" required name="link_room">
+                                            <input type="text" class="form-control" id="exampleInputLink" placeholder="Masukan Link" name="link_room">
+                                            <small class=" text-danger "><?php if (isset($_SESSION['linkErr'])) { ?>
+                                                    *<?php echo $_SESSION['linkErr'];
+                                                                                unset($_SESSION['linkErr']);
+                                                                            } ?></small>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="exampleInputMeetingId">Meeting ID</label>
-                                            <input type="text" class="form-control" id="exampleInputMeetingId" placeholder="Meeting ID" required name="meeting_id">
+                                            <input type="text" class="form-control" id="exampleInputMeetingId" placeholder="Meeting ID" name="meeting_id">
+                                            <small class=" text-danger "><?php if (isset($_SESSION['meeting_idErr'])) { ?>
+                                                    *<?php echo $_SESSION['meeting_idErr'];
+                                                                                unset($_SESSION['meeting_idErr']);
+                                                                            } ?></small>
                                         </div>
                                     </div>
                                 </div>
@@ -56,13 +64,21 @@ if (isset($_GET['status'])) {
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="exampleInputNamaRoom">Nama Room</label>
-                                            <input type="text" class="form-control" id="exampleInputNamaRoom" placeholder="Nama Room" required name="nama_room">
+                                            <input type="text" class="form-control" id="exampleInputNamaRoom" placeholder="Nama Room" name="nama_room">
+                                            <small class=" text-danger "><?php if (isset($_SESSION['nama_roomErr'])) { ?>
+                                                    *<?php echo $_SESSION['nama_roomErr'];
+                                                                                unset($_SESSION['nama_roomErr']);
+                                                                            } ?></small>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="exampleInputMeetingPassword">Password Room</label>
-                                            <input type="text" class="form-control" id="exampleInputMeetingPassword" placeholder="Password Room" required name="password_room">
+                                            <input type="text" class="form-control" id="exampleInputMeetingPassword" placeholder="Password Room" name="password_room">
+                                            <small class=" text-danger "><?php if (isset($_SESSION['password_roomErr'])) { ?>
+                                                    *<?php echo $_SESSION['password_roomErr'];
+                                                                                unset($_SESSION['password_roomErr']);
+                                                                            } ?></small>
                                         </div>
                                     </div>
                                 </div>
@@ -70,13 +86,21 @@ if (isset($_GET['status'])) {
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="exampleInputMeetingPassword">Tanggal Tes</label>
-                                            <input type="date" class="form-control" id="exampleInputMeetingPassword" placeholder="tanggal" required name="tanggal_room">
+                                            <input type="date" class="form-control" id="exampleInputMeetingPassword" placeholder="tanggal" name="tanggal_room">
+                                            <small class=" text-danger "><?php if (isset($_SESSION['tanggal_roomErr'])) { ?>
+                                                    *<?php echo $_SESSION['tanggal_roomErr'];
+                                                                                unset($_SESSION['tanggal_roomErr']);
+                                                                            } ?></small>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="exampleInputMeetingPassword">Jam Mulai</label>
-                                            <input type="time" class="form-control" id="exampleInputMeetingPassword" placeholder="jam" required name="jam_mulai_room">
+                                            <input type="time" class="form-control" id="exampleInputMeetingPassword" placeholder="jam" name="jam_mulai_room">
+                                            <small class=" text-danger "><?php if (isset($_SESSION['jam_mulaiErr'])) { ?>
+                                                    *<?php echo $_SESSION['jam_mulaiErr'];
+                                                                                unset($_SESSION['jam_mulaiErr']);
+                                                                            } ?></small>
                                         </div>
                                     </div>
                                 </div>
@@ -84,7 +108,11 @@ if (isset($_GET['status'])) {
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="exampleInputMeetingPassword">Jam Selesai</label>
-                                            <input type="time" class="form-control" id="exampleInputMeetingPassword" placeholder="tanggal" required name="jam_selesai_room">
+                                            <input type="time" class="form-control" id="exampleInputMeetingPassword" placeholder="tanggal" name="jam_selesai_room">
+                                            <small class=" text-danger "><?php if (isset($_SESSION['jam_selesaiErr'])) { ?>
+                                                    *<?php echo $_SESSION['jam_selesaiErr'];
+                                                                                unset($_SESSION['jam_selesaiErr']);
+                                                                            } ?></small>
                                         </div>
                                     </div>
                                 </div>

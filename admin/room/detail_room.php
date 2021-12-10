@@ -383,11 +383,11 @@ if (isset($_GET['status'])) {
                                                                 </td>
                                                                 <td>
                                                                     <select class="form-control" name="u_status">
-                                                                        <?php if($rowDataPeserta['status_login'] == 1):?>
-                                                                            <option value="<?=$rowDataPeserta['status_login']?>">Sudah Melakukan Tes</option>
-                                                                        <?php else:?>
-                                                                            <option value="<?=$rowDataPeserta['status_login']?>">Belum Melakukan Tes</option>
-                                                                        <?php endif;?>
+                                                                        <?php if ($rowDataPeserta['status_login'] == 1) : ?>
+                                                                            <option value="<?= $rowDataPeserta['status_login'] ?>">Sudah Melakukan Tes</option>
+                                                                        <?php else : ?>
+                                                                            <option value="<?= $rowDataPeserta['status_login'] ?>">Belum Melakukan Tes</option>
+                                                                        <?php endif; ?>
                                                                         <option value="0">Reset Status</option>
                                                                     </select>
                                                                 </td>
@@ -442,12 +442,24 @@ if (isset($_GET['status'])) {
                                     <tr style="border:none;">
                                         <td style="border:none;">
                                             <input type="email" name="email" id="email" value="" class="form-control" placeholder="Email Peserta">
+                                            <small class=" text-danger "><?php if (isset($_SESSION['emailErr'])) { ?>
+                                                    *<?php echo $_SESSION['emailErr'];
+                                                                                unset($_SESSION['emailErr']);
+                                                                            } ?></small>
                                         </td>
                                         <td style="border:none;">
                                             <input type="text" name="nama" id="nama" value="" class="form-control" placeholder="Nama Peserta">
+                                            <small class=" text-danger "><?php if (isset($_SESSION['namaErr'])) { ?>
+                                                    *<?php echo $_SESSION['namaErr'];
+                                                                                unset($_SESSION['namaErr']);
+                                                                            } ?></small>
                                         </td>
                                         <td style="border:none;">
                                             <input type="number" name="usia" id="usia" value="" class="form-control" placeholder="Usia Peserta">
+                                            <small class=" text-danger "><?php if (isset($_SESSION['usiaErr'])) { ?>
+                                                    *<?php echo $_SESSION['usiaErr'];
+                                                                                unset($_SESSION['usiaErr']);
+                                                                            } ?></small>
                                         </td>
                                         <td style="border:none;">
                                             <select name="jenis" class="form-control">
@@ -455,9 +467,17 @@ if (isset($_GET['status'])) {
                                                 <option value="managerial">Managerial</option>
                                                 <option value="nonmanagerial">Nonmanagerial</option>
                                             </select>
+                                            <small class=" text-danger "><?php if (isset($_SESSION['jenisErr'])) { ?>
+                                                    *<?php echo $_SESSION['jenisErr'];
+                                                                                unset($_SESSION['jenisErr']);
+                                                                            } ?></small>
                                         </td>
                                         <td style="border:none;">
                                             <input type="text" name="pendidikan" id="pendidikan" value="" class="form-control" placeholder="Pendidikan">
+                                            <small class=" text-danger "><?php if (isset($_SESSION['pendidikanErr'])) { ?>
+                                                    *<?php echo $_SESSION['pendidikanErr'];
+                                                                                unset($_SESSION['pendidikanErr']);
+                                                                            } ?></small>
                                         </td>
                                     </tr>
                                 </table>

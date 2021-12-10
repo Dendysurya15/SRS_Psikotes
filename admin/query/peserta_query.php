@@ -39,33 +39,58 @@ if (isset($_POST['add'])) {
     $pendidikan     = $_POST['pendidikan'];
     $jenis          = $_POST['jenis'];
     $status_login   = 0;
-    $arr_data       = array(
-        $room_id,
-        $username,
-        $password,
-        $email,
-        $nama,
-        $usia,
-        $pendidikan,
-        $jenis,
-        $status_login
-    );
-    // var_dump($arr_data);
-    $add_peserta    = $soal->Peserta($arr_kolom, $arr_data, 'tambah');
 
-    #Tambah Peserta 
-    switch ($add_peserta) {
-            #Berhasil Status = 0
-        case 'berhasil':
-            header('location:../room/detail_room?room_id=' . $room_id . '&status=0');
-            break;
-            #Berhasil Status = 1
-        case 'gagal':
-            header('location:../room/detail_room?room_id=' . $room_id . '&status=1');
-            break;
-        default:
-            # code...
-            break;
+    session_start();
+    if (empty($email)) {
+        $_SESSION['emailErr'] = "Email wajib di isi";
+    }
+    if (empty($nama)) {
+        $_SESSION['namaErr'] = "Nama  wajib di isi";
+    }
+    if (empty($usia)) {
+        $_SESSION['usiaErr'] = "Usia wajib di isi";
+    }
+    if (empty($jenis)) {
+        $_SESSION['jenisErr'] = "Jenis tes wajib di isi";
+    }
+    if (empty($pendidikan)) {
+        $_SESSION['pendidikanErr'] = "Pendidikan wajib di isi";
+    }
+
+    if (
+        isset($_SESSION['emailErr']) || isset($_SESSION['namaErr']) || isset($_SESSION['usiaErr']) ||
+        isset($_SESSION['jenisErr']) ||  isset($_SESSION['pendidikanErr'])
+    ) {
+        header('location:../room/detail_room?room_id=' . $room_id);
+    } else {
+        $arr_data       = array(
+            $room_id,
+            $username,
+            $password,
+            $email,
+            $nama,
+            $usia,
+            $pendidikan,
+            $jenis,
+            $status_login
+        );
+        // var_dump($arr_data);
+        $add_peserta    = $soal->Peserta($arr_kolom, $arr_data, 'tambah');
+
+        #Tambah Peserta 
+        switch ($add_peserta) {
+                #Berhasil Status = 0
+            case 'berhasil':
+                header('location:../room/detail_room?room_id=' . $room_id . '&status=0');
+                break;
+                #Berhasil Status = 1
+            case 'gagal':
+                header('location:../room/detail_room?room_id=' . $room_id . '&status=1');
+                break;
+            default:
+                # code...
+                break;
+        }
     }
 }
 

@@ -1,6 +1,6 @@
 <?php
-define('WP_HOME','https://www.assessmentcenter-ssms.com/');
-define('WP_SITEURL','https://www.assessmentcenter-ssms.com/');
+define('WP_HOME', 'https://www.assessmentcenter-ssms.com/');
+define('WP_SITEURL', 'https://www.assessmentcenter-ssms.com/');
 
 // define('WP_HOME','localhost');
 // define('WP_SITEURL','localhost');
@@ -11,6 +11,10 @@ include_once '../layout/header.php';
 include '../../kumpulan_function.php';
 
 $soal = new Soal();
+$skor  = $soal->Skor($_SESSION['i_room']);
+$namaPeserta    = $skor->fetch_assoc();
+$namaPeserta = $namaPeserta['nama_peserta'];
+
 $soal_id = '';
 
 if (isset($_SESSION['kerja_soal'])) {
@@ -112,7 +116,7 @@ if ($status_s == 1) {
 ?>
 
 
-<body class="hold-transition sidebar-mini sidebar-collapse layout-fixed layout-navbar-fixed">
+<body class="hold-transition sidebar-mini sidebar-collapse layout-fixed layout-navbar-fixed unselectable">
     <div class="wrapper">
         <nav class="main-header navbar navbar-expand navbar-white navbar-light">
             <ul class="navbar-nav">
@@ -120,7 +124,7 @@ if ($status_s == 1) {
                     <a class="nav-link" data-widget="pushmenu" href="#" role="hover"><i class="fas fa-bars"></i></a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
-                    <a class="nav-link">Selamat datang!</a>
+                    <a class="nav-link">Selamat datang! <?= $namaPeserta ?> </a>
                 </li>
 
             </ul>
@@ -261,6 +265,9 @@ if ($status_s == 1) {
 
     <script>
         var timer_ = <?= $d; ?>;
+        $("body").on("contextmenu", function(e) {
+            return false;
+        });
 
         function Pesan() {
             $('#hapalan').click();
@@ -304,7 +311,7 @@ if ($status_s == 1) {
                 $('#soal_asli').removeAttr('hidden');
                 $('#sisa_waktu').removeAttr('hidden');
                 $('#gambar_hapalan').removeAttr('hidden');
-                
+
                 $('#soal_contoh').attr('hidden', true);
                 timer_ = timer_ - 1;
                 if (timer_ > 0) {
@@ -316,3 +323,12 @@ if ($status_s == 1) {
             }, 1000);
         }
     </script>
+
+    <style>
+        .unselectable {
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+    </style>
