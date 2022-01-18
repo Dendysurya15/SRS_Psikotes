@@ -516,6 +516,13 @@ class Soal
 
                 switch ($this->conn->query($sqlTambahRoom)) {
                     case TRUE:
+                        $_SESSION['getLink'] = '';
+                        $_SESSION['meetingId'] = '';
+                        $_SESSION['namaRoom'] = '';
+                        $_SESSION['passwordRoom'] = '';
+                        $_SESSION['tanggalRoom'] = '';
+                        $_SESSION['jamMulai'] = '';
+                        $_SESSION['jamSelesai'] = '';
                         header('location:../room/daftar_room?status=' . $berhasil . '');
                         break;
 
@@ -557,6 +564,24 @@ class Soal
         }
     }
 
+    #Peserta login
+
+    function loginPeserta($username, $password)
+    {
+        $query = "SELECT * FROM `peserta` WHERE username_peserta ='$username' and password_peserta='$password'";
+        $resultPesertaLogin = $this->conn->query($query);
+        return $resultPesertaLogin;
+    }
+
+    function updatePeserta($id_peserta, $arrData)
+    {
+        $query = "UPDATE `peserta` WHERE id='$id_peserta'";
+        $updatePeserta = $this->conn->query($query);
+
+
+        return $updatePeserta;
+    }
+
     #Peserta Tambah, Update, Hapus
     function Peserta($arr_kolom, $arr_data, $status)
     {
@@ -586,6 +611,11 @@ class Soal
 
                 switch ($this->conn->query($sqlTambahPeserta)) {
                     case TRUE:
+                        $_SESSION['email'] = '';
+                        $_SESSION['nama'] = '';
+                        $_SESSION['usia'] = '';
+                        $_SESSION['jenis'] = '';
+                        $_SESSION['pendidikan'] = '';
                         return 'berhasil';
                         break;
                     case FALSE:
