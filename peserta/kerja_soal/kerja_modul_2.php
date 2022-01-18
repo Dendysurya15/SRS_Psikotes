@@ -164,8 +164,8 @@ if ($status_s == 1) {
 
                 </div>
             </section>
-            <section class="content">
-                <div class="container-fluid">
+            <section class="content row">
+                <div class="col-9">
                     <div class="card">
 
                         <div class="card-header">
@@ -413,11 +413,33 @@ if ($status_s == 1) {
                         </form>
                     </div>
                 </div>
-        </div>
+                <div class="col-3">
+                    <div class="card">
+                        <div style="border-bottom: 1pt solid #E9ECEF;">
+                            <p class="text-center pt-3"> Status Jawaban</p>
+                        </div>
+                        <div class="card-body">
 
-    </div><!-- /.container-fluid -->
-    </section>
-    <!-- /.content -->
+                            <div class="row text-center" style="height:100%;width:100%">
+                                <?php if ($statusSoal->num_rows > 0) : ?>
+                                    <?php $index = 0; ?>
+                                    <?php while ($rowSoalModul = $statusSoal->fetch_assoc()) : ?>
+                                        <a href="" class="ml-1 mb-2" style="border: 1px solid #DFDFDF;line-height: 30px;border-radius: 3px;width: 15%;height: 30px;font-size: 10pt;">
+                                            <?= $rowSoalModul['nomor_soal'] ?>
+                                        </a>
+                                        <?php $index++; ?>
+                                    <?php endwhile; ?>
+                                <?php endif; ?>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div><!-- /.container-fluid -->
+        </section>
+        <!-- /.content -->
     </div>
 
     <!-- jQuery -->
@@ -490,6 +512,50 @@ if ($status_s == 1) {
                 }
             }, 1000);
         }
+
+        var currSeconds = 0;
+        var link = document.createElement("a");
+
+
+        /* kode awal idle mode 30 menit */
+        let idleInterval =
+            setInterval(timerIncrement, 1000);
+
+        /* Zero the idle timer
+            on mouse movement */
+        $(this).mousemove(resetTimer);
+        $(this).keypress(resetTimer);
+
+
+        function resetTimer() {
+
+            /* Hide the timer text */
+            document.querySelector(".timertext")
+                .style.display = 'none';
+
+            currSeconds = 0;
+
+        }
+
+        function timerIncrement() {
+            currSeconds = currSeconds + 1;
+
+            if (currSeconds == 1800) {
+                link.href = "../auth/logout"
+                link.click()
+                alert("Anda tidak melakukan akitivitas apapun selama 30 menit, mohon maaf anda dikeluarkan dari tes ini!")
+            }
+
+            /* Set the timer text to
+                the new value */
+            document.querySelector(".secs")
+                .textContent = currSeconds;
+
+            /* Display the timer text */
+            document.querySelector(".timertext")
+                .style.display = 'block';
+        }
+        // kode akhir idle mode 30 menit
     </script>
 
     <style>

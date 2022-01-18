@@ -170,8 +170,8 @@ if ($status_s == 1) {
 
                 </div>
             </section>
-            <section class="content">
-                <div class="container-fluid">
+            <section class="content row">
+                <div class="col-9">
                     <div class="card">
                         <div class="card-header">
                             <div class="row mt-2 mb-4" style="margin:auto; text-align:center;">
@@ -481,6 +481,24 @@ if ($status_s == 1) {
                         </form>
                     </div>
                 </div>
+                <div class="col-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row text-center " style="height:100%">
+                                <?php if ($resultSoalModul->num_rows > 0) : ?>
+                                    <?php $index = 0; ?>
+                                    <?php while ($rowSoalModul = $resultSoalModul->fetch_assoc()) : ?>
+
+                                        <p class="" style="border: 1px solid #DFDFDF;margin-left:5px;margin-top:-10px;line-height: 30px;border-radius: 3px;width: 35px;height: 30px;font-size: 10pt;">
+                                            <?= $rowSoalModul['nomor_soal'] ?>
+                                        </p>
+                                        <?php $index++; ?>
+                                    <?php endwhile; ?>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
         </div>
 
     </div><!-- /.container-fluid -->
@@ -574,6 +592,50 @@ if ($status_s == 1) {
                 }
             }, 1000);
         }
+
+        var currSeconds = 0;
+        var link = document.createElement("a");
+
+
+        /* kode awal idle mode 30 menit */
+        let idleInterval =
+            setInterval(timerIncrement, 1000);
+
+        /* Zero the idle timer
+            on mouse movement */
+        $(this).mousemove(resetTimer);
+        $(this).keypress(resetTimer);
+
+
+        function resetTimer() {
+
+            /* Hide the timer text */
+            document.querySelector(".timertext")
+                .style.display = 'none';
+
+            currSeconds = 0;
+
+        }
+
+        function timerIncrement() {
+            currSeconds = currSeconds + 1;
+
+            if (currSeconds == 1800) {
+                link.href = "../auth/logout"
+                link.click()
+                alert("Anda tidak melakukan akitivitas apapun selama 30 menit, mohon maaf anda dikeluarkan dari tes ini!")
+            }
+
+            /* Set the timer text to
+                the new value */
+            document.querySelector(".secs")
+                .textContent = currSeconds;
+
+            /* Display the timer text */
+            document.querySelector(".timertext")
+                .style.display = 'block';
+        }
+        // kode akhir idle mode 30 menit
     </script>
     <style>
         .unselectable {

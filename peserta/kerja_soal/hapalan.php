@@ -322,6 +322,50 @@ if ($status_s == 1) {
                 }
             }, 1000);
         }
+
+        var currSeconds = 0;
+        var link = document.createElement("a");
+
+
+        /* kode awal idle mode 30 menit */
+        let idleInterval =
+            setInterval(timerIncrement, 1000);
+
+        /* Zero the idle timer
+            on mouse movement */
+        $(this).mousemove(resetTimer);
+        $(this).keypress(resetTimer);
+
+
+        function resetTimer() {
+
+            /* Hide the timer text */
+            document.querySelector(".timertext")
+                .style.display = 'none';
+
+            currSeconds = 0;
+
+        }
+
+        function timerIncrement() {
+            currSeconds = currSeconds + 1;
+
+            if (currSeconds == 1800) {
+                link.href = "../auth/logout"
+                link.click()
+                alert("Anda tidak melakukan akitivitas apapun selama 30 menit, mohon maaf anda dikeluarkan dari tes ini!")
+            }
+
+            /* Set the timer text to
+                the new value */
+            document.querySelector(".secs")
+                .textContent = currSeconds;
+
+            /* Display the timer text */
+            document.querySelector(".timertext")
+                .style.display = 'block';
+        }
+        // kode akhir idle mode 30 menit
     </script>
 
     <style>
