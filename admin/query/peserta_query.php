@@ -43,18 +43,28 @@ if (isset($_POST['add'])) {
     session_start();
     if (empty($email)) {
         $_SESSION['emailErr'] = "Email wajib di isi";
+    } else {
+        $_SESSION['email'] = $email;
     }
     if (empty($nama)) {
         $_SESSION['namaErr'] = "Nama  wajib di isi";
+    } else {
+        $_SESSION['nama'] = $nama;
     }
     if (empty($usia)) {
         $_SESSION['usiaErr'] = "Usia wajib di isi";
+    } else {
+        $_SESSION['usia'] = $usia;
     }
     if (empty($jenis)) {
         $_SESSION['jenisErr'] = "Jenis tes wajib di isi";
+    } else {
+        $_SESSION['jenis'] = $jenis;
     }
     if (empty($pendidikan)) {
         $_SESSION['pendidikanErr'] = "Pendidikan wajib di isi";
+    } else {
+        $_SESSION['pendidikan'] = $pendidikan;
     }
 
     if (

@@ -19,26 +19,41 @@ if (isset($_POST['buat_room'])) {
     session_start();
     if (empty($link)) {
         $_SESSION['linkErr'] = "Link wajib di isi";
+    } else {
+        $_SESSION['getLink'] = $link;
     }
 
     if (empty($meeting_id)) {
         $_SESSION['meeting_idErr'] = "Nama room wajib di isi";
+    } else {
+        $_SESSION['meetingId'] = $meeting_id;
     }
+
     if (empty($nama_room)) {
         $_SESSION['nama_roomErr'] = "Meeting ID wajib di isi";
+    } else {
+        $_SESSION['namaRoom'] = $nama_room;
     }
     if (empty($password_room)) {
         $_SESSION['password_roomErr'] = "Password ID wajib di isi";
+    } else {
+        $_SESSION['passwordRoom'] = $password_room;
     }
 
     if (empty($tanggal_room)) {
         $_SESSION['tanggal_roomErr'] = "Tanggal Room wajib di isi";
+    } else {
+        $_SESSION['tanggalRoom'] = $tanggal_room;
     }
     if (empty($jam_mulai_room)) {
         $_SESSION['jam_mulaiErr'] = "Jam mulai room wajib di isi";
+    } else {
+        $_SESSION['jamMulai'] = $jam_mulai_room;
     }
     if (empty($jam_selesai_room)) {
         $_SESSION['jam_selesaiErr'] = "Jam selesai room wajib di isi";
+    } else {
+        $_SESSION['jamSelesai'] = $jam_selesai_room;
     }
 
     if (
