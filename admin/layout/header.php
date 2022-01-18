@@ -99,6 +99,14 @@ if (!isset($_SESSION['admin'])) {
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a href="../biodata/form" class="nav-link">
+                                <i class="nav-icon fas fa-fw fa-chart-area"></i>
+                                <p>
+                                    Biodata Peserta
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
 
                             <a href="../query/auth_admin?logout=admin" class="nav-link">
                                 <i class="nav-icon fa fa-window-close"></i>
