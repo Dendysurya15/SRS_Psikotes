@@ -53,8 +53,21 @@ if (isset($_POST['login_room'])) {
                             $_SESSION['w_selesai']  = '';
                             $_SESSION['kerja_soal'] = 'soal_10_se';
                             $soal->KerjaSoal($_SESSION['kerja_soal']);
+                        } else if ($_SESSION['status_test'] == 'staff/asisten') {
+                            $_SESSION['w_selesai']  = '';
+                            $_SESSION['kerja_soal'] = 'soal_10_se';
+                            $soal->KerjaSoal($_SESSION['kerja_soal']);
+                        } else if ($_SESSION['status_test'] == 'asmen-up') {
+                            $_SESSION['w_selesai']  = '';
+                            $_SESSION['kerja_soal'] = 'soal_10_se';
+                            $soal->KerjaSoal($_SESSION['kerja_soal']);
+                        } else if ($_SESSION['status_test'] == 'nonstaff') {
+                            $_SESSION['w_selesai']  = '';
+                            $_SESSION['kerja_soal'] = 'soal_1';
+                            $soal->KerjaSoal($_SESSION['kerja_soal']);
                         } else {
                             $_SESSION['w_selesai']  = '';
+                            $_SESSION['coba'] = 'testing';
                             $_SESSION['kerja_soal'] = 'soal_1';
                             $soal->KerjaSoal($_SESSION['kerja_soal']);
                         }
@@ -79,6 +92,18 @@ if (isset($_POST['login_room'])) {
                         switch ($updPeserta) {
                             case 'berhasil':
                                 if ($_SESSION['status_test'] == 'managerial') {
+
+                                    $_SESSION['w_selesai']  = '';
+
+                                    $_SESSION['kerja_soal'] = 'soal_10_se';
+                                    $soal->KerjaSoal($_SESSION['kerja_soal']);
+                                } else if ($_SESSION['status_test'] == 'staff/asisten') {
+
+                                    $_SESSION['w_selesai']  = '';
+
+                                    $_SESSION['kerja_soal'] = 'soal_10_se';
+                                    $soal->KerjaSoal($_SESSION['kerja_soal']);
+                                } else if ($_SESSION['status_test'] == 'asmen-up') {
 
                                     $_SESSION['w_selesai']  = '';
 
@@ -212,6 +237,10 @@ if (isset($_POST['soal_1'])) {
                 $_SESSION['w_selesai']  = '';
                 $_SESSION['kerja_soal'] = 'soal_3';
                 $soal->KerjaSoal($_SESSION['kerja_soal']);
+            } else if (($_SESSION['status_test'] == 'nonstaff')) {
+                $_SESSION['kerja_soal'] = 'soal_3';
+                $_SESSION['w_selesai']  = '';
+                $soal->KerjaSoal($_SESSION['kerja_soal']);
             } else {
                 $_SESSION['kerja_soal'] = 'hapalan';
                 $_SESSION['w_selesai']  = '';
@@ -226,7 +255,7 @@ if (isset($_POST['soal_1'])) {
             $_SESSION['kerja_soal'] = 'soal_3';
             $soal->KerjaSoal($_SESSION['kerja_soal']);
         } else {
-            $_SESSION['kerja_soal'] = 'hapalan';
+            $_SESSION['kerja_soal'] = 'soal_3';
             $_SESSION['w_selesai']  = '';
             $soal->KerjaSoal($_SESSION['kerja_soal']);
         }
@@ -246,9 +275,15 @@ if (isset($_POST['hapalan'])) {
         $_SESSION['kerja_soal'] = 'soal_2';
         $soal->KerjaSoal($_SESSION['kerja_soal']);
     } else {
-        $_SESSION['w_selesai']  = '';
-        $_SESSION['kerja_soal'] = 'soal_3';
-        $soal->KerjaSoal($_SESSION['kerja_soal']);
+        if (($_SESSION['status_test'] == 'staff/asisten')  || ($_SESSION['status_test'] == 'asmen-up')) {
+            $_SESSION['kerja_soal'] = 'soal_2';
+            $_SESSION['w_selesai']  = '';
+            $soal->KerjaSoal($_SESSION['kerja_soal']);
+        } else {
+            $_SESSION['w_selesai']  = '';
+            $_SESSION['kerja_soal'] = 'soal_3';
+            $soal->KerjaSoal($_SESSION['kerja_soal']);
+        }
     }
 }
 
@@ -424,17 +459,36 @@ if (isset($_POST['soal_3'])) {
         $update     = $soal->InputJawaban($arr_kolom, $arr_data, 'update');
 
         if ($update == 'berhasil') {
-
-            $_SESSION['kerja_soal'] = 'soal_4';
-            $_SESSION['w_selesai']  = '';
-            $soal->KerjaSoal($_SESSION['kerja_soal']);
+            if (($_SESSION['status_test'] == 'staff/asisten') || ($_SESSION['status_test'] == 'asmen-up')) {
+                $_SESSION['kerja_soal'] = 'soal_5';
+                $_SESSION['w_selesai']  = '';
+                $soal->KerjaSoal($_SESSION['kerja_soal']);
+            } else {
+                $_SESSION['kerja_soal'] = 'soal_4';
+                $_SESSION['w_selesai']  = '';
+                $soal->KerjaSoal($_SESSION['kerja_soal']);
+            }
         } else {
             header('location:../kerja_soal/kerja_modul_3?status=0');
         }
     } else {
-        $_SESSION['kerja_soal'] = 'soal_4';
-        $_SESSION['w_selesai']  = '';
-        $soal->KerjaSoal($_SESSION['kerja_soal']);
+        if ($_SESSION['status_test'] == 'nonstaff') {
+            $_SESSION['kerja_soal'] = 'soal_4';
+            $_SESSION['w_selesai']  = '';
+            $soal->KerjaSoal($_SESSION['kerja_soal']);
+        } else if ($_SESSION['status_test'] == 'staff/asisten') {
+            $_SESSION['kerja_soal'] = 'soal_5';
+            $_SESSION['w_selesai']  = '';
+            $soal->KerjaSoal($_SESSION['kerja_soal']);
+        } else if ($_SESSION['status_test'] == 'asmen-up') {
+            $_SESSION['kerja_soal'] = 'soal_5';
+            $_SESSION['w_selesai']  = '';
+            $soal->KerjaSoal($_SESSION['kerja_soal']);
+        } else {
+            $_SESSION['kerja_soal'] = 'soal_4';
+            $_SESSION['w_selesai']  = '';
+            $soal->KerjaSoal($_SESSION['kerja_soal']);
+        }
     }
 }
 # SOAL 3 ~
@@ -510,9 +564,19 @@ if (isset($_POST['soal_4'])) {
             header('location:../kerja_soal/kerja_modul_4?status=0');
         }
     } else {
-        $_SESSION['kerja_soal'] = 'soal_5';
-        $_SESSION['w_selesai']  = '';
-        $soal->KerjaSoal($_SESSION['kerja_soal']);
+        if ($_SESSION['status_test'] == 'managerial') {
+            $_SESSION['kerja_soal'] = 'soal_4';
+            $_SESSION['w_selesai']  = '';
+            $soal->KerjaSoal($_SESSION['kerja_soal']);
+        } else if ($_SESSION['status_test'] == 'nonstaff') {
+            $_SESSION['kerja_soal'] = 'soal_5';
+            $_SESSION['w_selesai']  = '';
+            $soal->KerjaSoal($_SESSION['kerja_soal']);
+        } else {
+            $_SESSION['kerja_soal'] = 'soal_5';
+            $_SESSION['w_selesai']  = '';
+            $soal->KerjaSoal($_SESSION['kerja_soal']);
+        }
     }
 }
 # SOAL 4 ~
@@ -630,18 +694,35 @@ if (isset($_POST['soal_5'])) {
         $update     = $soal->InputJawaban($arr_kolom, $arr_data, 'update');
 
         if ($update == 'berhasil') {
-            
+
             $_SESSION['kerja_soal'] = 'soal_6';
             $_SESSION['w_selesai']  = '';
             $soal->KerjaSoal($_SESSION['kerja_soal']);
         } else {
             header('location:../kerja_soal/kerja_modul_5?status=0');
         }
-    }
-    else{
-        $_SESSION['kerja_soal'] = 'soal_6';
-        $_SESSION['w_selesai']  = '';
-        $soal->KerjaSoal($_SESSION['kerja_soal']);
+    } else {
+        if ($_SESSION['status_test'] == 'managerial') {
+            $_SESSION['kerja_soal'] = 'soal_6';
+            $_SESSION['w_selesai']  = '';
+            $soal->KerjaSoal($_SESSION['kerja_soal']);
+        } else if ($_SESSION['status_test'] == 'nonstaff') {
+            $_SESSION['kerja_soal'] = 'soal_6';
+            $_SESSION['w_selesai']  = '';
+            $soal->KerjaSoal($_SESSION['kerja_soal']);
+        } else if ($_SESSION['status_test'] == 'staff/asisten') {
+            $_SESSION['kerja_soal'] = 'soal_6';
+            $_SESSION['w_selesai']  = '';
+            $soal->KerjaSoal($_SESSION['kerja_soal']);
+        } else if ($_SESSION['status_test'] == 'asmen-up') {
+            $_SESSION['kerja_soal'] = 'soal_6';
+            $_SESSION['w_selesai']  = '';
+            $soal->KerjaSoal($_SESSION['kerja_soal']);
+        } else {
+            $_SESSION['kerja_soal'] = 'soal_6';
+            $_SESSION['w_selesai']  = '';
+            $soal->KerjaSoal($_SESSION['kerja_soal']);
+        }
     }
 
 
@@ -782,21 +863,48 @@ if (isset($_POST['soal_6'])) {
     $update     = $soal->InputJawaban($arr_kolom, $arr_data, 'update');
 
     if ($update == 'berhasil') {
-        if ($_SESSION['status_test'] == 'nonmanagerial') {
-            $d_hapalan      = $soal->SelectSoal2('Modul 8');
+        // if ($_SESSION['status_test'] == 'nonmanagerial') {
+        //     $d_hapalan      = $soal->SelectSoal2('Modul 8');
+        //     $r_hapalan      = $d_hapalan->fetch_assoc();
+        //     $w_selesai      = strtotime($n_jam) + $r_hapalan['durasi'];
+
+        //     echo '<br><br>' . $r_hapalan['durasi'];
+
+        //     unset($_SESSION['w_selesai']);
+        //     unset($_SESSION['kerja_soal']);
+
+        //     $_SESSION['kerja_soal'] = 'soal_8';
+        //     $_SESSION['w_selesai']  = '';
+        //     $soal->KerjaSoal($_SESSION['kerja_soal']);
+        // } 
+        if ($_SESSION['status_test'] == 'nonstaff') {
+            $d_hapalan      = $soal->SelectSoal2('Modul 9');
             $r_hapalan      = $d_hapalan->fetch_assoc();
             $w_selesai      = strtotime($n_jam) + $r_hapalan['durasi'];
 
             echo '<br><br>' . $r_hapalan['durasi'];
-
+            $_SESSION['kerja_soal'] = 'soal_9';
+            $_SESSION['w_selesai']  = '';
+            $soal->KerjaSoal($_SESSION['kerja_soal']);
+        } else if ($_SESSION['status_test'] == 'asmen-up') {
+            $d_hapalan      = $soal->SelectSoal2('Modul 9');
+            $r_hapalan      = $d_hapalan->fetch_assoc();
+            $w_selesai      = strtotime($n_jam) + $r_hapalan['durasi'];
+            unset($_SESSION['w_selesai']);
+            unset($_SESSION['kerja_soal']);
+            echo '<br><br>' . $r_hapalan['durasi'];
+            $_SESSION['kerja_soal'] = 'soal_7';
+            $_SESSION['w_selesai']  = '';
+            $soal->KerjaSoal($_SESSION['kerja_soal']);
+        } else if ($_SESSION['status_test'] == 'staff/asisten') {
             unset($_SESSION['w_selesai']);
             unset($_SESSION['kerja_soal']);
 
-            $_SESSION['kerja_soal'] = 'soal_8';
+            $_SESSION['kerja_soal'] = 'selesai';
             $_SESSION['w_selesai']  = '';
             $soal->KerjaSoal($_SESSION['kerja_soal']);
         } else {
-            $d_hapalan      = $soal->SelectSoal2('Modul 7');
+            $d_hapalan      = $soal->SelectSoal2('Modul 9');
             $r_hapalan      = $d_hapalan->fetch_assoc();
             $w_selesai      = strtotime($n_jam) + $r_hapalan['durasi'];
 
@@ -805,7 +913,7 @@ if (isset($_POST['soal_6'])) {
             unset($_SESSION['w_selesai']);
             unset($_SESSION['kerja_soal']);
 
-            $_SESSION['kerja_soal'] = 'soal_7';
+            $_SESSION['kerja_soal'] = 'soal_9';
             $_SESSION['w_selesai']  = '';
             $soal->KerjaSoal($_SESSION['kerja_soal']);
         }
@@ -934,18 +1042,27 @@ if (isset($_POST['soal_7'])) {
     $update     = $soal->InputJawaban($arr_kolom, $arr_data, 'update');
 
     if ($update == 'berhasil') {
-        $d_hapalan      = $soal->SelectSoal2('Modul 8');
-        $r_hapalan      = $d_hapalan->fetch_assoc();
-        $w_selesai      = strtotime($n_jam) + $r_hapalan['durasi'];
+        if ($_SESSION['status_test'] == 'asmen-up') {
+            unset($_SESSION['w_selesai']);
+            unset($_SESSION['kerja_soal']);
 
-        echo '<br><br>' . $r_hapalan['durasi'];
+            $_SESSION['kerja_soal'] = 'selesai';
+            $_SESSION['w_selesai']  = '';
+            $soal->KerjaSoal($_SESSION['kerja_soal']);
+        } else {
+            $d_hapalan      = $soal->SelectSoal2('Modul 8');
+            $r_hapalan      = $d_hapalan->fetch_assoc();
+            $w_selesai      = strtotime($n_jam) + $r_hapalan['durasi'];
 
-        unset($_SESSION['w_selesai']);
-        unset($_SESSION['kerja_soal']);
+            echo '<br><br>' . $r_hapalan['durasi'];
 
-        $_SESSION['kerja_soal'] = 'soal_8';
-        $_SESSION['w_selesai']  = date('H:i:s', $w_selesai);
-        $soal->KerjaSoal($_SESSION['kerja_soal']);
+            unset($_SESSION['w_selesai']);
+            unset($_SESSION['kerja_soal']);
+
+            $_SESSION['kerja_soal'] = 'soal_8';
+            $_SESSION['w_selesai']  = date('H:i:s', $w_selesai);
+            $soal->KerjaSoal($_SESSION['kerja_soal']);
+        }
     } else {
         header('location:../kerja_soal/kerja_modul_7?status=0');
     }
@@ -1741,7 +1858,8 @@ if (isset($_POST['soal_10_wu'])) {
     $update     = $soal->InputJawaban($arr_kolom, $arr_data, 'update');
 
     if ($update == 'berhasil') {
-        $d_hapalan      = $soal->SelectSoal2('Modul 10 WU');
+
+        $d_hapalan      = $soal->SelectSoal2('Modul 2');
         $r_hapalan      = $d_hapalan->fetch_assoc();
         $w_selesai      = strtotime($n_jam) + $r_hapalan['durasi'];
 

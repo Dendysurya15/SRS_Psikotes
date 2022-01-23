@@ -377,8 +377,8 @@ if (isset($_GET['status'])) {
                                                                         <option disabled selected>
                                                                             <?= strtoupper($rowDataPeserta['jenis_tes_peserta']) ?>
                                                                         </option>
-                                                                        <option value="nonmanagerial">NONMANAGERIAL</option>
-                                                                        <option value="managerial">MANAGERIAL</option>
+                                                                        <option value=""> <?= $rowDataPeserta['jenis_tes_peserta'] ?></option>
+                                                                        <!-- <option value="managerial">MANAGERIAL</option>   -->
                                                                     </select>
                                                                 </td>
                                                                 <td>
@@ -448,7 +448,7 @@ if (isset($_GET['status'])) {
                                                                             } ?></small>
                                         </td>
                                         <td style="border:none;">
-                                            <input type="text" name="nama" id="nama" value="" class="form-control" placeholder="Nama Peserta">
+                                            <input type="text" name="nama" id="nama" value="" class="form-control" placeholder="Nama Lengkap Peserta">
                                             <small class=" text-danger "><?php if (isset($_SESSION['namaErr'])) { ?>
                                                     *<?php echo $_SESSION['namaErr'];
                                                                                 unset($_SESSION['namaErr']);
@@ -464,8 +464,9 @@ if (isset($_GET['status'])) {
                                         <td style="border:none;">
                                             <select name="jenis" class="form-control">
                                                 <option disabled selected>Jenis Tes</option>
-                                                <option value="managerial">Managerial</option>
-                                                <option value="nonmanagerial">Nonmanagerial</option>
+                                                <option value="nonstaff">Level Non Staff</option>
+                                                <option value="staff/asisten">Level Staff/Asisten</option>
+                                                <option value="asmen-up">Level Asmen - Up</option>
                                             </select>
                                             <small class=" text-danger "><?php if (isset($_SESSION['jenisErr'])) { ?>
                                                     *<?php echo $_SESSION['jenisErr'];

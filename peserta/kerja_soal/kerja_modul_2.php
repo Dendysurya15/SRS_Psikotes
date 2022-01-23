@@ -165,7 +165,7 @@ if ($status_s == 1) {
                 </div>
             </section>
             <section class="content row">
-                <div class="col-9">
+                <div class="col-12">
                     <div class="card">
 
                         <div class="card-header">
@@ -413,7 +413,7 @@ if ($status_s == 1) {
                         </form>
                     </div>
                 </div>
-                <div class="col-3">
+                <!-- <div class="col-3">
                     <div class="card">
                         <div style="border-bottom: 1pt solid #E9ECEF;">
                             <p class="text-center pt-3"> Status Jawaban</p>
@@ -434,7 +434,7 @@ if ($status_s == 1) {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </section>
 
         </div><!-- /.container-fluid -->
