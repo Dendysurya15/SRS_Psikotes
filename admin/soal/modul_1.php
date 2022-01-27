@@ -62,6 +62,60 @@ if (isset($_GET['status'])) {
                         alert(html);                
                     </script>';
             break;
+        case 21:
+            echo '<script>
+                                        var html = "Gagal Menambahkan Instruksi karena format bukan file bukan Audio";
+                                        alert(html);
+                                    </script>';
+            break;
+        case 22:
+            echo '<script>
+                                            var html = "Berhasil Menambahkan Instruksi Soal";
+                                            alert(html);
+                                        </script>';
+            break;
+        case 23:
+            echo '<script>
+                                                var html = "Gagal Menambahkan Instruksi Soal";
+                                                alert(html);
+                                            </script>';
+            break;
+        case 24:
+            echo '<script>
+                                                    var html = "Gagal Menambahkan Instruksi Soal karena nama file sama atau sudah ada";
+                                                    alert(html);
+                                                </script>';
+            break;
+        case 25:
+            echo '<script>
+                                                        var html = "Gagal untuk memperbaharui Instruksi Soal";
+                                                        alert(html);
+                                                    </script>';
+            break;
+        case 26:
+            echo '<script>
+                                                            var html = "Berhasil untuk memperbaharui Instruksi Soal";
+                                                            alert(html);
+                                                        </script>';
+            break;
+        case 27:
+            echo '<script>
+                                                            var html = "Berhasil untuk menghapus Instruksi Soal";
+                                                            alert(html);
+                                                        </script>';
+            break;
+        case 28:
+            echo '<script>
+                                                                var html = "Gagal untuk menghapus Instruksi Soal";
+                                                                alert(html);
+                                                            </script>';
+            break;
+        case 29:
+            echo '<script>
+                                                                    var html = "Size file instruksi harus kurang dari 5Mb";
+                                                                    alert(html);
+                                                                </script>';
+            break;
         default:
             echo '<script>
                     var html = "Size Gambar Harus Kurang Dari 5mb";
@@ -149,6 +203,53 @@ if (isset($_GET['status'])) {
             <div class="row">
                 <div class="col-md-12">
                     <form action="../query/modul_1_query" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="soal_id" value="<?= $soal_id ?>">
+                        <div class="card">
+                            <div class="card-body">
+                                <table class="table table-bordered table-hover text-center">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Instruksi Modul</th>
+                                            <th>File Suara</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <?php if (!empty($rowDataModul['instruksi_soal'])) : ?>
+                                                    <audio src="../instruksi_soal/<?= $rowDataModul['instruksi_soal'] ?>" type="audio/mpeg" controlsList="nodownload" controls>
+                                                        Your browser does not support the audio tag.
+                                                    </audio>
+                                                <?php else : ?>
+                                                    Instruksi suara tidak ada
+                                                <?php endif; ?>
+                                            </td>
+                                            <td><input type="file" name="instruksi_suara" accept=".ogg,.flac,.mp3,.m4a,.mp4" class="form-control"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="card-footer">
+                                <?php if (!empty($rowDataModul['instruksi_soal'])) : ?>
+                                    <input type="hidden" name="instruksi_lama" value="<?= $rowDataModul['instruksi_soal'] ?>">
+                                    <input name="tambah_instruksi" type="submit" value="Update Instruksi" class="btn btn-success float-sm-right">
+                                    <input name="hapus_instruksi" type="submit" value="Delete Instruksi" class="btn btn-danger float-sm-right mr-1">
+                                <?php else : ?>
+                                    <input name="tambah_instruksi" type="submit" value="Tambah Instruksi" class="btn btn-primary float-sm-right">
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <form action="../query/modul_1_query" method="post" enctype="multipart/form-data">
                         <div class="card">
                             <div class="card-body">
                                 <table class="table table-bordered table-hover text-center">
@@ -185,6 +286,7 @@ if (isset($_GET['status'])) {
                 </div>
             </div>
         </div>
+
 
         <div class="container-fluid">
             <div class="row">

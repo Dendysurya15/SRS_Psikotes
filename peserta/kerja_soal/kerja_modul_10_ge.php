@@ -170,6 +170,15 @@ if ($status_s == 1) {
                         <form id="soal_contoh" class="mt-5">
 
                             <div class="row mt-4 mb-4">
+                                <?php if (!empty($rowSelectSoal['instruksi_soal'])) : ?>
+                                    <div class="row mt-2 mb-4" style="margin:auto; text-align:center;">
+                                        <div class="col-md-12">
+                                            <audio src="../../admin/instruksi_soal/<?= $rowSelectSoal['instruksi_soal'] ?>" type="audio/mpeg" controlsList="nodownload" controls>
+                                                Your browser does not support the audio tag.
+                                            </audio>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
                                 <div class="col-md-12" style="margin-left: auto; margin-right: auto;">
                                     <h3 class="content-header">
                                         Tentukan <b>KATA UMUM</b> dari dua kata yang diberikan, anda bisa langsung mengetik jawaban anda di

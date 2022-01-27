@@ -582,6 +582,90 @@ class Soal
         return $updatePeserta;
     }
 
+    function instruksiSoal($soal_id, $instruksi_lama,  $instruksi_file, $path, $pindah_html,  $status)
+    {
+        $lima_mb        = 5 * 1048576;
+        $instruksi_tmp    = $instruksi_file['tmp_name'];
+        $instruksi_name    = $instruksi_file['name'];
+        $instruksi_type    = $instruksi_file['type'];
+        $instruksi_size    = $instruksi_file['size'];
+        switch ($status) {
+            case 'tambah':
+                if ($instruksi_size > $lima_mb) {
+                    header('location:' . $pindah_html . '?soal_id=' . $soal_id . '&status=5');
+                }
+                if ($instruksi_lama != $instruksi_name and !empty($instruksi_lama)) {
+                    if (file_exists($path . $instruksi_lama)) {
+
+                        if (explode("/", $instruksi_type)[0] == "audio") {
+                            unlink($path . $instruksi_lama);
+                            $instruksi_ext         = pathinfo($instruksi_name, PATHINFO_EXTENSION);
+                            $file_name           = strtolower(str_replace('.' . $instruksi_ext . '', '', $instruksi_name));
+                            $format_nama_baru   = $file_name . '_modul' . $soal_id . '.' . strtolower($instruksi_ext);
+                            $sqlUpdateInstruksi = 'UPDATE ' . 'soal' . ' SET instruksi_soal ="' . $format_nama_baru . '" WHERE id=' . $soal_id . '';
+
+
+                            if ($this->conn->query($sqlUpdateInstruksi) === TRUE) {
+                                move_uploaded_file($instruksi_tmp, $path . $format_nama_baru);
+                                header('location:' . $pindah_html . '?soal_id=' . $soal_id . '&status=26');
+                            } else {
+                                header('location:' . $pindah_html . '?soal_id=' . $soal_id . '&status=25');
+                            }
+                        } else {
+                            header('location:' . $pindah_html . '?soal_id=' . $soal_id . '&status=25');
+                        }
+                    } else {
+                        if (explode("/", $instruksi_type)[0] == "audio") {
+                            $instruksi_ext         = pathinfo($instruksi_name, PATHINFO_EXTENSION);
+                            $file_name           = strtolower(str_replace('.' . $instruksi_ext . '', '', $instruksi_name));
+                            $format_nama_baru   = $file_name . '_modul' . $soal_id . '.' . strtolower($instruksi_ext);
+                            $sqlUpdateInstruksi = 'UPDATE ' . 'soal' . ' SET instruksi_soal ="' . $format_nama_baru . '" WHERE id=' . $soal_id . '';
+
+                            if ($this->conn->query($sqlUpdateInstruksi) === TRUE) {
+                                move_uploaded_file($instruksi_tmp, $path . $format_nama_baru);
+                                header('location:' . $pindah_html . '?soal_id=' . $soal_id . '&status=22');
+                            } else {
+                                header('location:' . $pindah_html . '?soal_id=' . $soal_id . '&status=23');
+                            }
+                        } else {
+                            header('location:' . $pindah_html . '?soal_id=' . $soal_id . '&status=23');
+                        }
+                    }
+                } else {
+                    if (explode("/", $instruksi_type)[0] == "audio") {
+                        $instruksi_ext         = pathinfo($instruksi_name, PATHINFO_EXTENSION);
+                        $file_name           = strtolower(str_replace('.' . $instruksi_ext . '', '', $instruksi_name));
+                        $format_nama_baru   = $file_name . '_modul' . $soal_id . '.' . strtolower($instruksi_ext);
+                        $sqlUpdateInstruksi = 'UPDATE ' . 'soal' . ' SET instruksi_soal ="' . $format_nama_baru . '" WHERE id=' . $soal_id . '';
+
+                        if ($this->conn->query($sqlUpdateInstruksi) === TRUE) {
+                            move_uploaded_file($instruksi_tmp, $path . $format_nama_baru);
+                            header('location:' . $pindah_html . '?soal_id=' . $soal_id . '&status=22');
+                        } else {
+                            header('location:' . $pindah_html . '?soal_id=' . $soal_id . '&status=23');
+                        }
+                    } else {
+                        header('location:' . $pindah_html . '?soal_id=' . $soal_id . '&status=21');
+                    }
+                }
+                break;
+
+            case 'hapus':
+
+                $sqlUpdateInstruksi = 'UPDATE ' . 'soal' . ' SET instruksi_soal ="' . NULL . '" WHERE id=' . $soal_id . '';
+                if ($this->conn->query($sqlUpdateInstruksi) === TRUE) {
+                    unlink($path . $instruksi_lama);
+                    header('location:' . $pindah_html . '?soal_id=' . $soal_id . '&status=27');
+                } else {
+                    header('location:' . $pindah_html . '?soal_id=' . $soal_id . '&status=28');
+                }
+                break;
+            default:
+                # code...
+                break;
+        }
+    }
+
     #Peserta Tambah, Update, Hapus
     function Peserta($arr_kolom, $arr_data, $status)
     {

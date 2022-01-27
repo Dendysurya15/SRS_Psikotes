@@ -196,7 +196,17 @@ if ($status_s == 1) {
 
                         <form id="soal_contoh">
                             <!-- PENJELASAN -->
+
                             <div class="row mt-4">
+                                <?php if (!empty($rowSelectSoal['instruksi_soal'])) : ?>
+                                    <div class="row mt-2 mb-4" style="margin:auto; text-align:center;">
+                                        <div class="col-md-12">
+                                            <audio src="../../admin/instruksi_soal/<?= $rowSelectSoal['instruksi_soal'] ?>" type="audio/mpeg" controlsList="nodownload" controls>
+                                                Your browser does not support the audio tag.
+                                            </audio>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
                                 <div class="col-md-10" style="margin-left: auto; margin-right: auto;">
                                     <h3 class="content-header">
                                         Pada test ini anda akan menjumpai sejumlah gambar, dimana gambar-gambar A B & C adalah gambar soal, sedangkan gambar 1 2 3 4 5 merupakan pilihan jawabannya.

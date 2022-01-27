@@ -199,6 +199,15 @@ if ($status_s == 1) {
 
                         <form id="soal_contoh">
                             <div class="row mt-4">
+                                <?php if (!empty($rowSelectSoal['instruksi_soal'])) : ?>
+                                    <div class="row mt-2 mb-4" style="margin:auto; text-align:center;">
+                                        <div class="col-md-12">
+                                            <audio src="../../admin/instruksi_soal/<?= $rowSelectSoal['instruksi_soal'] ?>" type="audio/mpeg" controlsList="nodownload" controls>
+                                                Your browser does not support the audio tag.
+                                            </audio>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
                                 <div class="col-md-10" style="margin-left: auto; margin-right: auto;">
                                     <h3 class="content-header">
                                         Pada tes kali ini memiliki 5 kategori dimana setiap kategorinya berisi 5 kata-kata, anda harus

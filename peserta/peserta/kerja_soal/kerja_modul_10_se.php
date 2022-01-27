@@ -1,6 +1,6 @@
 <?php
-define('WP_HOME','https://www.assessmentcenter-ssms.com/');
-define('WP_SITEURL','https://www.assessmentcenter-ssms.com/');
+define('WP_HOME', 'https://www.assessmentcenter-ssms.com/');
+define('WP_SITEURL', 'https://www.assessmentcenter-ssms.com/');
 
 date_default_timezone_set("Asia/Jakarta");
 include_once '../layout/header.php';
