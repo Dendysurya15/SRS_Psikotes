@@ -8,9 +8,8 @@ include_once '../layout/header.php';
 include '../../kumpulan_function.php';
 
 $soal = new Soal();
-$skor  = $soal->Skor($_SESSION['i_room']);
-$namaPeserta    = $skor->fetch_assoc();
-$namaPeserta = $namaPeserta['nama_peserta'];
+$resPeserta       = $soal->Peserta('id', $_SESSION['i_peserta'], 'select');
+$rowPeserta       = $resPeserta->fetch_assoc();
 $soal_id = '';
 
 if (isset($_SESSION['kerja_soal'])) {
@@ -131,7 +130,7 @@ if ($status_s == 1) {
                     <a class="nav-link" data-widget="pushmenu" href="#" role="hover"><i class="fas fa-bars"></i></a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
-                    <a class="nav-link">Selamat datang! <?= $namaPeserta ?> </a>
+                    <a class="nav-link">Selamat datang <?= $rowPeserta['nama_peserta'] ?>!</a>
                 </li>
 
             </ul>
