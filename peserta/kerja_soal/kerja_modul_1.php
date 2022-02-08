@@ -58,7 +58,14 @@ if (isset($_GET['status'])) {
                     </script>                
                 ';
             break;
-
+        case 1:
+            echo '
+                        <script>
+                            var html = "Biodata berhasil di simpan, selamat mengerjakan semoga berhasil!";
+                            alert(html);
+                        </script>                
+                    ';
+            break;
         default:
             # code...
             break;

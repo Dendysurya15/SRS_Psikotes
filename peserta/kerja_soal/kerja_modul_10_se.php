@@ -18,6 +18,21 @@ if (isset($_SESSION['kerja_soal'])) {
     }
 }
 
+if (isset($_GET['status'])) {
+    switch ($_GET['status']) {
+        case 1:
+            echo '
+                        <script>
+                            var html = "Biodata berhasil di simpan, selamat mengerjakan semoga berhasil!";
+                            alert(html);
+                        </script>                
+                    ';
+            break;
+        default:
+            # code...
+            break;
+    }
+}
 $timer = '';
 $resultSelSoal      = $soal->SelectSoal2('Modul 10 SE');
 switch ($resultSelSoal) {

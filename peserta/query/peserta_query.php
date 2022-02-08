@@ -49,28 +49,10 @@ if (isset($_POST['login_room'])) {
 
                 switch ($updPeserta) {
                     case 'berhasil':
-                        if ($_SESSION['status_test'] == 'managerial') {
-                            $_SESSION['w_selesai']  = '';
-                            $_SESSION['kerja_soal'] = 'soal_10_se';
-                            $soal->KerjaSoal($_SESSION['kerja_soal']);
-                        } else if ($_SESSION['status_test'] == 'staff/asisten') {
-                            $_SESSION['w_selesai']  = '';
-                            $_SESSION['kerja_soal'] = 'soal_10_se';
-                            $soal->KerjaSoal($_SESSION['kerja_soal']);
-                        } else if ($_SESSION['status_test'] == 'asmen-up') {
-                            $_SESSION['w_selesai']  = '';
-                            $_SESSION['kerja_soal'] = 'soal_10_se';
-                            $soal->KerjaSoal($_SESSION['kerja_soal']);
-                        } else if ($_SESSION['status_test'] == 'nonstaff') {
-                            $_SESSION['w_selesai']  = '';
-                            $_SESSION['kerja_soal'] = 'soal_1';
-                            $soal->KerjaSoal($_SESSION['kerja_soal']);
-                        } else {
-                            $_SESSION['w_selesai']  = '';
-                            $_SESSION['coba'] = 'testing';
-                            $_SESSION['kerja_soal'] = 'soal_1';
-                            $soal->KerjaSoal($_SESSION['kerja_soal']);
-                        }
+                        $_SESSION['w_selesai']  = '';
+                        $_SESSION['status_test']            = $rowPeserta['jenis_tes_peserta'];
+                        $_SESSION['kerja_soal'] = 'biodata';
+                        $soal->KerjaSoal($_SESSION['kerja_soal']);
                         break;
                     case 'gagal':
                         header('location:../auth/login?status=0');
@@ -91,35 +73,11 @@ if (isset($_POST['login_room'])) {
                         $updPeserta       = $soal->Peserta($row_update, $col_update, 'update');
                         switch ($updPeserta) {
                             case 'berhasil':
-                                if ($_SESSION['status_test'] == 'managerial') {
 
-                                    $_SESSION['w_selesai']  = '';
+                                $_SESSION['w_selesai']  = '';
+                                $_SESSION['kerja_soal'] = 'biodata';
+                                $soal->KerjaSoal($_SESSION['kerja_soal']);
 
-                                    $_SESSION['kerja_soal'] = 'soal_10_se';
-                                    $soal->KerjaSoal($_SESSION['kerja_soal']);
-                                } else if ($_SESSION['status_test'] == 'staff/asisten') {
-
-                                    $_SESSION['w_selesai']  = '';
-
-                                    $_SESSION['kerja_soal'] = 'soal_10_se';
-                                    $soal->KerjaSoal($_SESSION['kerja_soal']);
-                                } else if ($_SESSION['status_test'] == 'asmen-up') {
-
-                                    $_SESSION['w_selesai']  = '';
-
-                                    $_SESSION['kerja_soal'] = 'soal_10_se';
-                                    $soal->KerjaSoal($_SESSION['kerja_soal']);
-                                } else {
-                                    $resSoal1         = $soal->SelectSoal2('Modul 1');
-                                    $rowSoal1         = $resSoal1->fetch_assoc();
-
-                                    $w_selesai              = strtotime($n_jam) + $rowSoal1['durasi'];
-                                    $_SESSION['w_selesai']  = '';
-
-
-                                    $_SESSION['kerja_soal'] = 'soal_1';
-                                    $soal->KerjaSoal($_SESSION['kerja_soal']);
-                                }
                                 break;
                             case 'gagal':
                                 header('location:../auth/login?status=0');
@@ -146,6 +104,99 @@ if (isset($_POST['login_room'])) {
     # 2. LOGIN 'GAGAL'
     else {
         header('location:../auth/login?status=0');
+    }
+}
+
+if (isset($_POST['store_biodata'])) {
+
+    $id_peserta = $_POST['id_peserta'];
+    $status_test = $_POST['status_test'];
+    $nama = $_POST['nama_lengkap'];
+    $tempat_lahir = $_POST['tempat_lahir'];
+    $tanggal_lahir  = $_POST['tanggal_lahir'];
+    $gender =  $_POST['gender'];
+    $pendidikan_peserta =  $_POST['pendidikan_peserta'];
+    $posisi_yg_dilamar =  $_POST['posisi_yg_dilamar'];
+    $jurusan = $_POST['jurusan'];
+    $kontak_pribadi =  $_POST['kontak_pribadi'];
+
+    session_start();
+    if (empty($nama)) {
+        $_SESSION['namaErr'] = "Nama wajib di isi";
+    } else {
+        $_SESSION['getNama'] = $nama;
+    }
+
+    if (empty($tanggal_lahir)) {
+        $_SESSION['tanggal_lahirErr'] = "Tanggal lahir wajib di isi";
+    } else {
+        $_SESSION['getTanggallahir'] = $tanggal_lahir;
+    }
+
+    if (empty($tempat_lahir)) {
+        $_SESSION['tempat_lahirErr'] = "Tempat lahir wajib di isi";
+    } else {
+        $_SESSION['getTempatlahir'] = $tempat_lahir;
+    }
+
+    if (empty($pendidikan_peserta)) {
+        $_SESSION['pendidikan_pesertaErr'] = "Pendidikan terakhir wajib di isi";
+    } else {
+        $_SESSION['getPendidikanpeserta'] = $pendidikan_peserta;
+    }
+
+    if (empty($gender)) {
+        $_SESSION['genderErr'] = "Gender wajib di isi";
+    } else {
+        $_SESSION['getGender'] = $gender;
+    }
+
+    if (empty($jurusan)) {
+        $_SESSION['jurusanErr'] = "Jurusan wajib di isi";
+    } else {
+        $_SESSION['getJurusan'] = $jurusan;
+    }
+
+    if (empty($posisi_yg_dilamar)) {
+        $_SESSION['posisi_yg_dilamarErr'] = "Posisi yang dilamar wajib di isi";
+    } else {
+        $_SESSION['getPosisiygdilamar'] = $posisi_yg_dilamar;
+    }
+
+    if (empty($kontak_pribadi)) {
+        $_SESSION['kontak_pribadiErr'] = "Kontak pribadi wajib di isi";
+    } else {
+        $_SESSION['getKontakpribadi'] = $kontak_pribadi;
+    }
+
+    if (
+        isset($_SESSION['namaErr']) || isset($_SESSION['tanggal_lahirErr']) || isset($_SESSION['tempat_lahirErr']) || isset($_SESSION['pendidikan_pesertaErr']) ||
+        isset($_SESSION['genderErr']) ||  isset($_SESSION['jurusanErr']) ||  isset($_SESSION['posisi_yg_dilamarErr']) ||  isset($_SESSION['kontak_pribadiErr'])
+    ) {
+        header('location:../kerja_soal/biodata');
+    } else {
+
+
+        $rowUpdate = array('tempat_lahir', 'tanggal_lahir', 'gender', 'pendidikan_peserta', 'posisi_yg_dilamar', 'jurusan', 'kontak_pribadi', 'id');
+        $arrData = array($tempat_lahir, $tanggal_lahir, $gender, $pendidikan_peserta, $posisi_yg_dilamar, $jurusan, $kontak_pribadi, $id_peserta);
+
+        $updatePeserta = $soal->Peserta($rowUpdate, $arrData, 'update');
+
+        if ($updatePeserta == 'berhasil') {
+            if ($status_test == 'asmen-up' || $status_test == 'staff/asisten') {
+                $_SESSION['kerja_soal'] = 'soal_10_se';
+                $_SESSION['w_selesai']  = '';
+                $_SESSION['status'] = '1';
+                $soal->KerjaSoal($_SESSION['kerja_soal']);
+            } else {
+                $_SESSION['kerja_soal'] = 'soal_1';
+                $_SESSION['w_selesai']  = '';
+                $_SESSION['status'] = '1';
+                $soal->KerjaSoal($_SESSION['kerja_soal']);
+            }
+        } else {
+            header('location:../kerja_soal/biodata?status=0');
+        }
     }
 }
 

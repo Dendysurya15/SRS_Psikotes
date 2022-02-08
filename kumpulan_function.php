@@ -564,23 +564,6 @@ class Soal
         }
     }
 
-    #Peserta login
-
-    function loginPeserta($username, $password)
-    {
-        $query = "SELECT * FROM `peserta` WHERE username_peserta ='$username' and password_peserta='$password'";
-        $resultPesertaLogin = $this->conn->query($query);
-        return $resultPesertaLogin;
-    }
-
-    function updatePeserta($id_peserta, $arrData)
-    {
-        $query = "UPDATE `peserta` WHERE id='$id_peserta'";
-        $updatePeserta = $this->conn->query($query);
-
-
-        return $updatePeserta;
-    }
 
     function instruksiSoal($soal_id, $instruksi_lama,  $instruksi_file, $path, $pindah_html,  $status)
     {
@@ -777,6 +760,14 @@ class Soal
 
                 $resLogin = $this->conn->query($sqlLogin);
                 if ($resLogin->num_rows > 0) {
+                    $_SESSION['getNama'] = '';
+                    $_SESSION['getTanggallahir'] = '';
+                    $_SESSION['getTempatlahir'] = '';
+                    $_SESSION['getPendidikanpeserta'] = '';
+                    $_SESSION['getGender'] = '';
+                    $_SESSION['getJurusan'] = '';
+                    $_SESSION['getPosisiygdilamar'] = '';
+                    $_SESSION['getKontakpribadi'] = '';
                     return 'berhasil';
                 } else {
                     return 'gagal';
@@ -795,6 +786,9 @@ class Soal
     function KerjaSoal($soal)
     {
         switch ($soal) {
+            case 'biodata':
+                header('location:../kerja_soal/biodata');
+                break;
             case 'soal_1':
                 header('location:../kerja_soal/kerja_modul_1');
                 break;
