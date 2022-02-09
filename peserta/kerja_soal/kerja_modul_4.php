@@ -106,6 +106,9 @@ if ($status_s == 1) {
 
             <div id="sisa_waktu" class="float-sm-right">
                 <div class="col-md-12">
+                    <h3>
+                        <p id="demo"></p>
+                    </h3>
                     <h3 id="s_w">Sisa Waktu : <?= $d ?> Detik</h3>
                 </div>
             </div>
@@ -418,6 +421,24 @@ if ($status_s == 1) {
                 .style.display = 'block';
         }
         // kode akhir idle mode 30 menit
+
+        //timer waktu pengerjaan tes
+        var countDownDate = new Date("<?= date_format(new DateTime($rowRoom['tanggal']), 'M d, Y') ?> <?= $rowRoom['jam_selesai'] ?>").getTime();
+
+        // Update the count down every 1 second
+        setInterval(function() {
+
+            // Get todays date and time
+            var now = new Date().getTime();
+
+            // Find the distance between now an the count down date
+            var distance = countDownDate - now;
+
+            // If the count down is over, write some text 
+            if (distance < 0) {
+                window.location.href = '../auth/login.php?status=2';
+            }
+        }, 1000);
     </script>
 
     <style>

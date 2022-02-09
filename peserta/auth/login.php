@@ -24,6 +24,14 @@ if (isset($_GET['status'])) {
           </script>
         ';
       break;
+    case 2:
+      echo '
+            <script>
+              var html = "Waktu pengerjaan tes psikotes ini sudah berakhir, terima kasih atas keikutsertaan anda dan semoga mendapatkan hasil yang memuaskan!";
+              alert(html);
+            </script>
+          ';
+      break;
     default:
       # code...
       break;

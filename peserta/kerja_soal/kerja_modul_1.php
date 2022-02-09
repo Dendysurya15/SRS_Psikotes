@@ -614,6 +614,24 @@ if ($status_s == 1) {
             }
         }, 1000);
     }
+
+    //timer waktu pengerjaan tes
+    var countDownDate = new Date("<?= date_format(new DateTime($rowRoom['tanggal']), 'M d, Y') ?> <?= $rowRoom['jam_selesai'] ?>").getTime();
+
+    // Update the count down every 1 second
+    setInterval(function() {
+
+        // Get todays date and time
+        var now = new Date().getTime();
+
+        // Find the distance between now an the count down date
+        var distance = countDownDate - now;
+
+        // If the count down is over, write some text 
+        if (distance < 0) {
+            window.location.href = '../auth/login.php?status=2';
+        }
+    }, 1000);
 </script>
 
 <style>
