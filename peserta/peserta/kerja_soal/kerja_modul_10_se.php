@@ -166,7 +166,7 @@ if ($status_s == 1) {
                         <form id="soal_contoh" class="mt-5">
 
                             <div class="row mt-4 mb-4">
-                                <div class="col-md-12" style="margin-left: auto; margin-right: auto;">
+                                <div class="col-md-12 pl-4 pr-4" style="margin-left: auto; margin-right: auto;">
                                     <h3 class="content-header">
                                         “Isilah titik-titik pada soal dengan memilih jawaban yang tersedia yang menurut anda paling sesuai
                                         untuk melengkapi kalimat tersebut”

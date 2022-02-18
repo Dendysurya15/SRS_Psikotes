@@ -39,6 +39,7 @@ switch ($soal_id) {
 
     default:
         $resultSoalModul    =  $soal->SelectDataSoalModul($soal_id, 'modul_5');
+        $queryNomorSoal    =  $soal->SelectDataSoalModul($soal_id, 'modul_5');
         break;
 }
 
@@ -119,6 +120,68 @@ if ($status_s == 1) {
     }
 }
 
+$arraySoal = array();
+$userSoal = array();
+while ($result = $resultSoalModul->fetch_assoc()) {
+    $arraySoal[] = $result;
+    $max = max($arraySoal);
+    $min = min($arraySoal);
+    $userSoal[] = $result['nomor_soal'];
+}
+$index = isset($_GET['index']) ? ($_GET['index']) : 1;
+
+if (isset($_SESSION['jawaban_soal' . $index])) {
+    $draft_jawaban = $_SESSION['jawaban_soal' . $index];
+    $tmp = explode('_', $draft_jawaban);
+    $draft_kiri = $tmp[0];
+    $draft_kanan = $tmp[1];
+}
+$status_pengerjaan = 0;
+if (isset($_SESSION['status_pengerjaan'])) {
+    $status_pengerjaan = $_SESSION['status_pengerjaan'];
+}
+
+$checkedSoal = array();
+$halfCheckedSoal = array();
+$checkedJawabanSoal = array();
+$emptyCheckedSoal = array();
+$session_str = json_encode($_SESSION);
+
+$session_arr = explode(',', $session_str);
+$result_partial_arr = $soal->array_partial_search($session_arr, 'jawaban_soal');
+
+
+if (!empty($result_partial_arr)) {
+    foreach ($result_partial_arr as $session_data) {
+        //hapus char pertama dan terakhir yaitu petik
+        $firstlastchar = substr($session_data, 1, -1);
+        //ubah ke array nomor soal dan jawaban
+        $clean_session = explode('":"', $firstlastchar);
+        //ubah ke array dan dapatkan jawaban
+        $tmp = explode('_', $clean_session[1]);
+        $kiri = $tmp[0];
+        $kanan = preg_replace('/[^0-9]/', '', $tmp[1]);
+        $kiri = $tmp[0];
+        $kanan = preg_replace('/[^0-9]/', '', $tmp[1]);
+
+        if ($kiri != '0' && $kanan != '0') {
+            $checkedSoal[] = preg_replace('/[^0-9]/', '', $clean_session[0]);
+            $checkedJawabanSoal[] = preg_replace('/[^0-9]/', '', $clean_session[0]) . '=' . $tmp[0] . ',' . $tmp[1];
+        } else if ($kiri != '0' || $kanan != '0') {
+            $halfCheckedSoal[] = preg_replace('/[^0-9]/', '', $clean_session[0]);
+        } else {
+            $emptyCheckedSoal[] = preg_replace('/[^0-9]/', '', $clean_session[0]);
+        }
+    }
+
+    json_encode($checkedSoal);
+    json_encode($halfCheckedSoal);
+    json_encode($emptyCheckedSoal);
+    json_encode($checkedJawabanSoal);
+}
+
+$soal_kosong = array_diff($userSoal, $checkedSoal);
+$soal_kosong = (array) $soal_kosong;
 
 ?>
 
@@ -173,7 +236,7 @@ if ($status_s == 1) {
             <section class="content-header">
                 <div class="content-fluid ">
 
-                    <div class="row mb-2">
+                    <div class="row mb-2" id="modul-name">
                         <div class="col-sm-12" style="text-align:center;">
                             <h1 class="m-0 pl-2 text-dark">
                                 Pengerjaan Soal 5
@@ -184,9 +247,9 @@ if ($status_s == 1) {
                 </div>
             </section>
             <section class="content row">
-                <div class="col-9">
-                    <div class="card">
-                        <div class="card-header">
+                <div class="col-12 " id="pane_soal">
+                    <div class="card pb-5 pt-5" id="card-main">
+                        <div class="card-header" id="card-header">
                             <div class="row mt-2 mb-4" style="margin:auto; text-align:center;">
                                 <div class="col-md-12">
                                     <?php if ($status_s == 0) : ?>
@@ -197,234 +260,234 @@ if ($status_s == 1) {
                                 </div>
                             </div>
                         </div>
+                        <div id="soal_contoh">
+                            <form class="mt-3 ml-4">
 
-                        <form id="soal_contoh" class="mt-3 ml-4">
-
-                            <div class="row mt-4 mb-4">
-                                <?php if (!empty($rowSelectSoal['instruksi_soal'])) : ?>
-                                    <div class="row mt-2 mb-4" style="margin:auto; text-align:center;">
-                                        <div class="col-md-12">
-                                            <audio src="../../admin/instruksi_soal/<?= $rowSelectSoal['instruksi_soal'] ?>" type="audio/mpeg" controlsList="nodownload" controls>
-                                                Your browser does not support the audio tag.
-                                            </audio>
+                                <div class="row mt-4 mb-4">
+                                    <?php if (!empty($rowSelectSoal['instruksi_soal'])) : ?>
+                                        <div class="row mt-2 mb-4" style="margin:auto; text-align:center;">
+                                            <div class="col-md-12">
+                                                <audio src="../../admin/instruksi_soal/<?= $rowSelectSoal['instruksi_soal'] ?>" type="audio/mpeg" controlsList="nodownload" controls>
+                                                    Your browser does not support the audio tag.
+                                                </audio>
+                                            </div>
                                         </div>
+                                    <?php endif; ?>
+                                    <div class="col-md-12" style="margin-left: auto; margin-right: auto;">
+                                        <h3 class="content-header">
+                                            Pada tes ini, setiap nomor memiliki 4 pernyataan yang berisi mengenai gambaran sikap atau
+                                            perilaku. Di sini anda harus memilih satu yang sesuai atau menggambarkan diri anda dengan klik
+                                            pada pilihan di bawah kata “setuju” dan memilih satu yang tidak sesuai atau tidak menggambarkan
+                                            diri anda dengan klik pada pilihan di bawah kata “tidak setuju”.
+                                        </h3>
                                     </div>
-                                <?php endif; ?>
-                                <div class="col-md-12" style="margin-left: auto; margin-right: auto;">
-                                    <h3 class="content-header">
-                                        Pada tes ini, setiap nomor memiliki 4 pernyataan yang berisi mengenai gambaran sikap atau
-                                        perilaku. Di sini anda harus memilih satu yang sesuai atau menggambarkan diri anda dengan klik
-                                        pada pilihan di bawah kata “setuju” dan memilih satu yang tidak sesuai atau tidak menggambarkan
-                                        diri anda dengan klik pada pilihan di bawah kata “tidak setuju”.
-                                    </h3>
                                 </div>
-                            </div>
 
-                            <table style="width: 98%; border:none;" class="table table-bordered table-hover text-center">
-                                <thead style="border: none;">
-                                    <tr style="border: none;">
-                                        <th style="border: none;">
-                                            <h4>Nomor Soal</h4>
-                                        </th>
-                                        <th style="width: 10%; border:none;">
-                                            <h4>Setuju</h4>
-                                        </th>
-                                        <th style="width: 65%; border:none;">
-                                            <h4>Pernyataan</h4>
-                                        </th>
-                                        <th style="width: 10%; border:none;">
-                                            <h4>Tidak Setuju</h4>
-                                        </th>
-                                    </tr>
-                                </thead>
+                                <table style="width: 98%; border:none;" class="table table-bordered table-hover text-center">
+                                    <thead style="border: none;">
+                                        <tr style="border: none;">
+                                            <th style="border: none;">
+                                                <h4>Nomor Soal</h4>
+                                            </th>
+                                            <th style="width: 10%; border:none;">
+                                                <h4>Setuju</h4>
+                                            </th>
+                                            <th style="width: 65%; border:none;">
+                                                <h4>Pernyataan</h4>
+                                            </th>
+                                            <th style="width: 10%; border:none;">
+                                                <h4>Tidak Setuju</h4>
+                                            </th>
+                                        </tr>
+                                    </thead>
 
-                                <tbody style="border: none;">
-                                    <tr style="border: none;">
-                                        <td style="border: none;">
-                                            <h4>1. </h4>
-                                        </td>
+                                    <tbody style="border: none;">
+                                        <tr style="border: none;">
+                                            <td style="border: none;">
+                                                <h4>1. </h4>
+                                            </td>
 
-                                        <td style="border: none;">
-                                            <div class="form-group">
-                                                <input id="kategori_setuju_100_1" class="form-control jawaban" type="radio" name="kategori_setuju_1" value="S"><br>
-                                            </div>
-                                            <div class="form-group">
-                                                <input id="kategori_setuju_100_2" class="form-control jawaban" type="radio" name="kategori_setuju_1" value="I"><br>
-                                            </div>
-                                            <div class="form-group">
-                                                <input id="kategori_setuju_100_3" class="form-control jawaban" type="radio" name="kategori_setuju_1" value="*"><br>
-                                            </div>
-                                            <div class="form-group">
-                                                <input id="kategori_setuju_100_4" class="form-control jawaban" type="radio" name="kategori_setuju_1" value="C"><br>
-                                            </div>
-                                        </td>
+                                            <td style="border: none;">
+                                                <div class="form-group">
+                                                    <input id="kategori_setuju_100_1" class="form-control jawaban" type="radio" name="kategori_setuju_1" value="S"><br>
+                                                </div>
+                                                <div class="form-group">
+                                                    <input id="kategori_setuju_100_2" class="form-control jawaban" type="radio" name="kategori_setuju_1" value="I"><br>
+                                                </div>
+                                                <div class="form-group">
+                                                    <input id="kategori_setuju_100_3" class="form-control jawaban" type="radio" name="kategori_setuju_1" value="*"><br>
+                                                </div>
+                                                <div class="form-group">
+                                                    <input id="kategori_setuju_100_4" class="form-control jawaban" type="radio" name="kategori_setuju_1" value="C"><br>
+                                                </div>
+                                            </td>
 
-                                        <td style="border: none;">
-                                            <div class="form-group">
-                                                <p class="teks-soal" style="font-size: 17.5pt;">Mudah bergaul, ramah mudah setuju </p>
-                                            </div>
-                                            <div class="form-group">
-                                                <p class="teks-soal" style="margin-top: 45px; font-size: 17.5pt;">Mempercayai, percaya pada orang lain
-                                                </p>
-                                            </div>
-                                            <div class="form-group">
-                                                <p class="teks-soal" style="margin-top: 45px; font-size: 17.5pt;">Petualang, suka mengambil resiko
-                                                </p>
-                                            </div>
-                                            <div class="form-group">
-                                                <p class="teks-soal" style="margin-top: 45px; font-size: 17.5pt;">Penuh toleransi, menghormati orang lain </p>
-                                            </div>
-                                        </td>
+                                            <td style="border: none;">
+                                                <div class="form-group">
+                                                    <p class="teks-soal" style="font-size: 17.5pt;">Mudah bergaul, ramah mudah setuju </p>
+                                                </div>
+                                                <div class="form-group">
+                                                    <p class="teks-soal" style="margin-top: 45px; font-size: 17.5pt;">Mempercayai, percaya pada orang lain
+                                                    </p>
+                                                </div>
+                                                <div class="form-group">
+                                                    <p class="teks-soal" style="margin-top: 45px; font-size: 17.5pt;">Petualang, suka mengambil resiko
+                                                    </p>
+                                                </div>
+                                                <div class="form-group">
+                                                    <p class="teks-soal" style="margin-top: 45px; font-size: 17.5pt;">Penuh toleransi, menghormati orang lain </p>
+                                                </div>
+                                            </td>
 
-                                        <td style="border: none;">
-                                            <div class="form-group">
-                                                <input id="kategori_tidak_setuju_100_1" class="form-control jawaban" type="radio" name="kategori_tidak_setuju_1" value="S"><br>
-                                            </div>
-                                            <div class="form-group">
-                                                <input id="kategori_tidak_setuju_100_2" class="form-control jawaban" type="radio" name="kategori_tidak_setuju_1" value="I"><br>
-                                            </div>
-                                            <div class="form-group">
-                                                <input id="kategori_tidak_setuju_100_3" class="form-control jawaban" type="radio" name="kategori_tidak_setuju_1" value="C"><br>
-                                            </div>
-                                            <div class="form-group">
-                                                <input id="kategori_tidak_setuju_100_4" class="form-control jawaban" type="radio" name="kategori_tidak_setuju_1" value="C"><br>
-                                            </div>
-                                        </td>
+                                            <td style="border: none;">
+                                                <div class="form-group">
+                                                    <input id="kategori_tidak_setuju_100_1" class="form-control jawaban" type="radio" name="kategori_tidak_setuju_1" value="S"><br>
+                                                </div>
+                                                <div class="form-group">
+                                                    <input id="kategori_tidak_setuju_100_2" class="form-control jawaban" type="radio" name="kategori_tidak_setuju_1" value="I"><br>
+                                                </div>
+                                                <div class="form-group">
+                                                    <input id="kategori_tidak_setuju_100_3" class="form-control jawaban" type="radio" name="kategori_tidak_setuju_1" value="C"><br>
+                                                </div>
+                                                <div class="form-group">
+                                                    <input id="kategori_tidak_setuju_100_4" class="form-control jawaban" type="radio" name="kategori_tidak_setuju_1" value="C"><br>
+                                                </div>
+                                            </td>
 
-                                    </tr>
+                                        </tr>
 
-                                    <tr style="border: none;">
-                                        <td style="border: none;"></td>
-                                    </tr>
+                                        <tr style="border: none;">
+                                            <td style="border: none;"></td>
+                                        </tr>
 
-                                    <tr style="border: none;">
-                                        <td style="border: none;">
-                                            <h4>2. </h4>
-                                        </td>
+                                        <tr style="border: none;">
+                                            <td style="border: none;">
+                                                <h4>2. </h4>
+                                            </td>
 
-                                        <td style="border: none;">
-                                            <div class="form-group">
-                                                <input id="kategori_setuju_200_1" class="form-control jawaban" type="radio" name="kategori_setuju_2" value="D"><br>
-                                            </div>
-                                            <div class="form-group">
-                                                <input id="kategori_setuju_200_2" class="form-control jawaban" type="radio" name="kategori_setuju_2" value="C"><br>
-                                            </div>
-                                            <div class="form-group">
-                                                <input id="kategori_setuju_200_3" class="form-control jawaban" type="radio" name="kategori_setuju_2" value="*"><br>
-                                            </div>
-                                            <div class="form-group">
-                                                <input id="kategori_setuju_200_4" class="form-control jawaban" type="radio" name="kategori_setuju_2" value="*"><br>
-                                            </div>
-                                        </td>
+                                            <td style="border: none;">
+                                                <div class="form-group">
+                                                    <input id="kategori_setuju_200_1" class="form-control jawaban" type="radio" name="kategori_setuju_2" value="D"><br>
+                                                </div>
+                                                <div class="form-group">
+                                                    <input id="kategori_setuju_200_2" class="form-control jawaban" type="radio" name="kategori_setuju_2" value="C"><br>
+                                                </div>
+                                                <div class="form-group">
+                                                    <input id="kategori_setuju_200_3" class="form-control jawaban" type="radio" name="kategori_setuju_2" value="*"><br>
+                                                </div>
+                                                <div class="form-group">
+                                                    <input id="kategori_setuju_200_4" class="form-control jawaban" type="radio" name="kategori_setuju_2" value="*"><br>
+                                                </div>
+                                            </td>
 
-                                        <td style="border: none;">
-                                            <div class="form-group">
-                                                <p class="teks-soal" style="font-size: 17.5pt;">Yang penting adalah hasil
-                                                </p>
-                                            </div>
-                                            <div class="form-group">
+                                            <td style="border: none;">
+                                                <div class="form-group">
+                                                    <p class="teks-soal" style="font-size: 17.5pt;">Yang penting adalah hasil
+                                                    </p>
+                                                </div>
+                                                <div class="form-group">
 
-                                                <p class="teks-soal" style="margin-top: 45px; font-size: 17.5pt;">Kerjakan dengan benar, ketepatan sangat penting
-                                                </p>
-                                            </div>
-                                            <div class="form-group">
+                                                    <p class="teks-soal" style="margin-top: 45px; font-size: 17.5pt;">Kerjakan dengan benar, ketepatan sangat penting
+                                                    </p>
+                                                </div>
+                                                <div class="form-group">
 
-                                                <p class="teks-soal" style="margin-top: 45px; font-size: 17.5pt;">Buat agar menyenangkan
-                                                </p>
-                                            </div>
-                                            <div class="form-group">
+                                                    <p class="teks-soal" style="margin-top: 45px; font-size: 17.5pt;">Buat agar menyenangkan
+                                                    </p>
+                                                </div>
+                                                <div class="form-group">
 
-                                                <p class="teks-soal" style="margin-top: 45px; font-size: 17.5pt;">Kerjakan bersama-sama
-                                                </p>
-                                            </div>
-                                        </td>
+                                                    <p class="teks-soal" style="margin-top: 45px; font-size: 17.5pt;">Kerjakan bersama-sama
+                                                    </p>
+                                                </div>
+                                            </td>
 
-                                        <td style="border: none;">
-                                            <div class="form-group">
-                                                <input id="kategori_tidak_setuju_200_1" class="form-control jawaban" type="radio" name="kategori_tidak_setuju_2" value="D"><br>
-                                            </div>
-                                            <div class="form-group">
-                                                <input id="kategori_tidak_setuju_200_2" class="form-control jawaban" type="radio" name="kategori_tidak_setuju_2" value="C"><br>
-                                            </div>
-                                            <div class="form-group">
-                                                <input id="kategori_tidak_setuju_200_3" class="form-control jawaban" type="radio" name="kategori_tidak_setuju_2" value="S"><br>
-                                            </div>
-                                            <div class="form-group">
-                                                <input id="kategori_tidak_setuju_200_4" class="form-control jawaban" type="radio" name="kategori_tidak_setuju_2" value="S"><br>
-                                            </div>
-                                        </td>
+                                            <td style="border: none;">
+                                                <div class="form-group">
+                                                    <input id="kategori_tidak_setuju_200_1" class="form-control jawaban" type="radio" name="kategori_tidak_setuju_2" value="D"><br>
+                                                </div>
+                                                <div class="form-group">
+                                                    <input id="kategori_tidak_setuju_200_2" class="form-control jawaban" type="radio" name="kategori_tidak_setuju_2" value="C"><br>
+                                                </div>
+                                                <div class="form-group">
+                                                    <input id="kategori_tidak_setuju_200_3" class="form-control jawaban" type="radio" name="kategori_tidak_setuju_2" value="S"><br>
+                                                </div>
+                                                <div class="form-group">
+                                                    <input id="kategori_tidak_setuju_200_4" class="form-control jawaban" type="radio" name="kategori_tidak_setuju_2" value="S"><br>
+                                                </div>
+                                            </td>
 
 
-                                    </tr>
+                                        </tr>
 
-                                    <tr style="border: none;">
-                                        <td style="border: none;"></td>
-                                    </tr>
+                                        <tr style="border: none;">
+                                            <td style="border: none;"></td>
+                                        </tr>
 
-                                    <tr style="border: none;">
-                                        <td style="border: none;">
-                                            <h4>3. </h4>
-                                        </td>
+                                        <tr style="border: none;">
+                                            <td style="border: none;">
+                                                <h4>3. </h4>
+                                            </td>
 
-                                        <td style="border: none;">
-                                            <div class="form-group">
-                                                <input id="kategori_setuju_300_1" class="form-control jawaban" type="radio" name="kategori_setuju_3" value="*"><br>
-                                            </div>
-                                            <div class="form-group">
-                                                <input id="kategori_setuju_300_2" class="form-control jawaban" type="radio" name="kategori_setuju_3" value="D"><br>
-                                            </div>
-                                            <div class="form-group">
-                                                <input id="kategori_setuju_300_3" class="form-control jawaban" type="radio" name="kategori_setuju_3" value="S"><br>
-                                            </div>
-                                            <div class="form-group">
-                                                <input id="kategori_setuju_300_4" class="form-control jawaban" type="radio" name="kategori_setuju_3" value="I"><br>
-                                            </div>
-                                        </td>
-                                        <td style="border: none;">
-                                            <div class="form-group">
+                                            <td style="border: none;">
+                                                <div class="form-group">
+                                                    <input id="kategori_setuju_300_1" class="form-control jawaban" type="radio" name="kategori_setuju_3" value="*"><br>
+                                                </div>
+                                                <div class="form-group">
+                                                    <input id="kategori_setuju_300_2" class="form-control jawaban" type="radio" name="kategori_setuju_3" value="D"><br>
+                                                </div>
+                                                <div class="form-group">
+                                                    <input id="kategori_setuju_300_3" class="form-control jawaban" type="radio" name="kategori_setuju_3" value="S"><br>
+                                                </div>
+                                                <div class="form-group">
+                                                    <input id="kategori_setuju_300_4" class="form-control jawaban" type="radio" name="kategori_setuju_3" value="I"><br>
+                                                </div>
+                                            </td>
+                                            <td style="border: none;">
+                                                <div class="form-group">
 
-                                                <p class="teks-soal" style="font-size: 17.5pt;">Pendidikan, kebudayaan
-                                                </p>
-                                            </div>
-                                            <div class="form-group">
+                                                    <p class="teks-soal" style="font-size: 17.5pt;">Pendidikan, kebudayaan
+                                                    </p>
+                                                </div>
+                                                <div class="form-group">
 
-                                                <p class="teks-soal" style="margin-top: 45px; font-size: 17.5pt;">Prestasi, penghargaan
-                                                </p>
-                                            </div>
-                                            <div class="form-group">
+                                                    <p class="teks-soal" style="margin-top: 45px; font-size: 17.5pt;">Prestasi, penghargaan
+                                                    </p>
+                                                </div>
+                                                <div class="form-group">
 
-                                                <p class="teks-soal" style="margin-top: 45px; font-size: 17.5pt;">Keselamatan, keamanan
-                                                </p>
-                                            </div>
-                                            <div class="form-group">
+                                                    <p class="teks-soal" style="margin-top: 45px; font-size: 17.5pt;">Keselamatan, keamanan
+                                                    </p>
+                                                </div>
+                                                <div class="form-group">
 
-                                                <p class="teks-soal" style="margin-top: 45px; font-size: 17.5pt;">Sosial, pertemuan kelompok
-                                                </p>
-                                            </div>
-                                        </td>
-                                        <td style="border: none;">
-                                            <div class="form-group">
-                                                <input id="kategori_tidak_setuju_300_1" class="form-control jawaban" type="radio" name="kategori_tidak_setuju_3" value="C"><br>
-                                            </div>
-                                            <div class="form-group">
-                                                <input id="kategori_tidak_setuju_300_2" class="form-control jawaban" type="radio" name="kategori_tidak_setuju_3" value="D"><br>
-                                            </div>
-                                            <div class="form-group">
-                                                <input id="kategori_tidak_setuju_300_3" class="form-control jawaban" type="radio" name="kategori_tidak_setuju_3" value="S"><br>
-                                            </div>
-                                            <div class="form-group">
-                                                <input id="kategori_tidak_setuju_300_4" class="form-control jawaban" type="radio" name="kategori_tidak_setuju_3" value="*"><br>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr style="border: none;">
-                                        <td style="border: none;"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </form>
-
-                        <form id="soal_asli" class="mt-3 ml-4" hidden action="../query/peserta_query" method="post">
+                                                    <p class="teks-soal" style="margin-top: 45px; font-size: 17.5pt;">Sosial, pertemuan kelompok
+                                                    </p>
+                                                </div>
+                                            </td>
+                                            <td style="border: none;">
+                                                <div class="form-group">
+                                                    <input id="kategori_tidak_setuju_300_1" class="form-control jawaban" type="radio" name="kategori_tidak_setuju_3" value="C"><br>
+                                                </div>
+                                                <div class="form-group">
+                                                    <input id="kategori_tidak_setuju_300_2" class="form-control jawaban" type="radio" name="kategori_tidak_setuju_3" value="D"><br>
+                                                </div>
+                                                <div class="form-group">
+                                                    <input id="kategori_tidak_setuju_300_3" class="form-control jawaban" type="radio" name="kategori_tidak_setuju_3" value="S"><br>
+                                                </div>
+                                                <div class="form-group">
+                                                    <input id="kategori_tidak_setuju_300_4" class="form-control jawaban" type="radio" name="kategori_tidak_setuju_3" value="*"><br>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr style="border: none;">
+                                            <td style="border: none;"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </form>
+                        </div>
+                        <form id="soal_asli" class="mt-2 ml-4" hidden action="../query/peserta_query" method="post">
 
                             <table style="width: 98%; border: none;" class="table table-bordered table-hover text-center">
                                 <thead style="border: none;">
@@ -447,144 +510,114 @@ if ($status_s == 1) {
                                 <tbody style="border: none;">
                                     <?php if ($resultSoalModul->num_rows > 0) : ?>
 
-                                        <?php $index = 1; ?>
-                                        <?php while ($rowSoalModul = $resultSoalModul->fetch_assoc()) : ?>
-                                            <?php
-                                            $kategori_setuju    = explode(';', $rowSoalModul['kategori_setuju']);
-                                            $pernyataan         = explode(';', $rowSoalModul['pernyataan']);
-                                            $kategori_tidak_setuju  =  explode(';', $rowSoalModul['kategori_tidak_setuju']);
-                                            $jumlah_ += 1;
 
-                                            $arr_nomor .= '0,';
-                                            ?>
+                                        <?php
+                                        $kategori_setuju    = explode(';',  $arraySoal[$index - 1]['kategori_setuju']);
+                                        $pernyataan         = explode(';', $arraySoal[$index - 1]['pernyataan']);
+                                        $kategori_tidak_setuju  =  explode(';', $arraySoal[$index - 1]['kategori_tidak_setuju']);
+                                        ?>
 
-                                            <input type="hidden" name="id_user" value="<?= $_SESSION['i_peserta'] ?>">
-                                            <input type="hidden" name="soal_id" value="<?= $soal_id ?>">
-                                            <input type="hidden" name="room_id" value="<?= $_SESSION['room_id'] ?>">
+                                        <input type="hidden" name="index" value="<?= $index ?>">
+                                        <input type="hidden" name="nomor_soal<?= $index ?>" value="<?= $index ?>">
+                                        <input type="hidden" name="kerja_soal" value="<?= $_SESSION['kerja_soal'] ?>">
+                                        <input type="hidden" name="soal_pintas" id="soal_pintas">
+                                        <input type="hidden" name="status_pengerjaan" value="1">
 
-                                            <input type="hidden" name="nomor_soal[]" id="nomor_soal_<?= $rowSoalModul['nomor_soal'] ?>" value="<?= $rowSoalModul['nomor_soal'] ?>">
+                                        <tr style="border: none;">
 
-                                            <tr style="border: none;">
-                                                <?php if ($index == 1) : ?>
-                                                    <td style="border: none;">
-                                                        <h4><?= $rowSoalModul['nomor_soal'] ?>. </h4>
-                                                    </td>
+                                            <td style="border: none;">
+                                                <h4><?= $arraySoal[$index - 1]['nomor_soal'] ?>. </h4>
+                                            </td>
 
-                                                    <td style="border: none;">
-                                                        <?php $index_setuju = 1; ?>
-                                                        <?php for ($i = 0; $i < count($kategori_setuju); $i++) : ?>
-                                                            <div class="form-group">
-                                                                <input id="kategori_setuju_<?= $rowSoalModul['nomor_soal'] ?>_<?= $index_setuju ?>" class="form-control jawaban" disabled type="radio" name="kategori_setuju_<?= $rowSoalModul['nomor_soal'] ?>" value="<?= $kategori_setuju[$i] ?>"><br>
-                                                            </div>
-                                                            <?php $index_setuju++ ?>
-                                                        <?php endfor; ?>
-                                                    </td>
+                                            <td style="border: none;">
+                                                <?php $index_setuju = 1; ?>
+                                                <?php for ($i = 0; $i < count($kategori_setuju); $i++) : ?>
+                                                    <div class="form-group">
+                                                        <input id="kategori_setuju_<?= $arraySoal[$index - 1]['nomor_soal'] ?>_<?= $index_setuju ?>" class="form-control jawaban" disabled type="radio" name="jawaban_kiri" <?php if (isset($draft_jawaban) && $draft_kiri == $kategori_setuju[$i]) { ?> checked="checked" <?php } ?> value="<?= $kategori_setuju[$i] ?>"><br>
+                                                    </div>
+                                                    <?php $index_setuju++ ?>
+                                                <?php endfor; ?>
+                                            </td>
 
-                                                    <td style="border: none;">
-                                                        <?php for ($i = 0; $i < count($pernyataan); $i++) : ?>
-                                                            <div class="form-group">
-                                                                <?php if ($i == 0) : ?>
-                                                                    <p class="teks-soal" style="font-size: 17.5pt;"><?= $pernyataan[$i] ?></p>
-                                                                <?php else : ?>
-                                                                    <p class="teks-soal" style="margin-top: 45px; font-size: 17.5pt;"><?= $pernyataan[$i] ?></p>
-                                                                <?php endif; ?>
-                                                            </div>
-                                                        <?php endfor; ?>
-                                                    </td>
+                                            <td style="border: none;">
+                                                <?php for ($i = 0; $i < count($pernyataan); $i++) : ?>
+                                                    <div class="form-group">
+                                                        <?php if ($i == 0) : ?>
+                                                            <p class="teks-soal" style="font-size: 17.5pt;"><?= $pernyataan[$i] ?></p>
+                                                        <?php else : ?>
+                                                            <p class="teks-soal" style="margin-top: 45px; font-size: 17.5pt;"><?= $pernyataan[$i] ?></p>
+                                                        <?php endif; ?>
+                                                    </div>
+                                                <?php endfor; ?>
+                                            </td>
 
-                                                    <td style="border: none;">
-                                                        <?php $index_tidak_setuju = 1 ?>
-                                                        <?php for ($i = 0; $i < count($kategori_tidak_setuju); $i++) : ?>
-                                                            <div class="form-group">
-                                                                <input id="kategori_tidak_setuju_<?= $rowSoalModul['nomor_soal'] ?>_<?= $index_tidak_setuju ?>" class="form-control jawaban" disabled type="radio" name="kategori_tidak_setuju_<?= $rowSoalModul['nomor_soal'] ?>" value="<?= $kategori_tidak_setuju[$i] ?>"><br>
-                                                            </div>
-                                                            <?php $index_tidak_setuju++ ?>
-                                                        <?php endfor; ?>
-                                                    </td>
-                                                <?php else : ?>
+                                            <td style="border: none;">
+                                                <?php $index_tidak_setuju = 1 ?>
+                                                <?php for ($i = 0; $i < count($kategori_tidak_setuju); $i++) : ?>
+                                                    <div class="form-group">
+                                                        <input id="kategori_tidak_setuju_<?= $arraySoal[$index - 1]['nomor_soal'] ?>_<?= $index_tidak_setuju ?>" class="form-control jawaban" disabled type="radio" name="jawaban_kanan" <?php if (isset($draft_jawaban) && $draft_kanan ==  $kategori_tidak_setuju[$i]) { ?> checked="checked" <?php } ?> value="<?= $kategori_tidak_setuju[$i] ?>"> <br>
+                                                    </div>
+                                                    <?php $index_tidak_setuju++ ?>
+                                                <?php endfor; ?>
+                                            </td>
 
-                                                    <td style="border: none;">
-                                                        <h4><?= $rowSoalModul['nomor_soal'] ?>. </h4>
-                                                    </td>
 
-                                                    <td style="border: none;">
-                                                        <?php $index_setuju = 1; ?>
-                                                        <?php for ($i = 0; $i < count($kategori_setuju); $i++) : ?>
-                                                            <div class="form-group">
-                                                                <input id="kategori_setuju_<?= $rowSoalModul['nomor_soal'] ?>_<?= $index_setuju ?>" class="form-control jawaban" disabled type="radio" name="kategori_setuju_<?= $rowSoalModul['nomor_soal'] ?>" value="<?= $kategori_setuju[$i] ?>"><br>
-                                                            </div>
-                                                            <?php $index_setuju++ ?>
-                                                        <?php endfor; ?>
-                                                    </td>
+                                        </tr>
+                                        <tr style="border: none;">
+                                            <td style="border: none;"></td>
+                                        </tr>
 
-                                                    <td style="border: none;">
-                                                        <?php for ($i = 0; $i < count($pernyataan); $i++) : ?>
-                                                            <div class="form-group">
-
-                                                                <?php if ($i == 0) : ?>
-                                                                    <p class="teks-soal" style="font-size: 17.5pt;"><?= $pernyataan[$i] ?></p>
-                                                                <?php else : ?>
-                                                                    <p class="teks-soal" style="margin-top: 45px; font-size: 17.5pt;"><?= $pernyataan[$i] ?></p>
-                                                                <?php endif; ?>
-                                                            </div>
-                                                        <?php endfor; ?>
-                                                    </td>
-
-                                                    <td style="border: none;">
-                                                        <?php $index_tidak_setuju = 1 ?>
-                                                        <?php for ($i = 0; $i < count($kategori_tidak_setuju); $i++) : ?>
-                                                            <div class="form-group">
-                                                                <input id="kategori_tidak_setuju_<?= $rowSoalModul['nomor_soal'] ?>_<?= $index_tidak_setuju ?>" class="form-control jawaban" disabled type="radio" name="kategori_tidak_setuju_<?= $rowSoalModul['nomor_soal'] ?>" value="<?= $kategori_tidak_setuju[$i] ?>"><br>
-                                                            </div>
-                                                            <?php $index_tidak_setuju++ ?>
-                                                        <?php endfor; ?>
-                                                    </td>
-                                                <?php endif; ?>
-
-                                            </tr>
-                                            <tr style="border: none;">
-                                                <td style="border: none;"></td>
-                                            </tr>
-                                            <?php $index++; ?>
-                                        <?php endwhile; ?>
                                     <?php endif; ?>
 
                                 </tbody>
-                                <tfoot style="border: none;">
-                                    <tr style="border: none;">
-                                        <td colspan="4" style="border: none;">
-                                            <input hidden name="soal_5" id="soal_5" class="btn btn-secondary w-50" type="submit" value="Submit Jawaban">
-                                            <input name="soal_5_" id="soal_5_" class="btn btn-success w-50 button-tes" type="button" value="KIRIM JAWABAN">
-                                        </td>
-                                    </tr>
-                                </tfoot>
+
                             </table>
-                        </form>
+                            <div class="col-12 pt-3">
+
+                                <button hidden id="prev" name="draft_jawaban_prev" type="submit" class="float-left btn btn-info ml-5"><i class="mr-2 fas fa-angle-left"></i>PREV</button>
+                                <button hidden id="next" name="draft_jawaban_next" type="submit" class="btn btn-info ml-2">NEXT<i class="ml-2 fas fa-angle-right"></i></button>
+                                <input type="hidden" name="checked_jawaban_soal" value="<?= implode(", ", $checkedJawabanSoal) ?>">
+
+                                <input type="hidden" name="checked_soal" value="<?= implode(", ", $checkedSoal) ?>">
+                                <input type="hidden" name="user_soal" value="<?= implode(", ", $userSoal) ?>">
+                                <input type="hidden" name="jumlah_soal" value="<?= $max['nomor_soal'] ?>">
+                                <button hidden name="soal_5" id="soal_5" class="btn btn-secondary w-50" type="submit">
+                                    Submit
+                                </button>
+                                <button name="soal_5_" id="soal_5_" class="float-right btn btn-success  mr-5" type="button">
+                                    KIRIM JAWABAN
+                                </button>
+                            </div>
                     </div>
                 </div>
-                <div class="col-3">
+                <div class="col-3" id="status_jawaban" hidden>
                     <div class="card">
-                        <div class="card-body">
+                        <div style="border-bottom: 1pt solid #E9ECEF;">
+                            <h5 class="text-center text-bold pt-3 pb-2"> Status Jawaban</h5>
+                        </div>
+                        <div class="card-body ">
                             <div class="row text-center " style="height:100%">
-                                <?php if ($resultSoalModul->num_rows > 0) : ?>
-                                    <?php $index = 0; ?>
-                                    <?php while ($rowSoalModul = $resultSoalModul->fetch_assoc()) : ?>
+                                <?php if ($queryNomorSoal->num_rows > 0) :
+                                    $increment = 1;
+                                ?>
+                                    <?php while ($resultSoal = $queryNomorSoal->fetch_assoc()) : ?>
 
-                                        <p class="" style="border: 1px solid #DFDFDF;margin-left:5px;margin-top:-10px;line-height: 30px;border-radius: 3px;width: 35px;height: 30px;font-size: 10pt;">
-                                            <?= $rowSoalModul['nomor_soal'] ?>
-                                        </p>
-                                        <?php $index++; ?>
-                                    <?php endwhile; ?>
+                                        <button name="draft_jawaban_pintas" onclick="soalPintas(<?= $increment ?>)" id="soal<?= $increment ?>" class="boxJawaban" style="border: 1px solid #DFDFDF;margin-left:4px;line-height: 30px;margin-bottom:10px;border-radius: 3px;width: 35px;height: 30px;font-size: 10pt;">
+                                            <?= $resultSoal['nomor_soal'] ?>
+                                        </button>
+                                    <?php
+
+                                        $increment++;
+                                    endwhile; ?>
+
                                 <?php endif; ?>
                             </div>
                         </div>
                     </div>
+                    </form>
                 </div>
         </div>
 
-        <?php
-        $arr_nomor = substr($arr_nomor, 0, -1);
-        ?>
 
     </div><!-- /.container-fluid -->
     </section>
@@ -606,19 +639,112 @@ if ($status_s == 1) {
     <script>
         var timer;
         var timer_ = <?= $d; ?>;
-        var nomor = <?= $jumlah_; ?>;
+        var soal_kosong = Object.values(<?= json_encode($soal_kosong) ?>);
         $("body").on("contextmenu", function(e) {
             return false;
         });
 
-        var nomor_soal_konf = '<?= $arr_nomor; ?>';
-        var nomor_soal_kiri = nomor_soal_konf.split(',');
-        var nomor_soal_kanan = nomor_soal_konf.split(',');
+        var arrFull = <?= json_encode($checkedSoal) ?>;
+        var arrHalf = <?= json_encode($halfCheckedSoal) ?>;
+        var soalNow = <?= $index ?>;
+        var soalMin = <?= $min['nomor_soal'] ?>;
+        var soalMax = <?= $max['nomor_soal'] ?>;
+        var radio_button_list = document.getElementsByName('jawaban');
+        var session_status_pengerjaan = <?= $status_pengerjaan ?>;
+        var radio_button;
+        var count;
 
-        console.log(nomor_soal_konf);
-        console.log(nomor_soal_kiri);
-        console.log(nomor_soal_kanan);
+        if (session_status_pengerjaan == 1) {
 
+            $('#soal_asli').removeAttr('hidden');
+            $('#pane_soal').removeAttr('class');
+            document.getElementById('pane_soal').setAttribute("class", "col-9");
+
+
+            $('#status_jawaban').removeAttr('hidden');
+
+            $('#soal_contoh').attr('hidden', true);
+            $('#card-header').attr('hidden', true);
+
+            $('#modul-name').attr('hidden', false);
+
+            $('#sisa_waktu').removeAttr('hidden');
+            $('.jawaban').removeAttr('disabled');
+            var time = setInterval(function() {
+
+                timer_ = timer_ - 1;
+                if (timer_ > 0) {
+                    document.getElementById('s_w').innerHTML = 'Sisa Waktu : ' + timer_ + ' Detik';
+                } else {
+                    clearInterval(time);
+                    Pesan();
+                }
+            }, 1000);
+        }
+
+        for (var i = soalMin; i <= soalMax; i++) {
+            if (i == soalNow) {
+                document.getElementById('soal' + i).style.border = '2px solid #E08253';
+            }
+
+            //full checked soal
+            for (var j = 0; j < arrFull.length; j++) {
+                if (i == arrFull[j]) {
+                    document.getElementById('soal' + i).style.backgroundColor = '#50c878';
+                    document.getElementById('soal' + i).style.color = 'whitesmoke';
+                    document.getElementById('soal' + i).onmouseover = function() {
+                        this.style.backgroundColor = "#40A060";
+                    }
+                    document.getElementById('soal' + i).onmouseleave = function() {
+                        this.style.backgroundColor = "#50C878";
+                    }
+                }
+            }
+
+            //half checked soal
+            for (var k = 0; k < arrHalf.length; k++) {
+                if (i == arrHalf[k]) {
+                    document.getElementById('soal' + i).style.backgroundColor = '#E1C16E';
+                    document.getElementById('soal' + i).style.color = 'whitesmoke';
+                    document.getElementById('soal' + i).onmouseover = function() {
+                        this.style.backgroundColor = "#ddb859";
+                    }
+                    document.getElementById('soal' + i).onmouseleave = function() {
+                        this.style.backgroundColor = "#E1C16E";
+                    }
+                }
+            }
+
+        }
+
+        for (count = 0; count < radio_button_list.length; count++) {
+            radio_button_list[count].onclick = function() {
+                if (radio_button == this) {
+                    this.checked = false;
+                    radio_button = null;
+                } else {
+                    radio_button = this;
+                }
+            };
+        }
+
+        function soalPintas(index) {
+            document.getElementById('soal_pintas').value = index;
+            document.forms[0].submit();
+        }
+
+        if (soalNow == soalMin) {
+            $('#next').removeAttr('hidden');
+
+            $('#next').removeAttr('class');
+            document.getElementById('next').setAttribute("class", "float-left btn btn-info ml-5");
+
+        } else if (soalNow == soalMax) {
+            $('#prev').removeAttr('hidden');
+        } else {
+            $('#prev').removeAttr('hidden');
+            $('#next').removeAttr('hidden');
+        }
 
         function Pesan() {
             $('#soal_5').click();
@@ -632,19 +758,9 @@ if ($status_s == 1) {
             }
         });
 
-
         $('#soal_5_').click(function() {
-            var arr_belum = [];
-            for (let i = 0; i < nomor_soal_kanan.length; i++) {
-                if (nomor_soal_kanan[i] == 0) {
-                    arr_belum.push(i + 1);
-                } else if (nomor_soal_kiri[i] == 0) {
-                    arr_belum.push(i + 1);
-                }
-            }
-
-            if (arr_belum.length != 0) {
-                var teks = 'Nomor soal yang belum diisi:\n' + arr_belum.toString();
+            if (soal_kosong.length != 0) {
+                var teks = 'Nomor soal yang belum diisi atau centang penuh:\n' + soal_kosong.toString();
                 alert(teks);
             } else {
                 var konf = confirm('Apakah anda ingin mengirim jawaban?');
@@ -668,6 +784,10 @@ if ($status_s == 1) {
                     $('#timer').attr('hidden', true);
 
                     $('#soal_asli').removeAttr('hidden');
+                    $('#pane_soal').removeAttr('class');
+                    document.getElementById('pane_soal').setAttribute("class", "col-9");
+
+                    $('#status_jawaban').removeAttr('hidden');
                     $('#soal_contoh').attr('hidden', true);
                     timer = window.setTimeout("countDown()", 1000);
                     window.status = timer_; // show the initial value
@@ -689,91 +809,94 @@ if ($status_s == 1) {
             }
         }
 
-
-
-        for (let i = 1; i < nomor; i++) {
-            for (let j = 1; j <= 4; j++) {
-                if (j == 1) {
-                    $('#kategori_tidak_setuju_' + i + '_1').click(function() {
-                        $('#kategori_setuju_' + i + '_1').prop('disabled', true);
-                        $('#kategori_setuju_' + i + '_2').removeAttr('disabled');
-                        $('#kategori_setuju_' + i + '_3').removeAttr('disabled');
-                        $('#kategori_setuju_' + i + '_4').removeAttr('disabled');
-                        nomor_soal_kanan[i - 1] = 1;
-                        console.log(nomor_soal_kanan);
-                        console.log(nomor_soal_kiri);
-
-                    });
-                    $('#kategori_setuju_' + i + '_1').click(function() {
-                        $('#kategori_tidak_setuju_' + i + '_1').prop('disabled', true);
-                        $('#kategori_tidak_setuju_' + i + '_2').removeAttr('disabled');
-                        $('#kategori_tidak_setuju_' + i + '_3').removeAttr('disabled');
-                        $('#kategori_tidak_setuju_' + i + '_4').removeAttr('disabled');
-                        nomor_soal_kiri[i - 1] = 1;
-                        console.log(nomor_soal_kanan);
-                        console.log(nomor_soal_kiri);
-                    });
-                } else if (j == 2) {
-                    $('#kategori_tidak_setuju_' + i + '_2').click(function() {
-                        $('#kategori_setuju_' + i + '_2').prop('disabled', true);
-                        $('#kategori_setuju_' + i + '_1').removeAttr('disabled');
-                        $('#kategori_setuju_' + i + '_3').removeAttr('disabled');
-                        $('#kategori_setuju_' + i + '_4').removeAttr('disabled');
-                        nomor_soal_kanan[i - 1] = 1;
-                        console.log(nomor_soal_kanan);
-                        console.log(nomor_soal_kiri);
-                    });
-                    $('#kategori_setuju_' + i + '_2').click(function() {
-                        $('#kategori_tidak_setuju_' + i + '_2').prop('disabled', true);
-                        $('#kategori_tidak_setuju_' + i + '_1').removeAttr('disabled');
-                        $('#kategori_tidak_setuju_' + i + '_3').removeAttr('disabled');
-                        $('#kategori_tidak_setuju_' + i + '_4').removeAttr('disabled');
-                        nomor_soal_kiri[i - 1] = 1;
-                        console.log(nomor_soal_kanan);
-                        console.log(nomor_soal_kiri);
-                    });
-                } else if (j == 3) {
-                    $('#kategori_tidak_setuju_' + i + '_3').click(function() {
-                        $('#kategori_setuju_' + i + '_3').prop('disabled', true);
-                        $('#kategori_setuju_' + i + '_1').removeAttr('disabled');
-                        $('#kategori_setuju_' + i + '_2').removeAttr('disabled');
-                        $('#kategori_setuju_' + i + '_4').removeAttr('disabled');
-                        nomor_soal_kanan[i - 1] = 1;
-                        console.log(nomor_soal_kanan);
-                        console.log(nomor_soal_kiri);
-                    });
-                    $('#kategori_setuju_' + i + '_3').click(function() {
-                        $('#kategori_tidak_setuju_' + i + '_3').prop('disabled', true);
-                        $('#kategori_tidak_setuju_' + i + '_1').removeAttr('disabled');
-                        $('#kategori_tidak_setuju_' + i + '_2').removeAttr('disabled');
-                        $('#kategori_tidak_setuju_' + i + '_4').removeAttr('disabled');
-                        nomor_soal_kiri[i - 1] = 1;
-                        console.log(nomor_soal_kanan);
-                        console.log(nomor_soal_kiri);
-                    });
-                } else if (j == 4) {
-                    $('#kategori_tidak_setuju_' + i + '_4').click(function() {
-                        $('#kategori_setuju_' + i + '_4').prop('disabled', true);
-                        $('#kategori_setuju_' + i + '_1').removeAttr('disabled');
-                        $('#kategori_setuju_' + i + '_2').removeAttr('disabled');
-                        $('#kategori_setuju_' + i + '_3').removeAttr('disabled');
-                        nomor_soal_kanan[i - 1] = 1;
-                        console.log(nomor_soal_kanan);
-                        console.log(nomor_soal_kiri);
-                    });
-                    $('#kategori_setuju_' + i + '_4').click(function() {
-                        $('#kategori_tidak_setuju_' + i + '_4').prop('disabled', true);
-                        $('#kategori_tidak_setuju_' + i + '_1').removeAttr('disabled');
-                        $('#kategori_tidak_setuju_' + i + '_2').removeAttr('disabled');
-                        $('#kategori_tidak_setuju_' + i + '_3').removeAttr('disabled');
-                        nomor_soal_kiri[i - 1] = 1;
-                        console.log(nomor_soal_kanan);
-                        console.log(nomor_soal_kiri);
-                    });
-                }
-
+        $('#kategori_tidak_setuju_' + soalNow + '_1').click(function() {
+            $('#kategori_setuju_' + soalNow + '_1').prop('disabled', true);
+            if (radio_button == this) {
+                this.checked = false;
+                radio_button = null;
+                $('#kategori_setuju_' + soalNow + '_1').prop('disabled', false);
+            } else {
+                radio_button = this;
             }
-        }
+        });
+
+        $('#kategori_setuju_' + soalNow + '_1').click(function() {
+            $('#kategori_tidak_setuju_' + soalNow + '_1').prop('disabled', true);
+            if (radio_button == this) {
+                this.checked = false;
+                radio_button = null;
+                $('#kategori_tidak_setuju_' + soalNow + '_1').prop('disabled', false);
+            } else {
+                radio_button = this;
+            }
+        });
+
+        $('#kategori_tidak_setuju_' + soalNow + '_2').click(function() {
+            $('#kategori_setuju_' + soalNow + '_2').prop('disabled', true);
+            if (radio_button == this) {
+                this.checked = false;
+                radio_button = null;
+                $('#kategori_setuju_' + soalNow + '_2').prop('disabled', false);
+            } else {
+                radio_button = this;
+            }
+        });
+
+        $('#kategori_setuju_' + soalNow + '_2').click(function() {
+            $('#kategori_tidak_setuju_' + soalNow + '_2').prop('disabled', true);
+            if (radio_button == this) {
+                this.checked = false;
+                radio_button = null;
+                $('#kategori_tidak_setuju_' + soalNow + '_2').prop('disabled', false);
+            } else {
+                radio_button = this;
+            }
+        });
+
+        $('#kategori_tidak_setuju_' + soalNow + '_3').click(function() {
+            $('#kategori_setuju_' + soalNow + '_3').prop('disabled', true);
+            if (radio_button == this) {
+                this.checked = false;
+                radio_button = null;
+                $('#kategori_setuju_' + soalNow + '_3').prop('disabled', false);
+            } else {
+                radio_button = this;
+            }
+        });
+
+        $('#kategori_setuju_' + soalNow + '_3').click(function() {
+            $('#kategori_tidak_setuju_' + soalNow + '_3').prop('disabled', true);
+            if (radio_button == this) {
+                this.checked = false;
+                radio_button = null;
+                $('#kategori_tidak_setuju_' + soalNow + '_3').prop('disabled', false);
+            } else {
+                radio_button = this;
+            }
+        });
+
+        $('#kategori_tidak_setuju_' + soalNow + '_4').click(function() {
+            $('#kategori_setuju_' + soalNow + '_4').prop('disabled', true);
+            if (radio_button == this) {
+                this.checked = false;
+                radio_button = null;
+                $('#kategori_setuju_' + soalNow + '_4').prop('disabled', false);
+            } else {
+                radio_button = this;
+            }
+        });
+
+        $('#kategori_setuju_' + soalNow + '_4').click(function() {
+            $('#kategori_tidak_setuju_' + soalNow + '_4').prop('disabled', true);
+            if (radio_button == this) {
+                this.checked = false;
+                radio_button = null;
+                $('#kategori_tidak_setuju_' + soalNow + '_4').prop('disabled', false);
+            } else {
+                radio_button = this;
+            }
+        });
+
 
         var currSeconds = 0;
         var link = document.createElement("a");

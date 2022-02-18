@@ -200,18 +200,110 @@ if (isset($_POST['store_biodata'])) {
     }
 }
 
+if (isset($_POST['draft_jawaban_prev']) || isset($_POST['draft_jawaban_next']) || isset($_POST['draft_jawaban_pintas'])) {
+
+    $button = '';
+    if (isset($_POST['draft_jawaban_prev'])) {
+        $button = 'kiri';
+    }
+    if (isset($_POST['draft_jawaban_next'])) {
+        $button = 'kanan';
+    }
+    if (isset($_POST['draft_jawaban_pintas'])) {
+        $button = 'pintas';
+    }
+
+    $index = $_POST['index'];
+    $kerja_soal = $_POST['kerja_soal'];
+    $noSoal =  $_POST['nomor_soal' . $index];
+
+
+    $jawabanSoal =  $_POST['jawaban'] ?: '';
+    $jawabanKiri = $_POST['jawaban_kiri'] ?: 0;
+    $jawabanKanan = $_POST['jawaban_kanan'] ?: 0;
+
+    // echo $kerja_soal;
+    // echo $_SESSION['kerja_soal'];
+
+    if ($kerja_soal == 'soal_5') {
+        $_SESSION['jawaban_soal' . $index] = $jawabanKiri . '_' . $jawabanKanan;
+        // echo 'ya';
+    } else {
+        // echo 'tidak';
+        $_SESSION['jawaban_soal' . $index] = $jawabanSoal;
+    }
+
+    // echo $jawabanSoal;
+    // echo $_SESSION['jawaban_soal' . $index];
+
+    $soalPintas = $_POST['soal_pintas'];
+    $_SESSION['status_pengerjaan'] = $_POST['status_pengerjaan'];
+
+    switch ($button) {
+        case 'kiri':
+            $page = $soal->modulSoal($_SESSION['kerja_soal']);
+            header($page . '?index=' . ($noSoal - 1));
+            break;
+        case 'kanan':
+            $page = $soal->modulSoal($_SESSION['kerja_soal']);
+            header($page . '?index=' . ($noSoal + 1));
+            break;
+        case 'pintas':
+            $page = $soal->modulSoal($_SESSION['kerja_soal']);
+            header($page . '?index=' . $soalPintas);
+            break;
+        default:
+            return 'tidak ada button yang ditekan';
+            break;
+    }
+}
+
 if (isset($_POST['soal_1'])) {
     $detJawaban     = $soal->JawabanDetail($_SESSION['i_jawaban'], $_SESSION['i_room'], $_SESSION['i_peserta']);
     $rDetJawaban    = $detJawaban->fetch_assoc();
 
     unset($_SESSION['w_selesai']);
-    unset($_SESSION['kerja_soal']);
+    unset($_SESSION['status_pengerjaan']);
+
+    $jumlah_soal = $_POST['jumlah_soal'];
+    $user_soal = $_POST['user_soal'];
+    $checked_soal = $_POST['checked_soal'];
+    $checked_jawaban_soal = $_POST['checked_jawaban_soal'];
+    $checked_soal_arr = explode(", ", $checked_soal);
+    $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
+
+    $soalArr = array();
+    $jawabanArr = array();
+    foreach ($checked_jawaban_soal_arr as $value) {
+
+        $newValue = explode('=', $value);
+        $soalArr[] = $newValue[0];
+        $jawabanArr[] = $newValue[1];
+    }
+
+    $session_str = json_encode($_SESSION);
+
+    $session_arr = explode(',', $session_str);
+
+    $result_partial_arr = $soal->array_partial_search($session_arr, 'jawaban_soal');
+    $biodata_arr = $soal->array_partial_search($session_arr, 'get');
+
+    //hapus semua session soal
+    foreach ($result_partial_arr as $session_data) {
+        $firstlastchar = substr($session_data, 1, -1);
+        $clean_session = explode('":"', $firstlastchar);
+
+        unset($_SESSION[$clean_session[0]]);
+    }
+
+    foreach ($biodata_arr as $session_data) {
+        $firstlastchar = substr($session_data, 1, -1);
+        $clean_session = explode('":"', $firstlastchar);
+
+        unset($_SESSION[$clean_session[0]]);
+    }
 
     if (empty($rDetJawaban['soal_1'])) {
-
-        $jawaban    = '';
-
-        $nomor_soal = $_POST['nomor_soal'];
 
         $resKunciJawaban    = $soal->KunciJawaban('modul_1');
 
@@ -233,23 +325,24 @@ if (isset($_POST['soal_1'])) {
 
         #Skoring 
         $jum_benar          = 0;
-        $arr_nomor_user     = array();
-        $arr_jawab_user     = array();
-
-        for ($i = 0; $i < count($_POST['nomor_soal']); $i++) {
-            if (isset($_POST['jawaban_' . $nomor_soal[$i] . ''])) {
-                $jawaban    .= $nomor_soal[$i] . '=' . $_POST['jawaban_' . $nomor_soal[$i] . ''] . ';';
-                array_push($arr_nomor_user, $nomor_soal[$i]);
-                array_push($arr_jawab_user, $_POST['jawaban_' . $nomor_soal[$i] . '']);
+        $soal_user = array();
+        $jawaban_user = array();
+        $store_jawaban = array();
+        $increment = 0;
+        for ($i = 1; $i <= $jumlah_soal; $i++) {
+            $soal_user[] = $i;
+            if (in_array($i, $soalArr)) {
+                $jawaban_user[] = $jawabanArr[$increment];
+                $store_jawaban[] = $i . '=' . $increment;
+                $increment++;
             } else {
-                $jawaban    .= $nomor_soal[$i] . '= ;';
-                array_push($arr_nomor_user, $nomor_soal[$i]);
-                array_push($arr_jawab_user, '');
+                $jawaban_user[] = '0';
+                $store_jawaban[] = $i . '= ';
             }
         }
 
-        for ($i = 0; $i < count($arr_nomor_modul); $i++) {
-            if ($arr_nomor_modul[$i] == $arr_nomor_user[$i] and $arr_jawab_modul[$i] == $arr_jawab_user[$i]) {
+        for ($i = 0; $i < $jumlah_soal; $i++) {
+            if ($arr_nomor_modul[$i] == $soal_user[$i] and $arr_jawab_modul[$i] == $jawaban_user[$i]) {
                 $jum_benar += 1;
             }
         }
@@ -272,11 +365,11 @@ if (isset($_POST['soal_1'])) {
         }
         echo '<br><br>' . $nilai;
 
-        $jawaban = substr($jawaban, 0, -1);
+        $store_jawaban =  implode(", ", $store_jawaban);
         $kondisi = 'room_id = "' . $_SESSION['i_room'] . '" AND peserta_id = "' . $_SESSION['i_peserta'] . '"';
 
         $arr_kolom  = array('soal_1', 'skor_1', 'WHERE');
-        $arr_data   = array($jawaban, $nilai, $kondisi);
+        $arr_data   = array($store_jawaban, $nilai, $kondisi);
 
         $update     = $soal->InputJawaban($arr_kolom, $arr_data, 'update');
 
@@ -344,9 +437,49 @@ if (isset($_POST['soal_2'])) {
     $detJawaban     = $soal->JawabanDetail($_SESSION['i_jawaban'], $_SESSION['i_room'], $_SESSION['i_peserta']);
     $rDetJawaban    = $detJawaban->fetch_assoc();
 
-    unset($_SESSION['w_selesai']);
-    unset($_SESSION['kerja_soal']);
+    // unset($_SESSION['w_selesai']);
+    // unset($_SESSION['kerja_soal']);
 
+    $jumlah_soal = $_POST['jumlah_soal'];
+    $checked_soal = $_POST['checked_soal'];
+    $checked_jawaban_soal = $_POST['checked_jawaban_soal'];
+    $checked_soal_arr = explode(", ", $checked_soal);
+    $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
+
+    // print_r($checked_jawaban_soal);
+    $soalArr = array();
+    $jawabanArr = array();
+    $tmp_store = array();
+    $store_jawaban = array();
+    foreach ($checked_jawaban_soal_arr as $value) {
+        $newValue = explode('=', $value);
+        $soalArr[] = $newValue[0];
+        $jawabanArr[] = $newValue[1];
+    }
+
+    $session_str = json_encode($_SESSION);
+
+    $session_arr = explode(',', $session_str);
+
+    $result_partial_arr = $soal->array_partial_search($session_arr, 'jawaban_soal');
+    $biodata_arr = $soal->array_partial_search($session_arr, 'get');
+
+    //hapus semua session soal
+    foreach ($result_partial_arr as $session_data) {
+        $firstlastchar = substr($session_data, 1, -1);
+        $clean_session = explode('":"', $firstlastchar);
+
+        unset($_SESSION[$clean_session[0]]);
+    }
+
+    foreach ($biodata_arr as $session_data) {
+        $firstlastchar = substr($session_data, 1, -1);
+        $clean_session = explode('":"', $firstlastchar);
+
+        unset($_SESSION[$clean_session[0]]);
+    }
+
+    unset($_SESSION['status_pengerjaan']);
     if (empty($rDetJawaban['soal_2'])) {
 
         # ~ informasi kunci jawaban dan nomor modul
@@ -362,33 +495,28 @@ if (isset($_POST['soal_2'])) {
 
         # ~
 
-
         # ~ Informasi submit jawaban peserta
-        $jawaban    = '';
-
-        $arr_nomor_peserta  = array();
-        $arr_jawab_peserta  = array();
-
-        $nomor_soal = $_POST['nomor_soal'];
-
-        for ($i = 0; $i < count($_POST['nomor_soal']); $i++) {
-            if (isset($_POST['jawaban_' . $nomor_soal[$i] . ''])) {
-                $jawaban    .= $nomor_soal[$i] . '=' . $_POST['jawaban_' . $nomor_soal[$i] . ''] . ';';
-                array_push($arr_nomor_peserta, $nomor_soal[$i]);
-                array_push($arr_jawab_peserta, $_POST['jawaban_' . $nomor_soal[$i] . '']);
+        $jum_benar          = 0;
+        $soal_user = array();
+        $jawaban_user = array();
+        $store_jawaban = array();
+        $increment = 0;
+        for ($i = 1; $i <= $jumlah_soal; $i++) {
+            $soal_user[] = $i;
+            if (in_array($i, $soalArr)) {
+                $jawaban_user[] = $jawabanArr[$increment];
+                $store_jawaban[] = $i . '=' . $jawabanArr[$increment];
+                $increment++;
             } else {
-                $jawaban    .= $nomor_soal[$i] . '=' . ';';
-                array_push($arr_nomor_peserta, $nomor_soal[$i]);
-                array_push($arr_jawab_peserta, '');
+                $jawaban_user[] = '';
+                $store_jawaban[] = $i . '= ';
             }
         }
-        $jawaban        = substr($jawaban, 0, -1);
-        # ~
 
         # ~ Cek Jawaban Benar 
         $hasil = 0;
-        for ($i = 0; $i < count($arr_nomor_modul); $i++) {
-            if ($arr_nomor_modul[$i] == $arr_nomor_peserta[$i] and $arr_jawab_modul[$i] == $arr_jawab_peserta[$i]) {
+        for ($i = 0; $i < $jumlah_soal; $i++) {
+            if ($arr_nomor_modul[$i] == $soal_user[$i] and $arr_jawab_modul[$i] == $jawaban_user[$i]) {
                 $hasil += 1;
             }
         }
@@ -397,9 +525,9 @@ if (isset($_POST['soal_2'])) {
         $nilai = 'B :' . $hasil;
 
         $kondisi = 'room_id = "' . $_SESSION['i_room'] . '" AND peserta_id = "' . $_SESSION['i_peserta'] . '"';
-
+        $store_jawaban =  implode(", ", $store_jawaban);
         $arr_kolom  = array('soal_2', 'skor_2', 'WHERE');
-        $arr_data   = array($jawaban, $nilai, $kondisi);
+        $arr_data   = array($store_jawaban, $nilai, $kondisi);
 
         $update     = $soal->InputJawaban($arr_kolom, $arr_data, 'update');
 
@@ -442,6 +570,37 @@ if (isset($_POST['soal_3'])) {
 
     unset($_SESSION['w_selesai']);
     unset($_SESSION['kerja_soal']);
+    unset($_SESSION['status_pengerjaan']);
+
+    $jumlah_soal = $_POST['jumlah_soal'];
+    $checked_soal = $_POST['checked_soal'];
+    $checked_jawaban_soal = $_POST['checked_jawaban_soal'];
+    $checked_soal_arr = explode(", ", $checked_soal);
+    $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
+
+    // print_r($checked_jawaban_soal);
+    $soalArr = array();
+    $jawabanArr = array();
+    foreach ($checked_jawaban_soal_arr as $value) {
+
+        $newValue = explode('=', $value);
+        $soalArr[] = $newValue[0];
+        $jawabanArr[] = $newValue[1];
+    }
+
+    $session_str = json_encode($_SESSION);
+
+    $session_arr = explode(',', $session_str);
+
+    $result_partial_arr = $soal->array_partial_search($session_arr, 'jawaban_soal');
+
+    //hapus semua session soal
+    foreach ($result_partial_arr as $session_data) {
+        $firstlastchar = substr($session_data, 1, -1);
+        $clean_session = explode('":"', $firstlastchar);
+
+        unset($_SESSION[$clean_session[0]]);
+    }
 
     if (empty($rDetJawaban['soal_3'])) { # ~ Informasi Nomor dan kunci jawaban modul
         $arr_nomor_modul    = array();
@@ -456,56 +615,55 @@ if (isset($_POST['soal_3'])) {
         # ~
 
         # ~ Informasi Jawaban Peserta
-        $jawaban    = '';
-        $arr_nomor_peserta  = array();
-        $arr_jawab_peserta  = array();
-
-        $nomor_soal = $_POST['nomor_soal'];
-
-        for ($i = 0; $i < count($_POST['nomor_soal']); $i++) {
-            if (isset($_POST['jawaban_' . $nomor_soal[$i] . ''])) {
-                $jawaban    .= $nomor_soal[$i] . '=' . $_POST['jawaban_' . $nomor_soal[$i] . ''] . ';';
-                array_push($arr_nomor_peserta, $nomor_soal[$i]);
-                array_push($arr_jawab_peserta, $_POST['jawaban_' . $nomor_soal[$i] . '']);
+        $jum_benar          = 0;
+        $soal_user = array();
+        $jawaban_user = array();
+        $store_jawaban = array();
+        $increment = 0;
+        for ($i = 1; $i <= $jumlah_soal; $i++) {
+            $soal_user[] = $i;
+            if (in_array($i, $soalArr)) {
+                $jawaban_user[] = $jawabanArr[$increment];
+                $store_jawaban[] = $i . '=' . $jawabanArr[$increment];
+                $increment++;
             } else {
-                $jawaban    .= $nomor_soal[$i] . '=' . ';';
-                array_push($arr_nomor_peserta, $nomor_soal[$i]);
-                array_push($arr_jawab_peserta, '');
+                $jawaban_user[] = '';
+                $store_jawaban[] = $i . '= ';
             }
         }
-        $jawaban        = substr($jawaban, 0, -1);
         # ~ 
 
+        $soal->array_dump($store_jawaban);
         # ~ Cek Jawaban Benar 
         $hasil = 0;
-        for ($i = 0; $i < count($arr_nomor_modul); $i++) {
-            if ($arr_nomor_modul[$i] == $arr_nomor_peserta[$i] and $arr_jawab_modul[$i] == $arr_jawab_peserta[$i]) {
-                $hasil += 1;
+        for ($i = 0; $i < $jumlah_soal; $i++) {
+            if ($arr_nomor_modul[$i] == $soal_user[$i] and $arr_jawab_modul[$i] == $jawaban_user[$i]) {
+                $jum_benar += 1;
             }
         }
         # ~ 
-
         $nilai = '';
-        if ($hasil >= 78) {
-            $nilai = 'SB | B:' . $hasil;
-        } elseif (77 >= $hasil and $hasil >= 65) {
-            $nilai = 'B | B:' . $hasil;
-        } elseif (64 >= $hasil and $hasil >= 52) {
-            $nilai = 'C+ | B:' . $hasil;
-        } elseif (51 >= $hasil and $hasil >= 39) {
-            $nilai = 'C | B:' . $hasil;
-        } elseif (38 >= $hasil and $hasil >= 25) {
-            $nilai = 'C- | B:' . $hasil;
-        } elseif (24 >= $hasil and $hasil >= 12) {
-            $nilai = 'K | B:' . $hasil;
-        } elseif (11 >= $hasil and $hasil >= 0) {
-            $nilai = 'SK | B:' . $hasil;
+        if ($jum_benar >= 78) {
+            $nilai = 'SB | B:' . $jum_benar;
+        } elseif (77 >= $jum_benar and $jum_benar >= 65) {
+            $nilai = 'B | B:' . $jum_benar;
+        } elseif (64 >= $jum_benar and $jum_benar >= 52) {
+            $nilai = 'C+ | B:' . $jum_benar;
+        } elseif (51 >= $jum_benar and $jum_benar >= 39) {
+            $nilai = 'C | B:' . $jum_benar;
+        } elseif (38 >= $jum_benar and $jum_benar >= 25) {
+            $nilai = 'C- | B:' . $jum_benar;
+        } elseif (24 >= $jum_benar and $jum_benar >= 12) {
+            $nilai = 'K | B:' . $jum_benar;
+        } elseif (11 >= $jum_benar and $jum_benar >= 0) {
+            $nilai = 'SK | B:' . $jum_benar;
         }
 
+        $store_jawaban =  implode(", ", $store_jawaban);
         $kondisi = 'room_id = "' . $_SESSION['i_room'] . '" AND peserta_id = "' . $_SESSION['i_peserta'] . '"';
 
         $arr_kolom  = array('soal_3', 'skor_3', 'WHERE');
-        $arr_data   = array($jawaban, $nilai, $kondisi);
+        $arr_data   = array($store_jawaban, $nilai, $kondisi);
 
         $update     = $soal->InputJawaban($arr_kolom, $arr_data, 'update');
 
@@ -551,6 +709,37 @@ if (isset($_POST['soal_4'])) {
 
     unset($_SESSION['w_selesai']);
     unset($_SESSION['kerja_soal']);
+    unset($_SESSION['status_pengerjaan']);
+
+    $jumlah_soal = $_POST['jumlah_soal'];
+    $user_soal = $_POST['user_soal'];
+    $checked_soal = $_POST['checked_soal'];
+    $checked_jawaban_soal = $_POST['checked_jawaban_soal'];
+    $checked_soal_arr = explode(", ", $checked_soal);
+    $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
+
+    $soalArr = array();
+    $jawabanArr = array();
+    foreach ($checked_jawaban_soal_arr as $value) {
+
+        $newValue = explode('=', $value);
+        $soalArr[] = $newValue[0];
+        $jawabanArr[] = $newValue[1];
+    }
+
+    $session_str = json_encode($_SESSION);
+
+    $session_arr = explode(',', $session_str);
+
+    $result_partial_arr = $soal->array_partial_search($session_arr, 'jawaban_soal');
+
+    //hapus semua session soal
+    foreach ($result_partial_arr as $session_data) {
+        $firstlastchar = substr($session_data, 1, -1);
+        $clean_session = explode('":"', $firstlastchar);
+
+        unset($_SESSION[$clean_session[0]]);
+    }
 
     if (empty($rDetJawaban['soal_4'])) { # ~ Informasi Nomor dan kunci jawaban modul
         $arr_nomor_modul    = array();
@@ -566,44 +755,38 @@ if (isset($_POST['soal_4'])) {
 
 
         # ~ Informasi Jawaban Peserta
-        $jawaban    = '';
-        $arr_nomor_peserta  = array();
-        $arr_jawab_peserta  = array();
-
-
-        $nomor_soal = $_POST['nomor_soal'];
-
-        for ($i = 0; $i < count($_POST['nomor_soal']); $i++) {
-            if (isset($_POST['jawaban_' . $nomor_soal[$i] . ''])) {
-                $str_jawaban = str_replace('.', ',', $_POST['jawaban_' . $nomor_soal[$i] . '']);
-                $jawaban    .= $nomor_soal[$i] . '=' . $str_jawaban . ';';
-                array_push($arr_nomor_peserta, $nomor_soal[$i]);
-                array_push($arr_jawab_peserta, $str_jawaban);
-                //echo $str_jawaban.'<br>';
+        $soal_user = array();
+        $jawaban_user = array();
+        $store_jawaban = array();
+        $increment = 0;
+        for ($i = 1; $i <= $jumlah_soal; $i++) {
+            $soal_user[] = $i;
+            if (in_array($i, $soalArr)) {
+                $jawaban_user[] = $jawabanArr[$increment];
+                $store_jawaban[] = $i . '=' . $jawabanArr[$increment];
+                $increment++;
             } else {
-                $jawaban    .= $nomor_soal[$i] . '=' . ';';
-                array_push($arr_nomor_peserta, $nomor_soal[$i]);
-                array_push($arr_jawab_peserta, '');
+                $jawaban_user[] = '0';
+                $store_jawaban[] = $i . '= ';
             }
         }
-        $jawaban        = substr($jawaban, 0, -1);
 
         # ~ Cek Jawaban Benar 
         $hasil = 0;
-        for ($i = 0; $i < count($arr_nomor_modul); $i++) {
-            if ($arr_nomor_modul[$i] == $arr_nomor_peserta[$i] and $arr_jawab_modul[$i] == $arr_jawab_peserta[$i]) {
-                $hasil += 1;
+        for ($i = 0; $i < $jumlah_soal; $i++) {
+            if ($arr_nomor_modul[$i] == $soal_user[$i] and $arr_jawab_modul[$i] == $jawaban_user[$i]) {
+                $jum_benar += 1;
             }
         }
         # ~ 
 
-
         $nilai = 'B :' . $hasil;
 
+        $store_jawaban =  implode(", ", $store_jawaban);
         $kondisi = 'room_id = "' . $_SESSION['i_room'] . '" AND peserta_id = "' . $_SESSION['i_peserta'] . '"';
 
         $arr_kolom  = array('soal_4', 'skor_4', 'WHERE');
-        $arr_data   = array($jawaban, $nilai, $kondisi);
+        $arr_data   = array($store_jawaban, $nilai, $kondisi);
 
         $update     = $soal->InputJawaban($arr_kolom, $arr_data, 'update');
 
@@ -638,15 +821,35 @@ if (isset($_POST['soal_4'])) {
 
 # ~ SOAL 5
 if (isset($_POST['soal_5'])) {
+
     $detJawaban     = $soal->JawabanDetail($_SESSION['i_jawaban'], $_SESSION['i_room'], $_SESSION['i_peserta']);
     $rDetJawaban    = $detJawaban->fetch_assoc();
 
+    $jumlah_soal = $_POST['jumlah_soal'];
+    $checked_soal = $_POST['checked_soal'];
+    $checked_jawaban_soal = $_POST['checked_jawaban_soal'];
+    $checked_soal_arr = explode(", ", $checked_soal);
+    $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
+
+    $soal->array_dump($checked_jawaban_soal_arr);
     unset($_SESSION['w_selesai']);
     unset($_SESSION['kerja_soal']);
 
+    $session_str = json_encode($_SESSION);
+
+    $session_arr = explode(',', $session_str);
+
+    $result_partial_arr = $soal->array_partial_search($session_arr, 'jawaban_soal');
+
+    //hapus semua session soal
+    foreach ($result_partial_arr as $session_data) {
+        $firstlastchar = substr($session_data, 1, -1);
+        $clean_session = explode('":"', $firstlastchar);
+
+        unset($_SESSION[$clean_session[0]]);
+    }
+
     if (empty($rDetJawaban['soal_5'])) {
-        $jawaban        = '';
-        $nomor_soal     = $_POST['nomor_soal'];
 
         #MOST
         $kat_set_d = 0;
@@ -664,64 +867,77 @@ if (isset($_POST['soal_5'])) {
         $kat_tdk_bin = 0;
         $kat_tdk_nl = 0;
 
+        $soalArr = array();
+        $jawabanArrSetuju = array();
+        $jawabanArrTidakSetuju = array();
+        $tmp_store = array();
+        $store_jawaban = array();
+        foreach ($checked_jawaban_soal_arr as $value) {
+            $newValue = explode('=', $value);
+            $soalArr[] = $newValue[0];
 
-        for ($i = 0; $i < count($nomor_soal); $i++) {
-            if (isset($_POST['kategori_setuju_' . $nomor_soal[$i] . ''])) {
-                $jawaban    .= $nomor_soal[$i] . '=' . $_POST['kategori_setuju_' . $nomor_soal[$i] . ''] . ',';
-                switch ($_POST['kategori_setuju_' . $nomor_soal[$i] . '']) {
-                    case 'D':
-                        $kat_set_d += 1;
-                        break;
-                    case 'I':
-                        $kat_set_i += 1;
-                        break;
-                    case 'S':
-                        $kat_set_s += 1;
-                        break;
-                    case 'C':
-                        $kat_set_c += 1;
-                        break;
-                    case '*':
-                        $kat_set_bin += 1;
-                        break;
-                    default:
-                        # code...
-                        break;
-                }
-            } else {
-                $jawaban     .= $nomor_soal[$i] . '=,';
-                $kat_set_nl  += 1;
-            }
+            $arrTemp = explode(',', $newValue[1]);
+            $jawabanArrSetuju[] = $arrTemp[0];
+            $jawabanArrTidakSetuju[] = $arrTemp[1];
+            $tmp_store[$newValue[0]] = $newValue[1];
+        }
+        //sorting jawaban berdasarkan key
+        ksort($tmp_store);
 
+        foreach ($tmp_store as $key => $value) {
+            $store_jawaban[] = $key . '=' . $value;
+        }
 
-            if (isset($_POST['kategori_tidak_setuju_' . $nomor_soal[$i] . ''])) {
-                $jawaban .= $_POST['kategori_tidak_setuju_' . $nomor_soal[$i] . ''] . ';';
+        unset($_SESSION['status_pengerjaan']);
+        // $soal->array_dump($jawabanArrSetuju);
 
-                switch ($_POST['kategori_tidak_setuju_' . $nomor_soal[$i] . '']) {
-                    case 'D':
-                        $kat_tdk_d += 1;
-                        break;
-                    case 'I':
-                        $kat_tdk_i += 1;
-                        break;
-                    case 'S':
-                        $kat_tdk_s += 1;
-                        break;
-                    case 'C':
-                        $kat_tdk_c += 1;
-                        break;
-                    case '*':
-                        $kat_tdk_bin += 1;
-                        break;
-                    default:
-                        # code...
-                        break;
-                }
-            } else {
-                $jawaban .= ';';
-                $kat_tdk_nl += 1;
+        foreach ($jawabanArrSetuju as $key => $value) {
+            switch ($value) {
+                case 'D':
+                    $kat_set_d += 1;
+                    break;
+                case 'I':
+                    $kat_set_i += 1;
+                    break;
+                case 'S':
+                    $kat_set_s += 1;
+                    break;
+                case 'C':
+                    $kat_set_c += 1;
+                    break;
+                case '*':
+                    $kat_set_bin += 1;
+                    break;
+                default:
+                    # code...
+                    break;
             }
         }
+
+        foreach ($jawabanArrTidakSetuju as $key => $value) {
+            switch ($value) {
+                case 'D':
+                    $kat_tdk_d += 1;
+                    break;
+                case 'I':
+                    $kat_tdk_i += 1;
+                    break;
+                case 'S':
+                    $kat_tdk_s += 1;
+                    break;
+                case 'C':
+                    $kat_tdk_c += 1;
+                    break;
+                case '*':
+                    $kat_tdk_bin += 1;
+                    break;
+                default:
+                    # code...
+                    break;
+            }
+        }
+
+
         #CHANGE
         $kat_chg_d = $kat_set_d - $kat_tdk_d;
         $kat_chg_i = $kat_set_i - $kat_tdk_i;
@@ -734,13 +950,13 @@ if (isset($_POST['soal_5'])) {
 
         $hasil  = $set . '<br>' . $tid . '<br>' . $chg;
 
-
         $kondisi = 'room_id = "' . $_SESSION['i_room'] . '" AND peserta_id = "' . $_SESSION['i_peserta'] . '"';
 
-        $arr_kolom  = array('soal_5', 'skor_5', 'WHERE');
-        $arr_data   = array($jawaban, htmlspecialchars($hasil), $kondisi);
+        $store_jawaban =  implode(", ", $store_jawaban);
 
-        #echo $jawaban;
+        $arr_kolom  = array('soal_5', 'skor_5', 'WHERE');
+        $arr_data   = array($store_jawaban, htmlspecialchars($hasil), $kondisi);
+
 
         $update     = $soal->InputJawaban($arr_kolom, $arr_data, 'update');
 
@@ -810,106 +1026,132 @@ if (isset($_POST['soal_6'])) {
     $jum_Z = 0;
     $jum_nl = 0;
 
+    $jumlah_soal = $_POST['jumlah_soal'];
+    $checked_soal = $_POST['checked_soal'];
+    $checked_jawaban_soal = $_POST['checked_jawaban_soal'];
+    $checked_soal_arr = explode(", ", $checked_soal);
+    $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
 
-    #data
-    $soal_id    = $_POST['soal_id'];
-    $id_user    = $_POST['id_user'];
-    $jawaban   = '';
+    // print_r($checked_jawaban_soal);
+    $soalArr = array();
+    $jawabanArr = array();
+    $tmp_store = array();
+    $store_jawaban = array();
+    foreach ($checked_jawaban_soal_arr as $value) {
+        $newValue = explode('=', $value);
+        $soalArr[] = $newValue[0];
+        $jawabanArr[] = $newValue[1];
+        $tmp_store[$newValue[0]] = $newValue[1];
+    }
+    //sorting jawaban berdasarkan key
+    ksort($tmp_store);
 
-    $nomor_soal = $_POST['nomor_soal'];
+    foreach ($tmp_store as $key => $value) {
+        $store_jawaban[] = $key . '=' . $value;
+    }
 
-    for ($i = 0; $i < count($nomor_soal); $i++) {
-        if (isset($_POST['kategori_' . $nomor_soal[$i] . ''])) {
-            $jawaban   .= $nomor_soal[$i] . '=' . $_POST['kategori_' . $nomor_soal[$i] . ''] . ';';
-            switch ($_POST['kategori_' . $nomor_soal[$i] . '']) {
-                case 'A':
-                    $jum_A += 1;
-                    break;
-                case 'B':
-                    $jum_B += 1;
-                    break;
-                case 'C':
-                    $jum_C += 1;
-                    break;
-                case 'D':
-                    $jum_D += 1;
-                    break;
-                case 'E':
-                    $jum_E += 1;
-                    break;
-                case 'F':
-                    $jum_F += 1;
-                    break;
-                case 'G':
-                    $jum_G += 1;
-                    break;
-                case 'H':
-                    $jum_H += 1;
-                    break;
-                case 'I':
-                    $jum_I += 1;
-                    break;
-                case 'K':
-                    $jum_K += 1;
-                    break;
-                case 'L':
-                    $jum_L += 1;
-                    break;
-                case 'N':
-                    $jum_N += 1;
-                    break;
-                case 'O':
-                    $jum_O += 1;
-                    break;
-                case 'P':
-                    $jum_P += 1;
-                    break;
-                case 'R':
-                    $jum_R += 1;
-                    break;
-                case 'S':
-                    $jum_S += 1;
-                    break;
-                case 'T':
-                    $jum_T += 1;
-                    break;
-                case 'V':
-                    $jum_V += 1;
-                    break;
-                case 'W':
-                    $jum_W += 1;
-                    break;
-                case 'X':
-                    $jum_X += 1;
-                    break;
-                case 'Z':
-                    $jum_Z += 1;
-                    break;
-                default:
-                    # code...
-                    break;
-            }
-        } else {
-            $jawaban   .= $nomor_soal[$i] . '=;';
-            $jum_nl += 1;
+
+    foreach ($jawabanArr as $value) {
+        switch ($value) {
+            case 'A':
+                $jum_A += 1;
+                break;
+            case 'B':
+                $jum_B += 1;
+                break;
+            case 'C':
+                $jum_C += 1;
+                break;
+            case 'D':
+                $jum_D += 1;
+                break;
+            case 'E':
+                $jum_E += 1;
+                break;
+            case 'F':
+                $jum_F += 1;
+                break;
+            case 'G':
+                $jum_G += 1;
+                break;
+            case 'H':
+                $jum_H += 1;
+                break;
+            case 'I':
+                $jum_I += 1;
+                break;
+            case 'K':
+                $jum_K += 1;
+                break;
+            case 'L':
+                $jum_L += 1;
+                break;
+            case 'N':
+                $jum_N += 1;
+                break;
+            case 'O':
+                $jum_O += 1;
+                break;
+            case 'P':
+                $jum_P += 1;
+                break;
+            case 'R':
+                $jum_R += 1;
+                break;
+            case 'S':
+                $jum_S += 1;
+                break;
+            case 'T':
+                $jum_T += 1;
+                break;
+            case 'V':
+                $jum_V += 1;
+                break;
+            case 'W':
+                $jum_W += 1;
+                break;
+            case 'X':
+                $jum_X += 1;
+                break;
+            case 'Z':
+                $jum_Z += 1;
+                break;
+            default:
+                # code...
+                break;
         }
     }
-    $jawaban = substr($jawaban, 0, -1);
 
-    echo $jawaban . '<br>';
 
     $hasil  = 'A=' . $jum_A . ';B=' . $jum_B . ';C=' . $jum_C . ';D=' . $jum_D . ';E=' . $jum_E . ';F='
         . $jum_F . ';G=' . $jum_G . ';H=' . $jum_H . ';I=' . $jum_I . ';K=' . $jum_K . ';L='
         . $jum_L . ';N=' . $jum_N . ';O=' . $jum_O . ';P=' . $jum_P . ';R=' . $jum_R . ';S='
         . $jum_S . ';T=' . $jum_T . ';V=' . $jum_V . ';W=' . $jum_W . ';X=' . $jum_X . ';Z='
         . $jum_Z . ';Null=' . $jum_nl;
-    echo $hasil . '<br>';
+
+    $store_jawaban =  implode(", ", $store_jawaban);
+
     $kondisi = 'room_id = "' . $_SESSION['i_room'] . '" AND peserta_id = "' . $_SESSION['i_peserta'] . '"';
 
     $arr_kolom  = array('soal_6', 'skor_6', 'WHERE');
-    $arr_data   = array($jawaban, htmlspecialchars($hasil), $kondisi);
+    $arr_data   = array($store_jawaban, htmlspecialchars($hasil), $kondisi);
 
     #echo $jawaban;
+
+    $session_str = json_encode($_SESSION);
+
+    $session_arr = explode(',', $session_str);
+
+    $result_partial_arr = $soal->array_partial_search($session_arr, 'jawaban_soal');
+
+    //hapus semua session soal
+    foreach ($result_partial_arr as $session_data) {
+        $firstlastchar = substr($session_data, 1, -1);
+        $clean_session = explode('":"', $firstlastchar);
+
+        unset($_SESSION[$clean_session[0]]);
+    }
+    unset($_SESSION['status_pengerjaan']);
 
     $update     = $soal->InputJawaban($arr_kolom, $arr_data, 'update');
 
@@ -976,7 +1218,6 @@ if (isset($_POST['soal_6'])) {
 # ~ SOAL 7
 if (isset($_POST['soal_7'])) {
     #KOLOM
-    $nomor_soal     = $_POST['nomor_soal'];
     $arr_jawaban    = array();
 
     $jum_           = 0;
@@ -985,32 +1226,89 @@ if (isset($_POST['soal_7'])) {
 
     $ins_jawaban    = '';
 
-    for ($i = 0; $i < count($nomor_soal); $i++) {
-        if ($jum_ < 7) {
-            if (isset($_POST['kategori_' . $nomor_soal[$i] . ''])) {
+    $jumlah_soal = $_POST['jumlah_soal'];
+    $user_soal = $_POST['user_soal'];
+    $checked_soal = $_POST['checked_soal'];
+    $checked_jawaban_soal = $_POST['checked_jawaban_soal'];
+    $checked_soal_arr = explode(", ", $checked_soal);
+    $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
 
-                array_push($jawaban, $_POST['kategori_' . $nomor_soal[$i] . '']);
+
+    $soalArr = array();
+    $jawabanArr = array();
+    foreach ($checked_jawaban_soal_arr as $value) {
+
+        $newValue = explode('=', $value);
+        $soalArr[] = $newValue[0];
+        $jawabanArr[] = $newValue[1];
+    }
+
+    $soal_user = array();
+    $jawaban_user = array();
+    $increment = 0;
+    for ($i = 1; $i <= $jumlah_soal; $i++) {
+        $soal_user[] = $i;
+        if (in_array($i, $soalArr)) {
+            $jawaban_user[] = $jawabanArr[$increment];
+            $store_jawaban[] = $i . '=' . $jawabanArr[$increment];
+            $increment++;
+        } else {
+            $jawaban_user[] = '';
+            $store_jawaban[] = $i . '= ';
+        }
+    }
+    $soal->array_dump($store_jawaban);
+    $soal->array_dump($jawaban_user);
+
+    $session_str = json_encode($_SESSION);
+
+    $session_arr = explode(',', $session_str);
+
+    $result_partial_arr = $soal->array_partial_search($session_arr, 'jawaban_soal');
+    $biodata_arr = $soal->array_partial_search($session_arr, 'get');
+
+    //hapus semua session soal
+    foreach ($result_partial_arr as $session_data) {
+        $firstlastchar = substr($session_data, 1, -1);
+        $clean_session = explode('":"', $firstlastchar);
+
+        unset($_SESSION[$clean_session[0]]);
+    }
+
+    foreach ($biodata_arr as $session_data) {
+        $firstlastchar = substr($session_data, 1, -1);
+        $clean_session = explode('":"', $firstlastchar);
+
+        unset($_SESSION[$clean_session[0]]);
+    }
+
+    unset($_SESSION['status_pengerjaan']);
+    for ($i = 0; $i < $jumlah_soal; $i++) {
+        if ($jum_ < 7) {
+            if ($jawaban_user[$i] != '') {
+
+                array_push($jawaban, $jawaban_user[$i]);
                 $jum_ += 1;
 
-                $ins_jawaban .= $nomor_soal[$i] . '=' . $_POST['kategori_' . $nomor_soal[$i] . ''] . ';';
+                $ins_jawaban .= $soal_user[$i] . '=' . $jawaban_user[$i] . ';';
             } else {
                 array_push($jawaban, '');
                 $jum_ += 1;
 
-                $ins_jawaban .= $nomor_soal[$i] . '=;';
+                $ins_jawaban .= $soal_user[$i] . '=;';
             }
         } else {
-            if (isset($_POST['kategori_' . $nomor_soal[$i] . ''])) {
+            if ($jawaban_user[$i] != '') {
 
 
-                array_push($jawaban, $_POST['kategori_' . $nomor_soal[$i] . '']);
+                array_push($jawaban, $jawaban_user[$i]);
 
                 array_push($arr_jawaban, $jawaban);
 
                 $jawaban = array();
                 $jum_ = 0;
 
-                $ins_jawaban .= $nomor_soal[$i] . '=' . $_POST['kategori_' . $nomor_soal[$i] . ''] . ';';
+                $ins_jawaban .= $soal_user[$i] . '=' . $jawaban_user[$i] . ';';
             } else {
                 echo '<br>';
 
@@ -1021,7 +1319,7 @@ if (isset($_POST['soal_7'])) {
                 $jawaban = array();
                 $jum_ = 0;
 
-                $ins_jawaban .= $nomor_soal[$i] . '=;';
+                $ins_jawaban .= $soal_user[$i] . '=;';
             }
         }
     }
@@ -1087,8 +1385,6 @@ if (isset($_POST['soal_7'])) {
 
     $arr_kolom  = array('soal_7', 'skor_7', 'WHERE');
     $arr_data   = array($ins_jawaban, htmlspecialchars($hasil), $kondisi);
-
-    #echo $jawaban;
 
     $update     = $soal->InputJawaban($arr_kolom, $arr_data, 'update');
 
@@ -1299,57 +1595,131 @@ if (isset($_POST['soal_8'])) {
 # ~ SOAL 9
 if (isset($_POST['soal_9'])) {
     #KOLOM
-    $jawaban = '';
-    $nomor_soal = $_POST['nomor_soal'];
+    $jum_R = 0;
+    $jum_I = 0;
+    $jum_A = 0;
+    $jum_S = 0;
+    $jum_E = 0;
+    $jum_C = 0;
 
-    $jum_r = 0;
-    $jum_i = 0;
-    $jum_a = 0;
-    $jum_s = 0;
-    $jum_e = 0;
-    $jum_c = 0;
+    $jumlah_soal = $_POST['jumlah_soal'];
+    $checked_soal = $_POST['checked_soal'];
+    $checked_jawaban_soal = $_POST['checked_jawaban_soal'];
+    $checked_soal_arr = explode(", ", $checked_soal);
+    $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
 
-    for ($i = 0; $i < count($nomor_soal); $i++) {
-        if (isset($_POST['kategori_' . $nomor_soal[$i] . ''])) {
-            $jawaban        .= $nomor_soal[$i] . '=' . $_POST['kategori_' . $nomor_soal[$i] . ''] . ';';
+    // print_r($checked_jawaban_soal);
+    $soalArr = array();
+    $jawabanArr = array();
+    $tmp_store = array();
+    $store_jawaban = array();
+    foreach ($checked_jawaban_soal_arr as $value) {
+        $newValue = explode('=', $value);
+        $soalArr[] = $newValue[0];
+        $jawabanArr[] = $newValue[1];
+        $tmp_store[$newValue[0]] = $newValue[1];
+    }
+    //sorting jawaban berdasarkan key
+    ksort($tmp_store);
 
-            switch ($_POST['kategori_' . $nomor_soal[$i] . '']) {
-                case 'R':
-                    $jum_r += 1;
-                    break;
-                case 'I':
-                    $jum_i += 1;
-                    break;
-                case 'A':
-                    $jum_a += 1;
-                    break;
-                case 'S':
-                    $jum_s += 1;
-                    break;
-                case 'E':
-                    $jum_e += 1;
-                    break;
-                case 'C':
-                    $jum_c += 1;
-                    break;
-                default:
-                    # code...
-                    break;
-            }
-        } else {
-            $jawaban       .= $nomor_soal[$i] . '=;';
+    foreach ($tmp_store as $key => $value) {
+        $store_jawaban[] = $key . '=' . $value;
+    }
+
+    $session_str = json_encode($_SESSION);
+
+    $session_arr = explode(',', $session_str);
+
+    $result_partial_arr = $soal->array_partial_search($session_arr, 'jawaban_soal');
+
+    //hapus semua session soal
+    foreach ($result_partial_arr as $session_data) {
+        $firstlastchar = substr($session_data, 1, -1);
+        $clean_session = explode('":"', $firstlastchar);
+
+        unset($_SESSION[$clean_session[0]]);
+    }
+    foreach ($jawabanArr as $value) {
+        switch ($value) {
+            case 'A':
+                $jum_A++;
+                break;
+            case 'B':
+                $jum_B++;
+                break;
+            case 'C':
+                $jum_C++;
+                break;
+            case 'D':
+                $jum_D++;
+                break;
+            case 'E':
+                $jum_E++;
+                break;
+            case 'F':
+                $jum_F++;
+                break;
+            case 'G':
+                $jum_G++;
+                break;
+            case 'H':
+                $jum_H++;
+                break;
+            case 'I':
+                $jum_I++;
+                break;
+            case 'K':
+                $jum_K++;
+                break;
+            case 'L':
+                $jum_L++;
+                break;
+            case 'N':
+                $jum_N++;
+                break;
+            case 'O':
+                $jum_O++;
+                break;
+            case 'P':
+                $jum_P++;
+                break;
+            case 'R':
+                $jum_R++;
+                break;
+            case 'S':
+                $jum_S++;
+                break;
+            case 'T':
+                $jum_T++;
+                break;
+            case 'V':
+                $jum_V++;
+                break;
+            case 'W':
+                $jum_W++;
+                break;
+            case 'X':
+                $jum_X++;
+                break;
+            case 'Z':
+                $jum_Z++;
+                break;
+            default:
+                # code...
+                break;
         }
     }
-    echo $jawaban . '<br>';
-    echo 'R:' . $jum_r . '<br>I:' . $jum_i . '<br>A:' . $jum_a . '<br>S:' . $jum_s . '<br>E:' . $jum_e . '<br>C:' . $jum_c;
 
-    $hasil = 'R=' . $jum_r . ';I=' . $jum_i . ';A=' . $jum_a . ';S=' . $jum_s . ';E=' . $jum_e . ';C=' . $jum_c;
-    echo '<br>' . $hasil;
+    // echo 'R:' . $jum_r . '<br>I:' . $jum_i . '<br>A:' . $jum_a . '<br>S:' . $jum_s . '<br>E:' . $jum_e . '<br>C:' . $jum_c;
 
+    $hasil = 'R=' . $jum_R . ';I=' . $jum_I . ';A=' . $jum_A . ';S=' . $jum_S . ';E=' . $jum_E . ';C=' . $jum_C;
+    // echo '<br>' . $hasil;
+
+    $store_jawaban =  implode(", ", $store_jawaban);
     $kondisi = 'room_id = "' . $_SESSION['i_room'] . '" AND peserta_id = "' . $_SESSION['i_peserta'] . '"';
 
     $arr_kolom  = array('soal_9', 'skor_9', 'WHERE');
-    $arr_data   = array($jawaban, htmlspecialchars($hasil), $kondisi);
+    $arr_data   = array($store_jawaban, htmlspecialchars($hasil), $kondisi);
 
     #echo $jawaban;
 
@@ -1392,6 +1762,30 @@ if (isset($_POST['soal_10_se'])) {
 
     $resKunciJawaban    = $soal->KunciJawaban('modul_10_se');
 
+    $jumlah_soal = $_POST['jumlah_soal'];
+    $checked_soal = $_POST['checked_soal'];
+    $checked_jawaban_soal = $_POST['checked_jawaban_soal'];
+    $checked_soal_arr = explode(", ", $checked_soal);
+    $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
+
+    // print_r($checked_jawaban_soal);
+    $soalArr = array();
+    $jawabanArr = array();
+    $tmp_store = array();
+    $store_jawaban = array();
+    foreach ($checked_jawaban_soal_arr as $value) {
+        $newValue = explode('=', $value);
+        $soalArr[] = $newValue[0];
+        $jawabanArr[] = $newValue[1];
+        $tmp_store[$newValue[0]] = $newValue[1];
+    }
+    //sorting jawaban berdasarkan key
+    ksort($tmp_store);
+
+    foreach ($tmp_store as $key => $value) {
+        $store_jawaban[] = $key . '=' . $value;
+    }
+
     while ($rowKunciJawaban = $resKunciJawaban->fetch_assoc()) {
         array_push($arr_nomor_modul, $rowKunciJawaban['nomor_soal']);
         array_push($arr_jawab_modul, $rowKunciJawaban['kunci_jawaban']);
@@ -1399,36 +1793,56 @@ if (isset($_POST['soal_10_se'])) {
     # ~
 
     # ~ Informasi Jawaban Peserta
-    $jawaban    = '';
-    $arr_nomor_peserta  = array();
-    $arr_jawab_peserta  = array();
-    $nomor_soal         = $_POST['nomor_soal'];
+    $session_str = json_encode($_SESSION);
 
-    foreach ($nomor_soal as $value) {
-        if (isset($_POST['jawaban_' . $value . ''])) {
-            $jawaban .= $value . '=' . $_POST['jawaban_' . $value . ''] . ';';
-            array_push($arr_nomor_peserta, $value);
-            array_push($arr_jawab_peserta, $_POST['jawaban_' . $value . '']);
+    $session_arr = explode(',', $session_str);
+
+    $result_partial_arr = $soal->array_partial_search($session_arr, 'jawaban_soal');
+    $biodata_arr = $soal->array_partial_search($session_arr, 'get');
+
+    //hapus semua session soal
+    foreach ($result_partial_arr as $session_data) {
+        $firstlastchar = substr($session_data, 1, -1);
+        $clean_session = explode('":"', $firstlastchar);
+
+        unset($_SESSION[$clean_session[0]]);
+    }
+    unset($_SESSION['status_pengerjaan']);
+    foreach ($biodata_arr as $session_data) {
+        $firstlastchar = substr($session_data, 1, -1);
+        $clean_session = explode('":"', $firstlastchar);
+
+        unset($_SESSION[$clean_session[0]]);
+    }
+
+    $soal_user = array();
+    $jawaban_user = array();
+    $store_jawaban = array();
+    $increment = 0;
+    for ($i = 1; $i <= $jumlah_soal; $i++) {
+        $soal_user[] = $i;
+        if (in_array($i, $soalArr)) {
+            $jawaban_user[] = $jawabanArr[$increment];
+            $store_jawaban[] = $i . '=' . $jawabanArr[$increment];
+            $increment++;
         } else {
-            $jawaban .= $value . '=;';
-            array_push($arr_nomor_peserta, $value);
-            array_push($arr_jawab_peserta, '');
+            $jawaban_user[] = '';
+            $store_jawaban[] = $i . '= ';
         }
     }
 
     $hasil = 0;
-    for ($i = 0; $i < count($arr_nomor_modul); $i++) {
-        if ($arr_nomor_modul[$i] == $arr_nomor_peserta[$i] and $arr_jawab_modul[$i] == $arr_jawab_peserta[$i]) {
-            $hasil += 1;
+    for ($i = 0; $i < $jumlah_soal; $i++) {
+        if ($arr_nomor_modul[$i] == $soal_user[$i] and $arr_jawab_modul[$i] == $jawaban_user[$i]) {
+            $jum_benar += 1;
         }
     }
 
+    $store_jawaban =  implode(", ", $store_jawaban);
     $kondisi = 'room_id = "' . $_SESSION['i_room'] . '" AND peserta_id = "' . $_SESSION['i_peserta'] . '"';
 
     $arr_kolom  = array('soal_10_se', 'skor_10', 'WHERE');
-    $arr_data   = array($jawaban, $hasil, $kondisi);
-
-    #echo $jawaban;
+    $arr_data   = array($store_jawaban, $hasil, $kondisi);
 
     $update     = $soal->InputJawaban($arr_kolom, $arr_data, 'update');
 
@@ -1462,38 +1876,66 @@ if (isset($_POST['soal_10_wa'])) {
     }
     # ~
 
-    # ~ Informasi Jawaban Peserta
-    $jawaban    = '';
-    $arr_nomor_peserta  = array();
-    $arr_jawab_peserta  = array();
-    $nomor_soal         = $_POST['nomor_soal'];
+    $jumlah_soal = $_POST['jumlah_soal'];
+    $checked_soal = $_POST['checked_soal'];
+    $checked_jawaban_soal = $_POST['checked_jawaban_soal'];
+    $checked_soal_arr = explode(", ", $checked_soal);
+    $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
 
-    foreach ($nomor_soal as $value) {
-        if (isset($_POST['jawaban_' . $value . ''])) {
-            $jawaban .= $value . '=' . $_POST['jawaban_' . $value . ''] . ';';
-            array_push($arr_nomor_peserta, $value);
-            array_push($arr_jawab_peserta, $_POST['jawaban_' . $value . '']);
+    // print_r($checked_jawaban_soal);
+    $soalArr = array();
+    $jawabanArr = array();
+    $tmp_store = array();
+    $store_jawaban = array();
+    foreach ($checked_jawaban_soal_arr as $value) {
+        $newValue = explode('=', $value);
+        $soalArr[] = $newValue[0];
+        $jawabanArr[] = $newValue[1];
+    }
+
+    $session_str = json_encode($_SESSION);
+
+    $session_arr = explode(',', $session_str);
+
+    $result_partial_arr = $soal->array_partial_search($session_arr, 'jawaban_soal');
+
+    //hapus semua session soal
+    foreach ($result_partial_arr as $session_data) {
+        $firstlastchar = substr($session_data, 1, -1);
+        $clean_session = explode('":"', $firstlastchar);
+
+        unset($_SESSION[$clean_session[0]]);
+    }
+    unset($_SESSION['status_pengerjaan']);
+    $soal_user = array();
+    $jawaban_user = array();
+    $increment = 0;
+    for ($i = 21; $i <= $jumlah_soal; $i++) {
+        $soal_user[] = $i;
+        if (in_array($i, $soalArr)) {
+            $jawaban_user[] = $jawabanArr[$increment];
+            $store_jawaban[] = $i . '=' . $jawabanArr[$increment];
+            $increment++;
         } else {
-            $jawaban .= $value . '=;';
-            array_push($arr_nomor_peserta, $value);
-            array_push($arr_jawab_peserta, '');
+            $jawaban_user[] = '';
+            $store_jawaban[] = $i . '= ';
         }
     }
 
     $hasil = 0;
-    for ($i = 0; $i < count($arr_nomor_modul); $i++) {
-        if ($arr_nomor_modul[$i] == $arr_nomor_peserta[$i] and $arr_jawab_modul[$i] == $arr_jawab_peserta[$i]) {
+    for ($i = 0; $i < $jumlah_soal - 21; $i++) {
+        if ($arr_nomor_modul[$i] == $soal_user[$i] and $arr_jawab_modul[$i] == $jawaban_user[$i]) {
             $hasil += 1;
         }
     }
-    $hasil = $hasil + (int)$_SESSION['skor_10'];
 
+    $hasil = $hasil + (int)$_SESSION['skor_10'];
+    $store_jawaban =  implode(", ", $store_jawaban);
     $kondisi = 'room_id = "' . $_SESSION['i_room'] . '" AND peserta_id = "' . $_SESSION['i_peserta'] . '"';
 
     $arr_kolom  = array('soal_10_wa', 'skor_10', 'WHERE');
-    $arr_data   = array($jawaban, $hasil, $kondisi);
+    $arr_data   = array($store_jawaban, $hasil, $kondisi);
 
-    #echo $jawaban;
 
     $update     = $soal->InputJawaban($arr_kolom, $arr_data, 'update');
 
@@ -1530,35 +1972,65 @@ if (isset($_POST['soal_10_an'])) {
     # ~
 
     # ~ Informasi Jawaban Peserta
-    $jawaban    = '';
-    $arr_nomor_peserta  = array();
-    $arr_jawab_peserta  = array();
-    $nomor_soal         = $_POST['nomor_soal'];
+    $jumlah_soal = $_POST['jumlah_soal'];
+    $checked_soal = $_POST['checked_soal'];
+    $checked_jawaban_soal = $_POST['checked_jawaban_soal'];
+    $checked_soal_arr = explode(", ", $checked_soal);
+    $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
 
-    foreach ($nomor_soal as $value) {
-        if (isset($_POST['jawaban_' . $value . ''])) {
-            $jawaban .= $value . '=' . $_POST['jawaban_' . $value . ''] . ';';
-            array_push($arr_nomor_peserta, $value);
-            array_push($arr_jawab_peserta, $_POST['jawaban_' . $value . '']);
+    // print_r($checked_jawaban_soal);
+    $soalArr = array();
+    $jawabanArr = array();
+    $tmp_store = array();
+    $store_jawaban = array();
+    foreach ($checked_jawaban_soal_arr as $value) {
+        $newValue = explode('=', $value);
+        $soalArr[] = $newValue[0];
+        $jawabanArr[] = $newValue[1];
+    }
+
+    $session_str = json_encode($_SESSION);
+
+    $session_arr = explode(',', $session_str);
+
+    $result_partial_arr = $soal->array_partial_search($session_arr, 'jawaban_soal');
+
+    //hapus semua session soal
+    foreach ($result_partial_arr as $session_data) {
+        $firstlastchar = substr($session_data, 1, -1);
+        $clean_session = explode('":"', $firstlastchar);
+
+        unset($_SESSION[$clean_session[0]]);
+    }
+    unset($_SESSION['status_pengerjaan']);
+    $soal_user = array();
+    $jawaban_user = array();
+    $increment = 0;
+    for ($i = 41; $i <= $jumlah_soal; $i++) {
+        $soal_user[] = $i;
+        if (in_array($i, $soalArr)) {
+            $jawaban_user[] = $jawabanArr[$increment];
+            $store_jawaban[] = $i . '=' . $jawabanArr[$increment];
+            $increment++;
         } else {
-            $jawaban .= $value . '=;';
-            array_push($arr_nomor_peserta, $value);
-            array_push($arr_jawab_peserta, '');
+            $jawaban_user[] = '';
+            $store_jawaban[] = $i . '= ';
         }
     }
 
     $hasil = 0;
-    for ($i = 0; $i < count($arr_nomor_modul); $i++) {
-        if ($arr_nomor_modul[$i] == $arr_nomor_peserta[$i] and $arr_jawab_modul[$i] == $arr_jawab_peserta[$i]) {
+    for ($i = 0; $i < $jumlah_soal - 41; $i++) {
+        if ($arr_nomor_modul[$i] == $soal_user[$i] and $arr_jawab_modul[$i] == $jawaban_user[$i]) {
             $hasil += 1;
         }
     }
     $hasil = $hasil + (int)$_SESSION['skor_10'];
 
+    $store_jawaban =  implode(", ", $store_jawaban);
     $kondisi = 'room_id = "' . $_SESSION['i_room'] . '" AND peserta_id = "' . $_SESSION['i_peserta'] . '"';
 
     $arr_kolom  = array('soal_10_an', 'skor_10', 'WHERE');
-    $arr_data   = array($jawaban, $hasil, $kondisi);
+    $arr_data   = array($store_jawaban, $hasil, $kondisi);
 
     #echo $jawaban;
 
@@ -1596,35 +2068,67 @@ if (isset($_POST['soal_10_ra'])) {
     # ~
 
     # ~ Informasi Jawaban Peserta
-    $jawaban    = '';
-    $arr_nomor_peserta  = array();
-    $arr_jawab_peserta  = array();
-    $nomor_soal         = $_POST['nomor_soal'];
+    $jumlah_soal = $_POST['jumlah_soal'];
+    $checked_soal = $_POST['checked_soal'];
+    $checked_jawaban_soal = $_POST['checked_jawaban_soal'];
+    $checked_soal_arr = explode(", ", $checked_soal);
+    $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
 
-    foreach ($nomor_soal as $value) {
-        if (isset($_POST['jawaban_' . $value . ''])) {
-            $jawaban .= $value . '=' . $_POST['jawaban_' . $value . ''] . ';';
-            array_push($arr_nomor_peserta, $value);
-            array_push($arr_jawab_peserta, $_POST['jawaban_' . $value . '']);
+    // print_r($checked_jawaban_soal);
+    $soalArr = array();
+    $jawabanArr = array();
+    $tmp_store = array();
+    $store_jawaban = array();
+    foreach ($checked_jawaban_soal_arr as $value) {
+        $newValue = explode('=', $value);
+        $soalArr[] = $newValue[0];
+        $jawabanArr[] = $newValue[1];
+    }
+
+    $session_str = json_encode($_SESSION);
+
+    $session_arr = explode(',', $session_str);
+
+    $result_partial_arr = $soal->array_partial_search($session_arr, 'jawaban_soal');
+
+    //hapus semua session soal
+    foreach ($result_partial_arr as $session_data) {
+        $firstlastchar = substr($session_data, 1, -1);
+        $clean_session = explode('":"', $firstlastchar);
+
+        unset($_SESSION[$clean_session[0]]);
+    }
+    unset($_SESSION['status_pengerjaan']);
+    $soal_user = array();
+    $jawaban_user = array();
+    $increment = 0;
+    for ($i = 61; $i <= $jumlah_soal; $i++) {
+        $soal_user[] = $i;
+        if (in_array($i, $soalArr)) {
+            $jawaban_user[] = $jawabanArr[$increment];
+            $store_jawaban[] = $i . '=' . $jawabanArr[$increment];
+            $increment++;
         } else {
-            $jawaban .= $value . '=;';
-            array_push($arr_nomor_peserta, $value);
-            array_push($arr_jawab_peserta, '');
+            $jawaban_user[] = '';
+            $store_jawaban[] = $i . '= ';
         }
     }
 
+
     $hasil = 0;
-    for ($i = 0; $i < count($arr_nomor_modul); $i++) {
-        if ($arr_nomor_modul[$i] == $arr_nomor_peserta[$i] and $arr_jawab_modul[$i] == $arr_jawab_peserta[$i]) {
+    for ($i = 0; $i < $jumlah_soal - 61; $i++) {
+        if ($arr_nomor_modul[$i] == $soal_user[$i] and $arr_jawab_modul[$i] == $jawaban_user[$i]) {
             $hasil += 1;
         }
     }
+
     $hasil = $hasil + (int)$_SESSION['skor_10'];
 
+    $store_jawaban =  implode(", ", $store_jawaban);
     $kondisi = 'room_id = "' . $_SESSION['i_room'] . '" AND peserta_id = "' . $_SESSION['i_peserta'] . '"';
 
     $arr_kolom  = array('soal_10_ra', 'skor_10', 'WHERE');
-    $arr_data   = array($jawaban, $hasil, $kondisi);
+    $arr_data   = array($store_jawaban, $hasil, $kondisi);
 
     #echo $jawaban;
 
@@ -1662,35 +2166,67 @@ if (isset($_POST['soal_10_zr'])) {
     # ~
 
     # ~ Informasi Jawaban Peserta
-    $jawaban    = '';
-    $arr_nomor_peserta  = array();
-    $arr_jawab_peserta  = array();
-    $nomor_soal         = $_POST['nomor_soal'];
+    $jumlah_soal = $_POST['jumlah_soal'];
+    $checked_soal = $_POST['checked_soal'];
+    $checked_jawaban_soal = $_POST['checked_jawaban_soal'];
+    $checked_soal_arr = explode(", ", $checked_soal);
+    $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
 
-    foreach ($nomor_soal as $value) {
-        if (isset($_POST['jawaban_' . $value . ''])) {
-            $jawaban .= $value . '=' . $_POST['jawaban_' . $value . ''] . ';';
-            array_push($arr_nomor_peserta, $value);
-            array_push($arr_jawab_peserta, $_POST['jawaban_' . $value . '']);
+    // print_r($checked_jawaban_soal);
+    $soalArr = array();
+    $jawabanArr = array();
+    $tmp_store = array();
+    $store_jawaban = array();
+    foreach ($checked_jawaban_soal_arr as $value) {
+        $newValue = explode('=', $value);
+        $soalArr[] = $newValue[0];
+        $jawabanArr[] = $newValue[1];
+    }
+
+    $session_str = json_encode($_SESSION);
+
+    $session_arr = explode(',', $session_str);
+
+    $result_partial_arr = $soal->array_partial_search($session_arr, 'jawaban_soal');
+
+    //hapus semua session soal
+    foreach ($result_partial_arr as $session_data) {
+        $firstlastchar = substr($session_data, 1, -1);
+        $clean_session = explode('":"', $firstlastchar);
+
+        unset($_SESSION[$clean_session[0]]);
+    }
+    unset($_SESSION['status_pengerjaan']);
+
+    $soal_user = array();
+    $jawaban_user = array();
+    $increment = 0;
+    for ($i = 81; $i <= $jumlah_soal; $i++) {
+        $soal_user[] = $i;
+        if (in_array($i, $soalArr)) {
+            $jawaban_user[] = $jawabanArr[$increment];
+            $store_jawaban[] = $i . '=' . $jawabanArr[$increment];
+            $increment++;
         } else {
-            $jawaban .= $value . '=;';
-            array_push($arr_nomor_peserta, $value);
-            array_push($arr_jawab_peserta, '');
+            $jawaban_user[] = '';
+            $store_jawaban[] = $i . '= ';
         }
     }
 
     $hasil = 0;
-    for ($i = 0; $i < count($arr_nomor_modul); $i++) {
-        if ($arr_nomor_modul[$i] == $arr_nomor_peserta[$i] and $arr_jawab_modul[$i] == $arr_jawab_peserta[$i]) {
+    for ($i = 0; $i < $jumlah_soal - 81; $i++) {
+        if ($arr_nomor_modul[$i] == $soal_user[$i] and $arr_jawab_modul[$i] == $jawaban_user[$i]) {
             $hasil += 1;
         }
     }
+    // $soal->array_dump($store_jawaban);
     $hasil = $hasil + (int)$_SESSION['skor_10'];
+    $store_jawaban =  implode(", ", $store_jawaban);
 
     $kondisi = 'room_id = "' . $_SESSION['i_room'] . '" AND peserta_id = "' . $_SESSION['i_peserta'] . '"';
 
     $arr_kolom  = array('soal_10_zr', 'skor_10', 'WHERE');
-    $arr_data   = array($jawaban, $hasil, $kondisi);
+    $arr_data   = array($store_jawaban, $hasil, $kondisi);
 
     #echo $jawaban;
 
@@ -1729,51 +2265,76 @@ if (isset($_POST['soal_10_ge'])) {
     }
 
     # ~
-    print_r($arr_jawab_nilai_2);
-    print_r($arr_jawab_nilai_2);
-    echo '<br>';
+    // print_r($arr_jawab_nilai_2);
+    // print_r($arr_jawab_nilai_2);
 
     # ~ Informasi Jawaban Peserta
-    $jawaban    = '';
-    $arr_nomor_peserta  = array();
-    $arr_jawab_peserta  = array();
-    $nomor_soal         = $_POST['nomor_soal'];
+    $jumlah_soal = $_POST['jumlah_soal'];
+    $checked_soal = $_POST['checked_soal'];
+    $checked_jawaban_soal = $_POST['checked_jawaban_soal'];
+    $checked_soal_arr = explode(", ", $checked_soal);
+    $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
 
-    foreach ($nomor_soal as $value) {
-        if (isset($_POST['jawaban_' . $value . ''])) {
-            $jawaban .= $value . '=' . $_POST['jawaban_' . $value . ''] . ';';
-            array_push($arr_nomor_peserta, $value);
-            array_push($arr_jawab_peserta, $_POST['jawaban_' . $value . '']);
+    // print_r($checked_jawaban_soal);
+    $soalArr = array();
+    $jawabanArr = array();
+    $tmp_store = array();
+    $store_jawaban = array();
+    foreach ($checked_jawaban_soal_arr as $value) {
+        $newValue = explode('=', $value);
+        $soalArr[] = $newValue[0];
+        $jawabanArr[] = $newValue[1];
+    }
+
+    $session_str = json_encode($_SESSION);
+
+    $session_arr = explode(',', $session_str);
+
+    $result_partial_arr = $soal->array_partial_search($session_arr, 'jawaban_soal');
+
+    //hapus semua session soal
+    foreach ($result_partial_arr as $session_data) {
+        $firstlastchar = substr($session_data, 1, -1);
+        $clean_session = explode('":"', $firstlastchar);
+
+        unset($_SESSION[$clean_session[0]]);
+    }
+    unset($_SESSION['status_pengerjaan']);
+    $soal_user = array();
+    $jawaban_user = array();
+    $increment = 0;
+    for ($i = 1; $i <= $jumlah_soal; $i++) {
+        $soal_user[] = $i;
+        if (in_array($i, $soalArr)) {
+            $jawaban_user[] = $jawabanArr[$increment];
+            $store_jawaban[] = $i . '=' . $jawabanArr[$increment];
+            $increment++;
         } else {
-            $jawaban .= $value . '=;';
-            array_push($arr_nomor_peserta, $value);
-            array_push($arr_jawab_peserta, '');
+            $jawaban_user[] = '';
+            $store_jawaban[] = $i . '= ';
         }
     }
 
-    print_r($arr_jawab_peserta);
-
-    echo '<br>';
-
     $hasil = 0;
 
-    for ($i = 0; $i < count($arr_nomor_modul); $i++) {
-        if ($arr_nomor_modul[$i] == $arr_nomor_peserta[$i] and in_array(strtolower($arr_jawab_peserta[$i]), $arr_jawab_nilai_2[$i])) {
+    for ($i = 0; $i <  $jumlah_soal; $i++) {
+        if ($arr_nomor_modul[$i] == $soal_user[$i] and in_array(strtolower($jawaban_user[$i]), $arr_jawab_nilai_2[$i])) {
             $hasil += 2;
-        } else if ($arr_nomor_modul[$i] == $arr_nomor_peserta[$i] and in_array(strtolower($arr_jawab_peserta[$i]), $arr_jawab_nilai_1[$i])) {
+        } else if ($arr_nomor_modul[$i] == $soal_user[$i] and in_array(strtolower($jawaban_user[$i]), $arr_jawab_nilai_1[$i])) {
             $hasil += 1;
         } else {
             $hasil += 0;
         }
     }
+
     $hasil = $hasil + (int)$_SESSION['skor_10'];
+    $store_jawaban =  implode(", ", $store_jawaban);
 
     $kondisi = 'room_id = "' . $_SESSION['i_room'] . '" AND peserta_id = "' . $_SESSION['i_peserta'] . '"';
 
     $arr_kolom  = array('soal_10_ge', 'skor_10', 'WHERE');
-    $arr_data   = array($jawaban, $hasil, $kondisi);
+    $arr_data   = array($store_jawaban, $hasil, $kondisi);
 
-    #echo $jawaban;
 
     $update     = $soal->InputJawaban($arr_kolom, $arr_data, 'update');
 
@@ -1809,35 +2370,69 @@ if (isset($_POST['soal_10_fa'])) {
     # ~
 
     # ~ Informasi Jawaban Peserta
-    $jawaban    = '';
-    $arr_nomor_peserta  = array();
-    $arr_jawab_peserta  = array();
-    $nomor_soal         = $_POST['nomor_soal'];
+    $jumlah_soal = $_POST['jumlah_soal'];
+    $user_soal = $_POST['user_soal'];
+    $checked_soal = $_POST['checked_soal'];
+    $checked_jawaban_soal = $_POST['checked_jawaban_soal'];
+    $checked_soal_arr = explode(", ", $checked_soal);
+    $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
 
-    foreach ($nomor_soal as $value) {
-        if (isset($_POST['jawaban_' . $value . ''])) {
-            $jawaban .= $value . '=' . $_POST['jawaban_' . $value . ''] . ';';
-            array_push($arr_nomor_peserta, $value);
-            array_push($arr_jawab_peserta, $_POST['jawaban_' . $value . '']);
+    $soalArr = array();
+    $jawabanArr = array();
+    foreach ($checked_jawaban_soal_arr as $value) {
+
+        $newValue = explode('=', $value);
+        $soalArr[] = $newValue[0];
+        $jawabanArr[] = $newValue[1];
+    }
+
+    $session_str = json_encode($_SESSION);
+
+    $session_arr = explode(',', $session_str);
+
+    $result_partial_arr = $soal->array_partial_search($session_arr, 'jawaban_soal');
+
+    //hapus semua session soal
+    foreach ($result_partial_arr as $session_data) {
+        $firstlastchar = substr($session_data, 1, -1);
+        $clean_session = explode('":"', $firstlastchar);
+
+        unset($_SESSION[$clean_session[0]]);
+    }
+
+    unset($_SESSION['status_pengerjaan']);
+
+    $soal_user = array();
+    $jawaban_user = array();
+    $store_jawaban = array();
+    $increment = 0;
+    for ($i = 1; $i <= $jumlah_soal; $i++) {
+        $soal_user[] = $i;
+        if (in_array($i, $soalArr)) {
+            $jawaban_user[] = $jawabanArr[$increment];
+            $store_jawaban[] = $i . '=' .  $jawabanArr[$increment];
+            $increment++;
         } else {
-            $jawaban .= $value . '=;';
-            array_push($arr_nomor_peserta, $value);
-            array_push($arr_jawab_peserta, '');
+            $jawaban_user[] = '';
+            $store_jawaban[] = $i . '= ';
         }
     }
 
     $hasil = 0;
-    for ($i = 0; $i < count($arr_nomor_modul); $i++) {
-        if ($arr_nomor_modul[$i] == $arr_nomor_peserta[$i] and $arr_jawab_modul[$i] == $arr_jawab_peserta[$i]) {
+    for ($i = 0; $i < $jumlah_soal; $i++) {
+        if ($arr_nomor_modul[$i] == $soal_user[$i] and $arr_jawab_modul[$i] == $jawaban_user[$i]) {
             $hasil += 1;
         }
     }
-    $hasil = $hasil + (int)$_SESSION['skor_10'];
 
+    echo $hasil;
+
+    $hasil = $hasil + (int)$_SESSION['skor_10'];
+    $store_jawaban =  implode(", ", $store_jawaban);
     $kondisi = 'room_id = "' . $_SESSION['i_room'] . '" AND peserta_id = "' . $_SESSION['i_peserta'] . '"';
 
     $arr_kolom  = array('soal_10_fa', 'skor_10', 'WHERE');
-    $arr_data   = array($jawaban, $hasil, $kondisi);
+    $arr_data   = array($store_jawaban, $hasil, $kondisi);
 
     #echo $jawaban;
 
@@ -1874,37 +2469,70 @@ if (isset($_POST['soal_10_wu'])) {
     # ~
 
     # ~ Informasi Jawaban Peserta
-    $jawaban    = '';
-    $arr_nomor_peserta  = array();
-    $arr_jawab_peserta  = array();
-    $nomor_soal         = $_POST['nomor_soal'];
 
-    foreach ($nomor_soal as $value) {
-        if (isset($_POST['jawaban_' . $value . ''])) {
-            $jawaban .= $value . '=' . $_POST['jawaban_' . $value . ''] . ';';
-            array_push($arr_nomor_peserta, $value);
-            array_push($arr_jawab_peserta, $_POST['jawaban_' . $value . '']);
+
+    $jumlah_soal = $_POST['jumlah_soal'];
+    $user_soal = $_POST['user_soal'];
+    $checked_soal = $_POST['checked_soal'];
+    $checked_jawaban_soal = $_POST['checked_jawaban_soal'];
+    $checked_soal_arr = explode(", ", $checked_soal);
+    $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
+
+    $soalArr = array();
+    $jawabanArr = array();
+    foreach ($checked_jawaban_soal_arr as $value) {
+
+        $newValue = explode('=', $value);
+        $soalArr[] = $newValue[0];
+        $jawabanArr[] = $newValue[1];
+    }
+
+    $session_str = json_encode($_SESSION);
+
+    $session_arr = explode(',', $session_str);
+
+    $result_partial_arr = $soal->array_partial_search($session_arr, 'jawaban_soal');
+
+    //hapus semua session soal
+    foreach ($result_partial_arr as $session_data) {
+        $firstlastchar = substr($session_data, 1, -1);
+        $clean_session = explode('":"', $firstlastchar);
+
+        unset($_SESSION[$clean_session[0]]);
+    }
+
+    unset($_SESSION['status_pengerjaan']);
+
+    $soal_user = array();
+    $jawaban_user = array();
+    $store_jawaban = array();
+    $increment = 0;
+    for ($i = 21; $i <= $jumlah_soal; $i++) {
+        $soal_user[] = $i;
+        if (in_array($i, $soalArr)) {
+            $jawaban_user[] = $jawabanArr[$increment];
+            $store_jawaban[] = $i . '=' .  $jawabanArr[$increment];
+            $increment++;
         } else {
-            $jawaban .= $value . '=;';
-            array_push($arr_nomor_peserta, $value);
-            array_push($arr_jawab_peserta, '');
+            $jawaban_user[] = '';
+            $store_jawaban[] = $i . '= ';
         }
     }
 
     $hasil = 0;
-    for ($i = 0; $i < count($arr_nomor_modul); $i++) {
-        if ($arr_nomor_modul[$i] == $arr_nomor_peserta[$i] and $arr_jawab_modul[$i] == $arr_jawab_peserta[$i]) {
+    for ($i = 0; $i < $jumlah_soal - 21; $i++) {
+        if ($arr_nomor_modul[$i] == $soal_user[$i] and $arr_jawab_modul[$i] == $jawaban_user[$i]) {
             $hasil += 1;
         }
     }
-    $hasil = $hasil + (int)$_SESSION['skor_10'];
 
+    $hasil = $hasil + (int)$_SESSION['skor_10'];
+    $store_jawaban =  implode(", ", $store_jawaban);
     $kondisi = 'room_id = "' . $_SESSION['i_room'] . '" AND peserta_id = "' . $_SESSION['i_peserta'] . '"';
 
     $arr_kolom  = array('soal_10_wu', 'skor_10', 'WHERE');
-    $arr_data   = array($jawaban, $hasil, $kondisi);
+    $arr_data   = array($store_jawaban, $hasil, $kondisi);
 
-    #echo $jawaban;
 
     $update     = $soal->InputJawaban($arr_kolom, $arr_data, 'update');
 

@@ -852,6 +852,75 @@ class Soal
         }
     }
 
+    function modulSoal($kerja_soal)
+    {
+        switch ($kerja_soal) {
+            case 'biodata':
+                header('location:../kerja_soal/biodata');
+                break;
+            case 'soal_1':
+                return 'location:../kerja_soal/kerja_modul_1';
+                break;
+            case 'hapalan':
+                return 'location:../kerja_soal/hapalan';
+                break;
+            case 'soal_2':
+                return 'location:../kerja_soal/kerja_modul_2';
+                break;
+            case 'soal_3':
+                return 'location:../kerja_soal/kerja_modul_3';
+                break;
+            case 'soal_4':
+                return 'location:../kerja_soal/kerja_modul_4';
+                break;
+            case 'soal_5':
+                return 'location:../kerja_soal/kerja_modul_5';
+                break;
+            case 'soal_6':
+                return 'location:../kerja_soal/kerja_modul_6';
+                break;
+            case 'soal_7':
+                return 'location:../kerja_soal/kerja_modul_7';
+                break;
+            case 'soal_8':
+                return 'location:../kerja_soal/kerja_modul_8';
+                break;
+            case 'soal_9':
+                return 'location:../kerja_soal/kerja_modul_9';
+                break;
+            case 'soal_10_se':
+                return 'location:../kerja_soal/kerja_modul_10_se';
+                break;
+            case 'soal_10_wa':
+                return 'location:../kerja_soal/kerja_modul_10_wa';
+                break;
+            case 'soal_10_an':
+                return 'location:../kerja_soal/kerja_modul_10_an';
+                break;
+            case 'soal_10_ra':
+                return 'location:../kerja_soal/kerja_modul_10_ra';
+                break;
+            case 'soal_10_zr':
+                return 'location:../kerja_soal/kerja_modul_10_zr';
+                break;
+            case 'soal_10_ge':
+                return 'location:../kerja_soal/kerja_modul_10_ge';
+                break;
+            case 'soal_10_fa':
+                return 'location:../kerja_soal/kerja_modul_10_fa';
+                break;
+            case 'soal_10_wu':
+                return 'location:../kerja_soal/kerja_modul_10_wu';
+                break;
+            case 'selesai':
+                header('location:../kerja_soal/selesai');
+                break;
+            default:
+                header('location:../auth/login?status=1');
+                break;
+        }
+    }
+
     function InputJawaban($arr_kolom, $arr_data, $status)
     {
         switch ($status) {
@@ -1136,5 +1205,21 @@ class Soal
             return $hari[$num] . ', ' . $tgl_indo;
         }
         return $tgl_indo;
+    }
+
+    function array_partial_search($array, $keyword)
+    {
+        $found = [];
+        foreach ($array as $string) {
+            if (strpos($string, $keyword) !== false) {
+                $found[] = $string;
+            }
+        }
+
+        return $found;
+    }
+    function array_dump($var)
+    {
+        echo "<pre>" . print_r($var, TRUE) . "</pre>";
     }
 }
