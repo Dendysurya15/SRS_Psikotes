@@ -466,7 +466,7 @@ class Soal
     #   ~ Daftar Room
     function DaftarRoom()
     {
-        $sqlDaftarRoom      = 'SELECT * FROM room';
+        $sqlDaftarRoom      = 'SELECT * FROM room ORDER BY tanggal DESC';
         $resultDaftarRoom   = $this->conn->query($sqlDaftarRoom);
         return $resultDaftarRoom;
     }

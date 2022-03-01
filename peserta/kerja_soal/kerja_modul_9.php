@@ -243,7 +243,7 @@ if (!empty($result_partial_arr)) {
                                     <div class="col-md-12" style="margin-left: auto; margin-right: auto;">
                                         <h3 class="content-header">
                                             Tes ini berisi mengenai aktivitas-aktvitas di setiap nomornya. Dalam tes ini anda hanya perlu
-                                            memilih aktivitas yang anda sukai saja.
+                                            memilih aktivitas yang anda sukai dengan mencentang box jawaban dan kosongkan apabila anda tidak menyukai aktivitas tersebut.
                                         </h3>
                                     </div>
                                 </div>
@@ -438,6 +438,15 @@ if (!empty($result_partial_arr)) {
 
             $('#sisa_waktu').removeAttr('hidden');
             $('.jawaban').removeAttr('disabled');
+            var time = setInterval(function() {
+                timer_ = timer_ - 1;
+                if (timer_ > 0) {
+                    document.getElementById('s_w').innerHTML = 'Sisa Waktu : ' + timer_ + ' Detik';
+                } else {
+                    clearInterval(time)
+                    Pesan();
+                }
+            }, 1000);
         }
 
         console.log(obj.length);
