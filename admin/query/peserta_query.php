@@ -38,7 +38,7 @@ if (isset($_POST['add'])) {
     $usia           = $_POST['usia'];
     $pendidikan     = $_POST['pendidikan'];
     $jenis          = $_POST['jenis'];
-    $status_login   = 0;
+    $status_login   = 99;
 
     session_start();
     if (empty($email)) {

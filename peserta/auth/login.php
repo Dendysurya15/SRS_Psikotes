@@ -10,7 +10,7 @@ if (isset($_GET['status'])) {
     case 0:
       echo '
           <script>
-            var html = "Gagal Melakukan Login, Pesan Kesalahan: \n- Username Atau Password Salah\n- Akun Sudah Pernah Melakukan Login\n- Belum Waktu Pelaksanaan Psikotes\n- Psikotes Telah Selesai";
+            var html = "Gagal Melakukan Login, Pesan Kesalahan: \n- Username Atau Password Salah\n- Akun anda terlalu sering melakukan Log Out\n- Belum Waktu Pelaksanaan Psikotes\n- Psikotes Telah Selesai";
             alert(html);
           </script>
         ';

@@ -756,7 +756,7 @@ class Soal
                         $sqlLogin .= $arr_kolom[$i] . ' = "' . $arr_data[$i] . '"';
                     }
                 }
-                $sqlLogin   .= ' AND status_login = 0';
+                $sqlLogin   .= ' AND status_login != 0';
 
                 $resLogin = $this->conn->query($sqlLogin);
                 if ($resLogin->num_rows > 0) {

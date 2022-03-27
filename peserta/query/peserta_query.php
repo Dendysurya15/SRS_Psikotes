@@ -34,24 +34,30 @@ if (isset($_POST['login_room'])) {
             $_SESSION['status_test']            = $rowPeserta['jenis_tes_peserta'];
             $_SESSION['i_peserta']              = $rowPeserta['id'];
             $_SESSION['i_room']                 = $rowPeserta['room_id'];
+            $_SESSION['kerja_soal']             = '';
+
+            $num_status_login = $rowPeserta['status_login'];
+
+            if ($rowPeserta['sesi_terakhir'] != NULL) {
+                $sesi_terakhir = $rowPeserta['sesi_terakhir'];
+            }
 
             $arr_kolom  = array('room_id', 'peserta_id');
             $arr_data   = array($_SESSION['i_room'], $_SESSION['i_peserta']);
-
             $arr_detail_jawaban     = $soal->JawabanSel($_SESSION['i_room'], $_SESSION['i_peserta']);
             if ($arr_detail_jawaban->num_rows > 0) {
                 $row_detail_jawaban     = $arr_detail_jawaban->fetch_assoc();
                 $_SESSION['i_jawaban']  = $row_detail_jawaban['id'];
 
                 $row_update       = array('status_login', 'username_peserta');
-                $col_update       = array(1, $rowPeserta['username_peserta']);
+                $col_update       = array($num_status_login - 1, $rowPeserta['username_peserta']);
                 $updPeserta       = $soal->Peserta($row_update, $col_update, 'update');
 
                 switch ($updPeserta) {
                     case 'berhasil':
                         $_SESSION['w_selesai']  = '';
                         $_SESSION['status_test']            = $rowPeserta['jenis_tes_peserta'];
-                        $_SESSION['kerja_soal'] = 'biodata';
+                        $_SESSION['kerja_soal'] = $sesi_terakhir ?: 'biodata';
                         $soal->KerjaSoal($_SESSION['kerja_soal']);
                         break;
                     case 'gagal':
@@ -69,13 +75,13 @@ if (isset($_POST['login_room'])) {
                     case $insJawaban != 'gagal':
                         $_SESSION['i_jawaban']  = $insJawaban;
                         $row_update       = array('status_login', 'username_peserta');
-                        $col_update       = array(1, $rowPeserta['username_peserta']);
+                        $col_update       = array($num_status_login - 1, $rowPeserta['username_peserta']);
                         $updPeserta       = $soal->Peserta($row_update, $col_update, 'update');
                         switch ($updPeserta) {
                             case 'berhasil':
 
                                 $_SESSION['w_selesai']  = '';
-                                $_SESSION['kerja_soal'] = 'biodata';
+                                $_SESSION['kerja_soal'] = $sesi_terakhir ?: 'biodata';
                                 $soal->KerjaSoal($_SESSION['kerja_soal']);
 
                                 break;

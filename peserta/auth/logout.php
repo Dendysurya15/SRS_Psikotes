@@ -2,9 +2,14 @@
 include '../../kumpulan_function.php';
 $soal = new Soal();
 session_start();
+$sesi_terakhir = $_SESSION['kerja_soal'];
 unset($_SESSION['kerja_soal']);
 unset($_SESSION['status_pengerjaan']);
 $_SESSION['kerja_soal'] = '';
+
+$row_update       = array('sesi_terakhir', 'id');
+$col_update       = array($sesi_terakhir, $_SESSION['i_peserta']);
+$soal->Peserta($row_update, $col_update, 'update');
 
 $session_str = json_encode($_SESSION);
 

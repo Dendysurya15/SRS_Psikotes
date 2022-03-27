@@ -383,12 +383,12 @@ if (isset($_GET['status'])) {
                                                                 </td>
                                                                 <td>
                                                                     <select class="form-control" name="u_status">
-                                                                        <?php if ($rowDataPeserta['status_login'] == 1) : ?>
-                                                                            <option value="<?= $rowDataPeserta['status_login'] ?>">Sudah Melakukan Tes</option>
-                                                                        <?php else : ?>
+                                                                        <?php if ($rowDataPeserta['status_login'] == 99) : ?>
                                                                             <option value="<?= $rowDataPeserta['status_login'] ?>">Belum Melakukan Tes</option>
+                                                                        <?php else : ?>
+                                                                            <option value="<?= $rowDataPeserta['status_login'] ?>">Sedang/Sudah Melakukan Tes</option>
                                                                         <?php endif; ?>
-                                                                        <option value="0">Reset Status</option>
+                                                                        <option value="99">Reset Status</option>
                                                                     </select>
                                                                 </td>
                                                                 <td>
