@@ -192,6 +192,18 @@ if (isset($_POST['update_peserta'])) {
             $id_peserta
         );
     }
+
+    if ($status == 99) {
+
+        $resPeserta       = $soal->Peserta('id', $_POST['u_id_peserta'], 'select');
+        $rowPeserta       = $resPeserta->fetch_assoc();
+
+        //update khusus untuk reset sesi terakhir
+        $row_update       = array('sesi_terakhir', 'id');
+        $col_update       = array(null, $id_peserta);
+        $updateSesi =  $soal->Peserta($row_update, $col_update, 'update');
+    }
+
     $update = $soal->Peserta($arr_kolom, $arr_data, 'update');
     switch ($update) {
             #Status Berhasil Update = 4 
