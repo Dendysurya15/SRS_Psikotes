@@ -276,6 +276,36 @@ if (isset($_POST['soal_1'])) {
     $checked_soal = $_POST['checked_soal'];
     $checked_jawaban_soal = $_POST['checked_jawaban_soal'];
     $checked_soal_arr = explode(", ", $checked_soal);
+
+    if (isset($_POST['ans_soal_terakhir']) && $_POST['ans_soal_terakhir'] != 'undefined') {
+        $tmp_store = array();
+        $store_jawaaban = array();
+        $checked_jawaban_soal =  $checked_jawaban_soal . ', ' . $_POST['soal_terakhir'] . '=' . $_POST['ans_soal_terakhir'];
+
+        //ini kode untuk melakukan sorting array dan jawaban setelah ditambahkan value nmor soal dan jawaban baru
+        $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
+
+        foreach ($checked_jawaban_soal_arr as $value) {
+            $newValue = explode('=', $value);
+            $tmp_store[$newValue[0]] = $newValue[1];
+        }
+        ksort($tmp_store);
+
+        $checked_jawaban_soal = '';
+        $sstore = count($tmp_store);
+        $iteration = 1;
+
+        //ini kode untuk membuat string dengan last char tidak ada koma
+        foreach ($tmp_store as $key => $value) {
+            if ($iteration == $sstore) {
+                $checked_jawaban_soal .= $key . '=' . $value;
+            } else {
+                $checked_jawaban_soal .= $key . '=' . $value . ', ';
+            }
+            $iteration++;
+        }
+    }
+
     $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
 
     $soalArr = array();
@@ -449,9 +479,42 @@ if (isset($_POST['soal_2'])) {
     $jumlah_soal = $_POST['jumlah_soal'];
     $checked_soal = $_POST['checked_soal'];
     $checked_jawaban_soal = $_POST['checked_jawaban_soal'];
+
+    if (isset($_POST['ans_soal_terakhir']) && $_POST['ans_soal_terakhir'] != 'undefined') {
+        $tmp_store = array();
+        $store_jawaaban = array();
+        $checked_jawaban_soal =  $checked_jawaban_soal . ', ' . $_POST['soal_terakhir'] . '=' . $_POST['ans_soal_terakhir'];
+
+        //ini kode untuk melakukan sorting array dan jawaban setelah ditambahkan value nmor soal dan jawaban baru
+        $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
+
+        foreach ($checked_jawaban_soal_arr as $value) {
+            $newValue = explode('=', $value);
+            $tmp_store[$newValue[0]] = $newValue[1];
+        }
+        ksort($tmp_store);
+
+        $checked_jawaban_soal = '';
+        $sstore = count($tmp_store);
+        $iteration = 1;
+
+        //ini kode untuk membuat string dengan last char tidak ada koma
+        foreach ($tmp_store as $key => $value) {
+            if ($iteration == $sstore) {
+                $checked_jawaban_soal .= $key . '=' . $value;
+            } else {
+                $checked_jawaban_soal .= $key . '=' . $value . ', ';
+            }
+            $iteration++;
+        }
+    }
+
+    echo $checked_jawaban_soal;
     $checked_soal_arr = explode(", ", $checked_soal);
+
     $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
 
+    $soal->array_dump($checked_jawaban_soal_arr);
     // print_r($checked_jawaban_soal);
     $soalArr = array();
     $jawabanArr = array();
@@ -582,6 +645,36 @@ if (isset($_POST['soal_3'])) {
     $checked_soal = $_POST['checked_soal'];
     $checked_jawaban_soal = $_POST['checked_jawaban_soal'];
     $checked_soal_arr = explode(", ", $checked_soal);
+
+    if (isset($_POST['ans_soal_terakhir']) && $_POST['ans_soal_terakhir'] != 'undefined') {
+        $tmp_store = array();
+        $store_jawaaban = array();
+        $checked_jawaban_soal =  $checked_jawaban_soal . ', ' . $_POST['soal_terakhir'] . '=' . $_POST['ans_soal_terakhir'];
+
+        //ini kode untuk melakukan sorting array dan jawaban setelah ditambahkan value nmor soal dan jawaban baru
+        $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
+
+        foreach ($checked_jawaban_soal_arr as $value) {
+            $newValue = explode('=', $value);
+            $tmp_store[$newValue[0]] = $newValue[1];
+        }
+        ksort($tmp_store);
+
+        $checked_jawaban_soal = '';
+        $sstore = count($tmp_store);
+        $iteration = 1;
+
+        //ini kode untuk membuat string dengan last char tidak ada koma
+        foreach ($tmp_store as $key => $value) {
+            if ($iteration == $sstore) {
+                $checked_jawaban_soal .= $key . '=' . $value;
+            } else {
+                $checked_jawaban_soal .= $key . '=' . $value . ', ';
+            }
+            $iteration++;
+        }
+    }
+
     $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
 
     // print_r($checked_jawaban_soal);
@@ -722,6 +815,36 @@ if (isset($_POST['soal_4'])) {
     $checked_soal = $_POST['checked_soal'];
     $checked_jawaban_soal = $_POST['checked_jawaban_soal'];
     $checked_soal_arr = explode(", ", $checked_soal);
+
+    if (isset($_POST['ans_soal_terakhir']) && $_POST['ans_soal_terakhir'] != 'undefined') {
+        $tmp_store = array();
+        $store_jawaaban = array();
+        $checked_jawaban_soal =  $checked_jawaban_soal . ', ' . $_POST['soal_terakhir'] . '=' . $_POST['ans_soal_terakhir'];
+
+        //ini kode untuk melakukan sorting array dan jawaban setelah ditambahkan value nmor soal dan jawaban baru
+        $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
+
+        foreach ($checked_jawaban_soal_arr as $value) {
+            $newValue = explode('=', $value);
+            $tmp_store[$newValue[0]] = $newValue[1];
+        }
+        ksort($tmp_store);
+
+        $checked_jawaban_soal = '';
+        $sstore = count($tmp_store);
+        $iteration = 1;
+
+        //ini kode untuk membuat string dengan last char tidak ada koma
+        foreach ($tmp_store as $key => $value) {
+            if ($iteration == $sstore) {
+                $checked_jawaban_soal .= $key . '=' . $value;
+            } else {
+                $checked_jawaban_soal .= $key . '=' . $value . ', ';
+            }
+            $iteration++;
+        }
+    }
+
     $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
 
     $soalArr = array();
@@ -835,9 +958,42 @@ if (isset($_POST['soal_5'])) {
     $checked_soal = $_POST['checked_soal'];
     $checked_jawaban_soal = $_POST['checked_jawaban_soal'];
     $checked_soal_arr = explode(", ", $checked_soal);
+
+    if (isset($_POST['ans_soal_terakhir']) && $_POST['ans_soal_terakhir'] != 'undefined,undefined') {
+        $tmp_store = array();
+        $store_jawaaban = array();
+        $checked_jawaban_soal =  $checked_jawaban_soal . ', ' . $_POST['soal_terakhir'] . '=' . $_POST['ans_soal_terakhir'];
+
+        //ini kode untuk melakukan sorting array dan jawaban setelah ditambahkan value nmor soal dan jawaban baru
+        $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
+
+        foreach ($checked_jawaban_soal_arr as $value) {
+            $newValue = explode('=', $value);
+            $tmp_store[$newValue[0]] = $newValue[1];
+        }
+        ksort($tmp_store);
+
+        $checked_jawaban_soal = '';
+        $sstore = count($tmp_store);
+        $iteration = 1;
+
+        //ini kode untuk membuat string dengan last char tidak ada koma
+        foreach ($tmp_store as $key => $value) {
+            if ($iteration == $sstore) {
+                $checked_jawaban_soal .= $key . '=' . $value;
+            } else {
+                $checked_jawaban_soal .= $key . '=' . $value . ', ';
+            }
+            $iteration++;
+        }
+    }
+
+    echo $checked_jawaban_soal;
+
     $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
 
     $soal->array_dump($checked_jawaban_soal_arr);
+
     unset($_SESSION['w_selesai']);
     unset($_SESSION['kerja_soal']);
 
@@ -1035,9 +1191,42 @@ if (isset($_POST['soal_6'])) {
     $jumlah_soal = $_POST['jumlah_soal'];
     $checked_soal = $_POST['checked_soal'];
     $checked_jawaban_soal = $_POST['checked_jawaban_soal'];
+
+    if (isset($_POST['ans_soal_terakhir']) && $_POST['ans_soal_terakhir'] != 'undefined') {
+        $tmp_store = array();
+        $store_jawaaban = array();
+        $checked_jawaban_soal =  $checked_jawaban_soal . ', ' . $_POST['soal_terakhir'] . '=' . $_POST['ans_soal_terakhir'];
+
+        //ini kode untuk melakukan sorting array dan jawaban setelah ditambahkan value nmor soal dan jawaban baru
+        $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
+
+        foreach ($checked_jawaban_soal_arr as $value) {
+            $newValue = explode('=', $value);
+            $tmp_store[$newValue[0]] = $newValue[1];
+        }
+        ksort($tmp_store);
+
+        $checked_jawaban_soal = '';
+        $sstore = count($tmp_store);
+        $iteration = 1;
+
+        //ini kode untuk membuat string dengan last char tidak ada koma
+        foreach ($tmp_store as $key => $value) {
+            if ($iteration == $sstore) {
+                $checked_jawaban_soal .= $key . '=' . $value;
+            } else {
+                $checked_jawaban_soal .= $key . '=' . $value . ', ';
+            }
+            $iteration++;
+        }
+    }
+
     $checked_soal_arr = explode(", ", $checked_soal);
+
+    echo $checked_jawaban_soal;
     $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
 
+    $soal->array_dump($checked_jawaban_soal_arr);
     // print_r($checked_jawaban_soal);
     $soalArr = array();
     $jawabanArr = array();
@@ -1237,8 +1426,40 @@ if (isset($_POST['soal_7'])) {
     $checked_soal = $_POST['checked_soal'];
     $checked_jawaban_soal = $_POST['checked_jawaban_soal'];
     $checked_soal_arr = explode(", ", $checked_soal);
+
+    if (isset($_POST['ans_soal_terakhir']) && $_POST['ans_soal_terakhir'] != 'undefined') {
+        $tmp_store = array();
+        $store_jawaaban = array();
+        $checked_jawaban_soal =  $checked_jawaban_soal . ', ' . $_POST['soal_terakhir'] . '=' . $_POST['ans_soal_terakhir'];
+
+        //ini kode untuk melakukan sorting array dan jawaban setelah ditambahkan value nmor soal dan jawaban baru
+        $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
+
+        foreach ($checked_jawaban_soal_arr as $value) {
+            $newValue = explode('=', $value);
+            $tmp_store[$newValue[0]] = $newValue[1];
+        }
+        ksort($tmp_store);
+
+        $checked_jawaban_soal = '';
+        $sstore = count($tmp_store);
+        $iteration = 1;
+
+        //ini kode untuk membuat string dengan last char tidak ada koma
+        foreach ($tmp_store as $key => $value) {
+            if ($iteration == $sstore) {
+                $checked_jawaban_soal .= $key . '=' . $value;
+            } else {
+                $checked_jawaban_soal .= $key . '=' . $value . ', ';
+            }
+            $iteration++;
+        }
+    }
+
+    echo $checked_jawaban_soal;
     $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
 
+    $soal->array_dump($checked_jawaban_soal_arr);
 
     $soalArr = array();
     $jawabanArr = array();
@@ -1612,25 +1833,62 @@ if (isset($_POST['soal_9'])) {
     $checked_soal = $_POST['checked_soal'];
     $checked_jawaban_soal = $_POST['checked_jawaban_soal'];
     $checked_soal_arr = explode(", ", $checked_soal);
+    // echo $jumlah_soal;
+
+    if (isset($_POST['ans_soal_terakhir'])) {
+        $tmp_store = array();
+        $store_jawaaban = array();
+        $checked_jawaban_soal =  $checked_jawaban_soal . ', ' . $_POST['soal_terakhir'] . '=' . $_POST['ans_soal_terakhir'];
+
+        //ini kode untuk melakukan sorting array dan jawaban setelah ditambahkan value nmor soal dan jawaban baru
+        $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
+
+        foreach ($checked_jawaban_soal_arr as $value) {
+            $newValue = explode('=', $value);
+            $tmp_store[$newValue[0]] = $newValue[1];
+        }
+        ksort($tmp_store);
+
+        $checked_jawaban_soal = '';
+        $sstore = count($tmp_store);
+        $iteration = 1;
+
+        //ini kode untuk membuat string dengan last char tidak ada koma
+        foreach ($tmp_store as $key => $value) {
+            if ($iteration == $sstore) {
+                $checked_jawaban_soal .= $key . '=' . $value;
+            } else {
+                $checked_jawaban_soal .= $key . '=' . $value . ', ';
+            }
+            $iteration++;
+        }
+    }
+
+    // echo $checked_jawaban_soal;
     $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
 
-    // print_r($checked_jawaban_soal);
     $soalArr = array();
     $jawabanArr = array();
     $tmp_store = array();
     $store_jawaban = array();
+
     foreach ($checked_jawaban_soal_arr as $value) {
         $newValue = explode('=', $value);
         $soalArr[] = $newValue[0];
         $jawabanArr[] = $newValue[1];
-        $tmp_store[$newValue[0]] = $newValue[1];
     }
-    //sorting jawaban berdasarkan key
-    ksort($tmp_store);
 
-    foreach ($tmp_store as $key => $value) {
-        $store_jawaban[] = $key . '=' . $value;
+    $incJawaban = 0;
+    for ($i = 1; $i <= $jumlah_soal; $i++) {
+        if (in_array($i, $soalArr)) {
+            $store_jawaban[] = $i . '=' . $jawabanArr[$incJawaban];
+            $incJawaban++;
+        } else {
+            $store_jawaban[] = $i . '= ';
+        }
     }
+
+    $soal->array_dump($store_jawaban);
 
     $session_str = json_encode($_SESSION);
 
@@ -1772,9 +2030,38 @@ if (isset($_POST['soal_10_se'])) {
     $checked_soal = $_POST['checked_soal'];
     $checked_jawaban_soal = $_POST['checked_jawaban_soal'];
     $checked_soal_arr = explode(", ", $checked_soal);
+
+    if (isset($_POST['ans_soal_terakhir']) && $_POST['ans_soal_terakhir'] != 'undefined') {
+        $tmp_store = array();
+        $store_jawaaban = array();
+        $checked_jawaban_soal =  $checked_jawaban_soal . ', ' . $_POST['soal_terakhir'] . '=' . $_POST['ans_soal_terakhir'];
+
+        //ini kode untuk melakukan sorting array dan jawaban setelah ditambahkan value nmor soal dan jawaban baru
+        $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
+
+        foreach ($checked_jawaban_soal_arr as $value) {
+            $newValue = explode('=', $value);
+            $tmp_store[$newValue[0]] = $newValue[1];
+        }
+        ksort($tmp_store);
+
+        $checked_jawaban_soal = '';
+        $sstore = count($tmp_store);
+        $iteration = 1;
+
+        //ini kode untuk membuat string dengan last char tidak ada koma
+        foreach ($tmp_store as $key => $value) {
+            if ($iteration == $sstore) {
+                $checked_jawaban_soal .= $key . '=' . $value;
+            } else {
+                $checked_jawaban_soal .= $key . '=' . $value . ', ';
+            }
+            $iteration++;
+        }
+    }
+
     $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
 
-    // print_r($checked_jawaban_soal);
     $soalArr = array();
     $jawabanArr = array();
     $tmp_store = array();
@@ -1886,9 +2173,38 @@ if (isset($_POST['soal_10_wa'])) {
     $checked_soal = $_POST['checked_soal'];
     $checked_jawaban_soal = $_POST['checked_jawaban_soal'];
     $checked_soal_arr = explode(", ", $checked_soal);
+
+    if (isset($_POST['ans_soal_terakhir']) && $_POST['ans_soal_terakhir'] != 'undefined') {
+        $tmp_store = array();
+        $store_jawaaban = array();
+        $checked_jawaban_soal =  $checked_jawaban_soal . ', ' . $_POST['soal_terakhir'] . '=' . $_POST['ans_soal_terakhir'];
+
+        //ini kode untuk melakukan sorting array dan jawaban setelah ditambahkan value nmor soal dan jawaban baru
+        $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
+
+        foreach ($checked_jawaban_soal_arr as $value) {
+            $newValue = explode('=', $value);
+            $tmp_store[$newValue[0]] = $newValue[1];
+        }
+        ksort($tmp_store);
+
+        $checked_jawaban_soal = '';
+        $sstore = count($tmp_store);
+        $iteration = 1;
+
+        //ini kode untuk membuat string dengan last char tidak ada koma
+        foreach ($tmp_store as $key => $value) {
+            if ($iteration == $sstore) {
+                $checked_jawaban_soal .= $key . '=' . $value;
+            } else {
+                $checked_jawaban_soal .= $key . '=' . $value . ', ';
+            }
+            $iteration++;
+        }
+    }
+
     $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
 
-    // print_r($checked_jawaban_soal);
     $soalArr = array();
     $jawabanArr = array();
     $tmp_store = array();
@@ -1982,9 +2298,38 @@ if (isset($_POST['soal_10_an'])) {
     $checked_soal = $_POST['checked_soal'];
     $checked_jawaban_soal = $_POST['checked_jawaban_soal'];
     $checked_soal_arr = explode(", ", $checked_soal);
+
+    if (isset($_POST['ans_soal_terakhir']) && $_POST['ans_soal_terakhir'] != 'undefined') {
+        $tmp_store = array();
+        $store_jawaaban = array();
+        $checked_jawaban_soal =  $checked_jawaban_soal . ', ' . $_POST['soal_terakhir'] . '=' . $_POST['ans_soal_terakhir'];
+
+        //ini kode untuk melakukan sorting array dan jawaban setelah ditambahkan value nmor soal dan jawaban baru
+        $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
+
+        foreach ($checked_jawaban_soal_arr as $value) {
+            $newValue = explode('=', $value);
+            $tmp_store[$newValue[0]] = $newValue[1];
+        }
+        ksort($tmp_store);
+
+        $checked_jawaban_soal = '';
+        $sstore = count($tmp_store);
+        $iteration = 1;
+
+        //ini kode untuk membuat string dengan last char tidak ada koma
+        foreach ($tmp_store as $key => $value) {
+            if ($iteration == $sstore) {
+                $checked_jawaban_soal .= $key . '=' . $value;
+            } else {
+                $checked_jawaban_soal .= $key . '=' . $value . ', ';
+            }
+            $iteration++;
+        }
+    }
+
     $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
 
-    // print_r($checked_jawaban_soal);
     $soalArr = array();
     $jawabanArr = array();
     $tmp_store = array();
@@ -2078,9 +2423,38 @@ if (isset($_POST['soal_10_ra'])) {
     $checked_soal = $_POST['checked_soal'];
     $checked_jawaban_soal = $_POST['checked_jawaban_soal'];
     $checked_soal_arr = explode(", ", $checked_soal);
+
+    if (isset($_POST['ans_soal_terakhir']) && $_POST['ans_soal_terakhir'] != 'undefined') {
+        $tmp_store = array();
+        $store_jawaaban = array();
+        $checked_jawaban_soal =  $checked_jawaban_soal . ', ' . $_POST['soal_terakhir'] . '=' . $_POST['ans_soal_terakhir'];
+
+        //ini kode untuk melakukan sorting array dan jawaban setelah ditambahkan value nmor soal dan jawaban baru
+        $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
+
+        foreach ($checked_jawaban_soal_arr as $value) {
+            $newValue = explode('=', $value);
+            $tmp_store[$newValue[0]] = $newValue[1];
+        }
+        ksort($tmp_store);
+
+        $checked_jawaban_soal = '';
+        $sstore = count($tmp_store);
+        $iteration = 1;
+
+        //ini kode untuk membuat string dengan last char tidak ada koma
+        foreach ($tmp_store as $key => $value) {
+            if ($iteration == $sstore) {
+                $checked_jawaban_soal .= $key . '=' . $value;
+            } else {
+                $checked_jawaban_soal .= $key . '=' . $value . ', ';
+            }
+            $iteration++;
+        }
+    }
+
     $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
 
-    // print_r($checked_jawaban_soal);
     $soalArr = array();
     $jawabanArr = array();
     $tmp_store = array();
@@ -2176,9 +2550,38 @@ if (isset($_POST['soal_10_zr'])) {
     $checked_soal = $_POST['checked_soal'];
     $checked_jawaban_soal = $_POST['checked_jawaban_soal'];
     $checked_soal_arr = explode(", ", $checked_soal);
+
+    if (isset($_POST['ans_soal_terakhir']) && $_POST['ans_soal_terakhir'] != 'undefined') {
+        $tmp_store = array();
+        $store_jawaaban = array();
+        $checked_jawaban_soal =  $checked_jawaban_soal . ', ' . $_POST['soal_terakhir'] . '=' . $_POST['ans_soal_terakhir'];
+
+        //ini kode untuk melakukan sorting array dan jawaban setelah ditambahkan value nmor soal dan jawaban baru
+        $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
+
+        foreach ($checked_jawaban_soal_arr as $value) {
+            $newValue = explode('=', $value);
+            $tmp_store[$newValue[0]] = $newValue[1];
+        }
+        ksort($tmp_store);
+
+        $checked_jawaban_soal = '';
+        $sstore = count($tmp_store);
+        $iteration = 1;
+
+        //ini kode untuk membuat string dengan last char tidak ada koma
+        foreach ($tmp_store as $key => $value) {
+            if ($iteration == $sstore) {
+                $checked_jawaban_soal .= $key . '=' . $value;
+            } else {
+                $checked_jawaban_soal .= $key . '=' . $value . ', ';
+            }
+            $iteration++;
+        }
+    }
+
     $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
 
-    // print_r($checked_jawaban_soal);
     $soalArr = array();
     $jawabanArr = array();
     $tmp_store = array();
@@ -2279,9 +2682,42 @@ if (isset($_POST['soal_10_ge'])) {
     $checked_soal = $_POST['checked_soal'];
     $checked_jawaban_soal = $_POST['checked_jawaban_soal'];
     $checked_soal_arr = explode(", ", $checked_soal);
+
+    if (isset($_POST['ans_soal_terakhir']) && $_POST['ans_soal_terakhir'] != 'undefined') {
+        $tmp_store = array();
+        $store_jawaaban = array();
+        $checked_jawaban_soal =  $checked_jawaban_soal . ', ' . $_POST['soal_terakhir'] . '=' . $_POST['ans_soal_terakhir'];
+
+        //ini kode untuk melakukan sorting array dan jawaban setelah ditambahkan value nmor soal dan jawaban baru
+        $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
+
+        foreach ($checked_jawaban_soal_arr as $value) {
+            $newValue = explode('=', $value);
+            $tmp_store[$newValue[0]] = $newValue[1];
+        }
+        ksort($tmp_store);
+
+        $checked_jawaban_soal = '';
+        $sstore = count($tmp_store);
+        $iteration = 1;
+
+        //ini kode untuk membuat string dengan last char tidak ada koma
+        foreach ($tmp_store as $key => $value) {
+            if ($iteration == $sstore) {
+                $checked_jawaban_soal .= $key . '=' . $value;
+            } else {
+                $checked_jawaban_soal .= $key . '=' . $value . ', ';
+            }
+            $iteration++;
+        }
+    }
+
+    echo $checked_jawaban_soal;
+
     $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
 
-    // print_r($checked_jawaban_soal);
+    $soal->array_dump($checked_jawaban_soal_arr);
+
     $soalArr = array();
     $jawabanArr = array();
     $tmp_store = array();
@@ -2291,6 +2727,9 @@ if (isset($_POST['soal_10_ge'])) {
         $soalArr[] = $newValue[0];
         $jawabanArr[] = $newValue[1];
     }
+
+    // $soal->array_dump($soalArr);
+    // $soal->array_dump($jawabanArr);
 
     $session_str = json_encode($_SESSION);
 
@@ -2381,6 +2820,36 @@ if (isset($_POST['soal_10_fa'])) {
     $checked_soal = $_POST['checked_soal'];
     $checked_jawaban_soal = $_POST['checked_jawaban_soal'];
     $checked_soal_arr = explode(", ", $checked_soal);
+    if (isset($_POST['ans_soal_terakhir']) && $_POST['ans_soal_terakhir'] != 'undefined') {
+        $tmp_store = array();
+        $store_jawaaban = array();
+        $checked_jawaban_soal =  $checked_jawaban_soal . ', ' . $_POST['soal_terakhir'] . '=' . $_POST['ans_soal_terakhir'];
+
+        //ini kode untuk melakukan sorting array dan jawaban setelah ditambahkan value nmor soal dan jawaban baru
+        $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
+
+        foreach ($checked_jawaban_soal_arr as $value) {
+            $newValue = explode('=', $value);
+            $tmp_store[$newValue[0]] = $newValue[1];
+        }
+        ksort($tmp_store);
+
+        $checked_jawaban_soal = '';
+        $sstore = count($tmp_store);
+        $iteration = 1;
+
+        //ini kode untuk membuat string dengan last char tidak ada koma
+        foreach ($tmp_store as $key => $value) {
+            if ($iteration == $sstore) {
+                $checked_jawaban_soal .= $key . '=' . $value;
+            } else {
+                $checked_jawaban_soal .= $key . '=' . $value . ', ';
+            }
+            $iteration++;
+        }
+    }
+
+    // echo $checked_jawaban_soal;
     $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
 
     $soalArr = array();
@@ -2482,6 +2951,36 @@ if (isset($_POST['soal_10_wu'])) {
     $checked_soal = $_POST['checked_soal'];
     $checked_jawaban_soal = $_POST['checked_jawaban_soal'];
     $checked_soal_arr = explode(", ", $checked_soal);
+
+    if (isset($_POST['ans_soal_terakhir']) && $_POST['ans_soal_terakhir'] != 'undefined') {
+        $tmp_store = array();
+        $store_jawaaban = array();
+        $checked_jawaban_soal =  $checked_jawaban_soal . ', ' . $_POST['soal_terakhir'] . '=' . $_POST['ans_soal_terakhir'];
+
+        //ini kode untuk melakukan sorting array dan jawaban setelah ditambahkan value nmor soal dan jawaban baru
+        $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
+
+        foreach ($checked_jawaban_soal_arr as $value) {
+            $newValue = explode('=', $value);
+            $tmp_store[$newValue[0]] = $newValue[1];
+        }
+        ksort($tmp_store);
+
+        $checked_jawaban_soal = '';
+        $sstore = count($tmp_store);
+        $iteration = 1;
+
+        //ini kode untuk membuat string dengan last char tidak ada koma
+        foreach ($tmp_store as $key => $value) {
+            if ($iteration == $sstore) {
+                $checked_jawaban_soal .= $key . '=' . $value;
+            } else {
+                $checked_jawaban_soal .= $key . '=' . $value . ', ';
+            }
+            $iteration++;
+        }
+    }
+
     $checked_jawaban_soal_arr = explode(", ", $checked_jawaban_soal);
 
     $soalArr = array();

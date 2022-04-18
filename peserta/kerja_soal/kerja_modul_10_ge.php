@@ -348,7 +348,7 @@ if (!empty($result_partial_arr)) {
                                         <div class="form-group">
                                             <input type="text" style="height: 50px; font-weight: normal;" placeholder="Jawab..." value="<?php if (isset($draft_jawaban)) {
                                                                                                                                             echo $draft_jawaban;
-                                                                                                                                        } ?>" class="teks-soal jawaban form-control" disabled name="jawaban">
+                                                                                                                                        } ?>" class="teks-soal jawaban form-control" id="jawabanField" disabled name="jawaban">
                                         </div>
                                     </div>
                                 </div>
@@ -358,14 +358,15 @@ if (!empty($result_partial_arr)) {
                                     <button hidden id="prev" name="draft_jawaban_prev" type="submit" class="float-left btn btn-info ml-5"><i class="mr-2 fas fa-angle-left"></i>PREV</button>
                                     <button hidden id="next" name="draft_jawaban_next" type="submit" class="btn btn-info ml-2">NEXT<i class="ml-2 fas fa-angle-right"></i></button>
                                     <input type="hidden" name="checked_jawaban_soal" value="<?= implode(", ", $checkedJawabanSoal) ?>">
-
+                                    <input type="hidden" name="ans_soal_terakhir" id="ans_soal_terakhir">
+                                    <input type="hidden" name="soal_terakhir" id="soal_terakhir">
                                     <input type="hidden" name="checked_soal" value="<?= implode(", ", $checkedSoal) ?>">
                                     <input type="hidden" name="user_soal" value="<?= implode(", ", $userSoal) ?>">
                                     <input type="hidden" name="jumlah_soal" value="<?= $max['nomor_soal'] ?>">
                                     <button hidden name="soal_10_ge" id="soal_10_ge" class="btn btn-secondary w-50" type="submit">
                                         Submit
                                     </button>
-                                    <button name="soal_10_ge_" id="soal_10_ge_" class="float-right btn btn-success mr-5" type="button">
+                                    <button name="soal_10_ge_" id="soal_10_ge_" hidden class="float-right btn btn-success mr-5" type="button">
                                         KIRIM JAWABAN
                                     </button>
                                 </div>
@@ -434,6 +435,11 @@ if (!empty($result_partial_arr)) {
         var session_status_pengerjaan = <?= $status_pengerjaan ?>;
         var radio_button;
         var count;
+        var id_jawaban = document.getElementById('ans_soal_terakhir');
+
+        if (soalNow == soalMax) {
+            $('#soal_10_ge_').removeAttr('hidden');
+        }
 
         if (session_status_pengerjaan == 1) {
 
@@ -484,16 +490,16 @@ if (!empty($result_partial_arr)) {
             }
         }
 
-        for (count = 0; count < radio_button_list.length; count++) {
-            radio_button_list[count].onclick = function() {
-                if (radio_button == this) {
-                    this.checked = false;
-                    radio_button = null;
-                } else {
-                    radio_button = this;
-                }
-            };
-        }
+        // for (count = 0; count < radio_button_list.length; count++) {
+        //     radio_button_list[count].onclick = function() {
+        //         if (radio_button == this) {
+        //             this.checked = false;
+        //             radio_button = null;
+        //         } else {
+        //             radio_button = this;
+        //         }
+        //     };
+        // }
 
         function soalPintas(index) {
             document.getElementById('soal_pintas').value = index;
@@ -529,6 +535,10 @@ if (!empty($result_partial_arr)) {
         $('#soal_10_ge_').click(function() {
             var konf = confirm('Apakah anda telah selesai mengerjakan?');
             if (konf == true) {
+                let val_field = document.getElementById("jawabanField").value;
+                id_jawaban.value = val_field;
+                // console.log(val_field);
+                document.getElementById("soal_terakhir").value = soalNow;
                 $('#soal_10_ge').click();
             }
         });

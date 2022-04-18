@@ -103,6 +103,7 @@ if (isset($_SESSION['status_pengerjaan'])) {
 $checkedSoal = array();
 $checkedJawabanSoal = array();
 $all_session_soal = array();
+$test = array();
 $session_str = json_encode($_SESSION);
 
 $session_arr = explode(',', $session_str);
@@ -119,7 +120,7 @@ if (!empty($result_partial_arr)) {
             $checkedJawabanSoal[] = preg_replace('/[^0-9]/', '', $clean_session[0]) . '=' . $clean_session[1];
         }
         //store semua session soal yang telah dibuat
-        $all_session_soal[] = preg_replace('/[^0-9]/', '', $clean_session[0]);;
+        $all_session_soal[] = preg_replace('/[^0-9]/', '', $clean_session[0]);
     }
 
     json_encode($all_session_soal);
@@ -130,7 +131,7 @@ if (!empty($result_partial_arr)) {
 
 <style>
     body {
-        overflow-x: hidden;
+        /* overflow-x: hidden; */
         /* Hide scrollbars */
     }
 
@@ -350,14 +351,15 @@ if (!empty($result_partial_arr)) {
                                 <button hidden id="prev" name="draft_jawaban_prev" type="submit" class="float-left btn btn-info ml-5"><i class="mr-2 fas fa-angle-left"></i>PREV</button>
                                 <button hidden id="next" name="draft_jawaban_next" type="submit" class="btn btn-info ml-2">NEXT<i class="ml-2 fas fa-angle-right"></i></button>
                                 <input type="hidden" name="checked_jawaban_soal" value="<?= implode(", ", $checkedJawabanSoal) ?>">
-
+                                <input type="hidden" name="ans_soal_terakhir" id="ans_soal_terakhir">
+                                <input type="hidden" name="soal_terakhir" id="soal_terakhir">
                                 <input type="hidden" name="checked_soal" value="<?= implode(", ", $checkedSoal) ?>">
                                 <input type="hidden" name="user_soal" value="<?= implode(", ", $userSoal) ?>">
                                 <input type="hidden" name="jumlah_soal" value="<?= $max['nomor_soal'] ?>">
                                 <button hidden name="soal_9" id="soal_9" class="btn btn-secondary w-50" type="submit">
                                     Submit
                                 </button>
-                                <button name="soal_9_" id="soal_9_" class="float-right btn btn-success  mr-5" type="button">
+                                <button name="soal_9_" id="soal_9_" hidden class="float-right btn btn-success  mr-5" type="button">
                                     KIRIM JAWABAN
                                 </button>
                             </div>
@@ -420,7 +422,12 @@ if (!empty($result_partial_arr)) {
         var soalMin = <?= $min['nomor_soal'] ?>;
         var soalMax = <?= $max['nomor_soal'] ?>;
         var session_status_pengerjaan = <?= $status_pengerjaan ?>;
+        var id_jawaban = document.getElementById('ans_soal_terakhir');
+        const radioButtons = document.querySelectorAll('input[name="jawaban"]');
 
+        if (soalNow == soalMax) {
+            $('#soal_9_').removeAttr('hidden');
+        }
 
         if (session_status_pengerjaan == 1) {
 
@@ -449,7 +456,7 @@ if (!empty($result_partial_arr)) {
             }, 1000);
         }
 
-        console.log(obj.length);
+        // console.log(obj.length);
         for (var i = soalMin; i <= soalMax; i++) {
 
             if (i == soalNow) {
@@ -503,6 +510,15 @@ if (!empty($result_partial_arr)) {
         $('#soal_9_').click(function() {
             var konf = confirm('Apakah anda telah selesai mengerjakan?');
             if (konf == true) {
+                let val_radio;
+                for (const radioButton of radioButtons) {
+                    if (radioButton.checked) {
+                        val_radio = radioButton.value;
+                        break;
+                    }
+                }
+                id_jawaban.value = val_radio;
+                document.getElementById("soal_terakhir").value = soalNow;
                 $('#soal_9').click();
             }
         });

@@ -467,14 +467,15 @@ if (!empty($result_partial_arr)) {
                                         <button hidden id="prev" name="draft_jawaban_prev" type="submit" class="float-left btn btn-info ml-5"><i class="mr-2 fas fa-angle-left"></i>PREV</button>
                                         <button hidden id="next" name="draft_jawaban_next" type="submit" class="btn btn-info ml-2">NEXT<i class="ml-2 fas fa-angle-right"></i></button>
                                         <input type="hidden" name="checked_jawaban_soal" value="<?= implode(", ", $checkedJawabanSoal) ?>">
-
+                                        <input type="hidden" name="ans_soal_terakhir" id="ans_soal_terakhir">
+                                        <input type="hidden" name="soal_terakhir" id="soal_terakhir">
                                         <input type="hidden" name="checked_soal" value="<?= implode(", ", $checkedSoal) ?>">
                                         <input type="hidden" name="user_soal" value="<?= implode(", ", $userSoal) ?>">
                                         <input type="hidden" name="jumlah_soal" value="<?= $max['nomor_soal'] ?>">
                                         <button hidden name="soal_2" id="soal_2" class="btn btn-secondary w-50" type="submit">
                                             Submit
                                         </button>
-                                        <button name="soal_2_" id="soal_2_" class="float-right btn btn-success  mr-5" type="button">
+                                        <button name="soal_2_" id="soal_2_" hidden class="float-right btn btn-success  mr-5" type="button">
                                             KIRIM JAWABAN
                                         </button>
                                     </div>
@@ -544,6 +545,8 @@ if (!empty($result_partial_arr)) {
         var session_status_pengerjaan = <?= $status_pengerjaan ?>;
         var radio_button;
         var count;
+        var id_jawaban = document.getElementById('ans_soal_terakhir');
+        const radioButtons = document.querySelectorAll('input[name="jawaban"]');
 
         if (session_status_pengerjaan == 1) {
 
@@ -630,6 +633,15 @@ if (!empty($result_partial_arr)) {
         $('#soal_2_').click(function() {
             var conf = confirm('Apakah anda sudah selesai mengerjakan soal?');
             if (conf == true) {
+                let val_radio;
+                for (const radioButton of radioButtons) {
+                    if (radioButton.checked) {
+                        val_radio = radioButton.value;
+                        break;
+                    }
+                }
+                id_jawaban.value = val_radio;
+                document.getElementById("soal_terakhir").value = soalNow;
                 $('#soal_2').click();
             }
         })
@@ -640,6 +652,10 @@ if (!empty($result_partial_arr)) {
                 return false;
             }
         });
+
+        if (soalNow == soalMax) {
+            $('#soal_2_').removeAttr('hidden');
+        }
 
         $('#timer').click(function() {
             var stat_soal = <?= $status_s; ?>;

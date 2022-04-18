@@ -577,14 +577,15 @@ $soal_kosong = (array) $soal_kosong;
                                 <button hidden id="prev" name="draft_jawaban_prev" type="submit" class="float-left btn btn-info ml-5"><i class="mr-2 fas fa-angle-left"></i>PREV</button>
                                 <button hidden id="next" name="draft_jawaban_next" type="submit" class="btn btn-info ml-2">NEXT<i class="ml-2 fas fa-angle-right"></i></button>
                                 <input type="hidden" name="checked_jawaban_soal" value="<?= implode(", ", $checkedJawabanSoal) ?>">
-
+                                <input type="hidden" name="ans_soal_terakhir" id="ans_soal_terakhir">
+                                <input type="hidden" name="soal_terakhir" id="soal_terakhir">
                                 <input type="hidden" name="checked_soal" value="<?= implode(", ", $checkedSoal) ?>">
                                 <input type="hidden" name="user_soal" value="<?= implode(", ", $userSoal) ?>">
                                 <input type="hidden" name="jumlah_soal" value="<?= $max['nomor_soal'] ?>">
                                 <button hidden name="soal_5" id="soal_5" class="btn btn-secondary w-50" type="submit">
                                     Submit
                                 </button>
-                                <button name="soal_5_" id="soal_5_" class="float-right btn btn-success  mr-5" type="button">
+                                <button name="soal_5_" id="soal_5_" hidden class="float-right btn btn-success  mr-5" type="button">
                                     KIRIM JAWABAN
                                 </button>
                             </div>
@@ -653,6 +654,9 @@ $soal_kosong = (array) $soal_kosong;
         var session_status_pengerjaan = <?= $status_pengerjaan ?>;
         var radio_button;
         var count;
+        var id_jawaban = document.getElementById('ans_soal_terakhir');
+        const radioButtonsKanan = document.querySelectorAll('input[name="jawaban_kanan"]');
+        const radioButtonsKiri = document.querySelectorAll('input[name="jawaban_kiri"]');
 
         if (session_status_pengerjaan == 1) {
 
@@ -759,15 +763,31 @@ $soal_kosong = (array) $soal_kosong;
         });
 
         $('#soal_5_').click(function() {
-            if (soal_kosong.length != 0) {
-                var teks = 'Nomor soal yang belum diisi atau centang penuh:\n' + soal_kosong.toString();
-                alert(teks);
-            } else {
-                var konf = confirm('Apakah anda ingin mengirim jawaban?');
-                if (konf == true) {
-                    $('#soal_5').click();
+            // if (soal_kosong.length != 0) {
+            //     var teks = 'Nomor soal yang belum diisi atau centang penuh:\n' + soal_kosong.toString();
+            //     alert(teks);
+            // } else {
+            var konf = confirm('Apakah anda ingin mengirim jawaban?');
+            if (konf == true) {
+                let val_radio_kanan;
+                let val_radio_kiri;
+                for (const radioButtonKiri of radioButtonsKiri) {
+                    if (radioButtonKiri.checked) {
+                        val_radio_kiri = radioButtonKiri.value;
+                        break;
+                    }
                 }
+                for (const radioButtonKanan of radioButtonsKanan) {
+                    if (radioButtonKanan.checked) {
+                        val_radio_kanan = radioButtonKanan.value;
+                        break;
+                    }
+                }
+                id_jawaban.value = val_radio_kiri + ',' + val_radio_kanan;
+                document.getElementById("soal_terakhir").value = soalNow;
+                $('#soal_5').click();
             }
+            // }
         });
 
         function startCounting() {
@@ -885,6 +905,10 @@ $soal_kosong = (array) $soal_kosong;
                 radio_button = this;
             }
         });
+
+        if (soalNow == soalMax) {
+            $('#soal_5_').removeAttr('hidden');
+        }
 
         $('#kategori_setuju_' + soalNow + '_4').click(function() {
             $('#kategori_tidak_setuju_' + soalNow + '_4').prop('disabled', true);
