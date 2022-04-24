@@ -552,25 +552,25 @@ $soal_kosong = (array) $soal_kosong;
 
         $('#soal_6_').click(function() {
 
-            // if (soal_kosong.length != 0) {
-            //     var teks = 'Nomor soal yang belum diisi:\n' + soal_kosong.toString();
-            //     alert(teks);
-            // } else {
+            if (soal_kosong.length != 0) {
+                var teks = 'Nomor soal yang belum diisi:\n' + soal_kosong.toString();
+                alert(teks);
+            } else {
 
-            var konf = confirm('Apakah anda telah selesai mengerjakan?');
-            if (konf == true) {
-                let val_radio;
-                for (const radioButton of radioButtons) {
-                    if (radioButton.checked) {
-                        val_radio = radioButton.value;
-                        break;
+                var konf = confirm('Apakah anda telah selesai mengerjakan?');
+                if (konf == true) {
+                    let val_radio;
+                    for (const radioButton of radioButtons) {
+                        if (radioButton.checked) {
+                            val_radio = radioButton.value;
+                            break;
+                        }
                     }
+                    id_jawaban.value = val_radio;
+                    document.getElementById("soal_terakhir").value = soalNow;
+                    $('#soal_6').click();
                 }
-                id_jawaban.value = val_radio;
-                document.getElementById("soal_terakhir").value = soalNow;
-                $('#soal_6').click();
             }
-            // }
         });
 
         $('#timer').click(function() {

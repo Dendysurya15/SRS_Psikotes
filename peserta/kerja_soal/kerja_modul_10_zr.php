@@ -123,6 +123,9 @@ if (!empty($result_partial_arr)) {
     json_encode($checkedSoal);
     json_encode($checkedJawabanSoal);
 }
+
+$soal_kosong = array_diff($userSoal, $checkedSoal);
+$soal_kosong = (array) $soal_kosong;
 ?>
 
 
@@ -502,6 +505,7 @@ if (!empty($result_partial_arr)) {
         var session_status_pengerjaan = <?= $status_pengerjaan ?>;
         var radio_button;
         var count;
+        var soal_kosong = Object.values(<?= json_encode($soal_kosong) ?>);
         var id_jawaban = document.getElementById('ans_soal_terakhir');
         const radioButtons = document.querySelectorAll('input[name="jawaban"]');
 
@@ -591,18 +595,23 @@ if (!empty($result_partial_arr)) {
         });
 
         $('#soal_10_zr_').click(function() {
-            var konf = confirm('Apakah anda telah selesai mengerjakan?');
-            if (konf == true) {
-                let val_radio;
-                for (const radioButton of radioButtons) {
-                    if (radioButton.checked) {
-                        val_radio = radioButton.value;
-                        break;
+            if (soal_kosong.length != 0) {
+                var teks = 'Nomor soal yang belum diisi atau centang penuh:\n' + soal_kosong.toString();
+                alert(teks);
+            } else {
+                var konf = confirm('Apakah anda telah selesai mengerjakan?');
+                if (konf == true) {
+                    let val_radio;
+                    for (const radioButton of radioButtons) {
+                        if (radioButton.checked) {
+                            val_radio = radioButton.value;
+                            break;
+                        }
                     }
+                    id_jawaban.value = val_radio;
+                    document.getElementById("soal_terakhir").value = soalNow;
+                    $('#soal_10_zr').click();
                 }
-                id_jawaban.value = val_radio;
-                document.getElementById("soal_terakhir").value = soalNow;
-                $('#soal_10_zr').click();
             }
         });
 

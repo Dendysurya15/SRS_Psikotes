@@ -763,31 +763,31 @@ $soal_kosong = (array) $soal_kosong;
         });
 
         $('#soal_5_').click(function() {
-            // if (soal_kosong.length != 0) {
-            //     var teks = 'Nomor soal yang belum diisi atau centang penuh:\n' + soal_kosong.toString();
-            //     alert(teks);
-            // } else {
-            var konf = confirm('Apakah anda ingin mengirim jawaban?');
-            if (konf == true) {
-                let val_radio_kanan;
-                let val_radio_kiri;
-                for (const radioButtonKiri of radioButtonsKiri) {
-                    if (radioButtonKiri.checked) {
-                        val_radio_kiri = radioButtonKiri.value;
-                        break;
+            if (soal_kosong.length != 0) {
+                var teks = 'Nomor soal yang belum diisi atau centang penuh:\n' + soal_kosong.toString();
+                alert(teks);
+            } else {
+                var konf = confirm('Apakah anda ingin mengirim jawaban?');
+                if (konf == true) {
+                    let val_radio_kanan;
+                    let val_radio_kiri;
+                    for (const radioButtonKiri of radioButtonsKiri) {
+                        if (radioButtonKiri.checked) {
+                            val_radio_kiri = radioButtonKiri.value;
+                            break;
+                        }
                     }
-                }
-                for (const radioButtonKanan of radioButtonsKanan) {
-                    if (radioButtonKanan.checked) {
-                        val_radio_kanan = radioButtonKanan.value;
-                        break;
+                    for (const radioButtonKanan of radioButtonsKanan) {
+                        if (radioButtonKanan.checked) {
+                            val_radio_kanan = radioButtonKanan.value;
+                            break;
+                        }
                     }
+                    id_jawaban.value = val_radio_kiri + ',' + val_radio_kanan;
+                    document.getElementById("soal_terakhir").value = soalNow;
+                    $('#soal_5').click();
                 }
-                id_jawaban.value = val_radio_kiri + ',' + val_radio_kanan;
-                document.getElementById("soal_terakhir").value = soalNow;
-                $('#soal_5').click();
             }
-            // }
         });
 
         function startCounting() {
