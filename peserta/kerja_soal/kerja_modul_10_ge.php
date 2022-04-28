@@ -536,11 +536,10 @@ $soal_kosong = (array) $soal_kosong;
 
         $('#soal_10_ge_').click(function() {
             var sisa_soal = soal_kosong.length
-            for (const radioButton of radioButtons) {
-                if (radioButton.checked) {
-                    sisa_soal = soal_kosong.length - 1
-                    break;
-                }
+            let val_field = document.getElementById("jawabanField").value;
+
+            if (val_field != '') {
+                sisa_soal = soal_kosong.length - 1
             }
             if (sisa_soal < 0) {
                 sisa_soal = sisa_soal + 1
