@@ -573,7 +573,18 @@ $soal_kosong = (array) $soal_kosong;
         });
 
         $('#soal_7_').click(function() {
-            if (soal_kosong.length != 0) {
+            var sisa_soal = soal_kosong.length
+            for (const radioButton of radioButtons) {
+                if (radioButton.checked) {
+                    sisa_soal = soal_kosong.length - 1
+                    break;
+                }
+            }
+            if (sisa_soal < 0) {
+                sisa_soal = sisa_soal + 1
+            }
+
+            if (sisa_soal != 0) {
                 var teks = 'Nomor soal yang belum diisi:\n' + soal_kosong.toString();
                 alert(teks);
             } else {
