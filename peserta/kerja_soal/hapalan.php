@@ -233,7 +233,7 @@ if ($status_s == 1) {
                                     <?php endwhile; ?>
                                     <div class="row mt-2 mb-4" style="margin:auto; text-align:center;">
                                         <div class="col-md-12">
-                                            <button name="hapalan_1" id="hapalan_1" class="btn btn-success w-50 button-tes" type="button">
+                                            <button name="hapalan_1" hidden id="hapalan_1" class="btn btn-success w-50 button-tes" type="button">
                                                 SELESAI
                                             </button>
 
