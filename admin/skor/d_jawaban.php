@@ -7,11 +7,115 @@ $room_id        = $_GET['room_id'];
 $jawaban_id     = $_GET['jawaban_id'];
 $peserta_id     = $_GET['peserta_id'];
 
-$skor  = $soal->D_Jawaban($jawaban_id, $room_id, $peserta_id)
+$resPeserta       = $soal->Peserta('id', $peserta_id, 'select');
+$rowPeserta       = $resPeserta->fetch_assoc();
+
+$skor  = $soal->D_Jawaban($jawaban_id, $room_id, $peserta_id);
+$spesifikSkor  = $soal->D_Jawaban($jawaban_id, $room_id, $peserta_id);
+
+$arrModul = array();
+$jawabanPeserta = array();
+$modul = $spesifikSkor->fetch_assoc();
+$arrModul5 = explode(' ', $modul['soal_5']);
+$arrModul6 = explode(',', $modul['soal_6']);
+$arrModul7 = explode(';', $modul['soal_7']);
+$arrModul9 = explode(',', $modul['soal_9']);
+
+if ($modul['soal_10_fa'] != '') {
+    $arrModul10FA = explode(',', $modul['soal_10_fa']);
+    foreach ($arrModul10FA as $key => $value) {
+        $splitVal = explode('=', $value);
+        $jawabanPeserta10FA[] = $splitVal[1];
+    }
+}
+if ($modul['soal_10_se'] != '') {
+    $arrModul10SE = explode(',', $modul['soal_10_se']);
+    foreach ($arrModul10SE as $key => $value) {
+        $splitVal = explode('=', $value);
+        $jawabanPeserta10SE[] = $splitVal[1];
+    }
+}
+if ($modul['soal_10_ge'] != '') {
+    $arrModul10GE = explode(',', $modul['soal_10_ge']);
+    foreach ($arrModul10GE as $key => $value) {
+        $splitVal = explode('=', $value);
+        $jawabanPeserta10GE[] = $splitVal[1];
+    }
+}
+if ($modul['soal_10_wu'] != '') {
+    $arrModul10WU = explode(',', $modul['soal_10_wu']);
+    foreach ($arrModul10WU as $key => $value) {
+        $splitVal = explode('=', $value);
+        $jawabanPeserta10WU[] = $splitVal[1];
+    }
+}
+if ($modul['soal_10_wa'] != '') {
+    $arrModul10WA = explode(',', $modul['soal_10_wa']);
+    foreach ($arrModul10WA as $key => $value) {
+        $splitVal = explode('=', $value);
+        $jawabanPeserta10WA[] = $splitVal[1];
+    }
+}
+if ($modul['soal_10_an'] != '') {
+    $arrModul10AN = explode(',', $modul['soal_10_an']);
+    foreach ($arrModul10AN as $key => $value) {
+        $splitVal = explode('=', $value);
+        $jawabanPeserta10AN[] = $splitVal[1];
+    }
+}
+
+if ($modul['soal_10_ra'] != '') {
+    $arrModul10RA = explode(',', $modul['soal_10_ra']);
+    foreach ($arrModul10RA as $key => $value) {
+        $splitVal = explode('=', $value);
+        $jawabanPeserta10RA[] = $splitVal[1];
+    }
+}
+if ($modul['soal_10_zr'] != '') {
+    $arrModul10ZR = explode(',', $modul['soal_10_zr']);
+    foreach ($arrModul10ZR as $key => $value) {
+        $splitVal = explode('=', $value);
+        $jawabanPeserta10ZR[] = $splitVal[1];
+    }
+}
+
+if ($modul['soal_5'] != '') {
+    $arrModul5 = explode(' ', $modul['soal_5']);
+    foreach ($arrModul5 as $key => $value) {
+        $splitVal = explode('=', $value);
+        $jawabanPeserta5[$splitVal[0]] = $splitVal[1];
+    }
+}
+
+if ($modul['soal_7'] != '') {
+    $arrModul7 = explode(',', $modul['soal_7']);
+    foreach ($arrModul7 as $key => $value) {
+        $splitVal = explode('=', $value);
+        $jawabanPeserta7[$splitVal[0]] = $splitVal[1];
+    }
+}
+
+if ($modul['soal_6'] != '') {
+    $arrModul6 = explode(',', $modul['soal_6']);
+    foreach ($arrModul6 as $key => $value) {
+        $splitVal = explode('=', $value);
+        $jawabanPeserta6[$splitVal[0]] = $splitVal[1];
+    }
+}
+
+if ($modul['soal_9'] != '') {
+    $arrModul9 = explode(',', $modul['soal_9']);
+    foreach ($arrModul9 as $key => $value) {
+        $splitVal = explode('=', $value);
+        $jawabanPeserta9[$splitVal[0]] = $splitVal[1];
+    }
+}
+
+$countSoal = 1;
 
 ?>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.6.4/css/buttons.dataTables.min.css" />
-    <link rel="stylesheet" type="text/css" href="layout/dist/css/jquery.dataTables.min.css" />
+<link rel="stylesheet" type="text/css" href="layout/dist/css/jquery.dataTables.min.css" />
 <div class="content-wrapper">
     <section class="content-header">
         <div class="content-fluid ">
@@ -20,6 +124,17 @@ $skor  = $soal->D_Jawaban($jawaban_id, $room_id, $peserta_id)
                 <div class="col-sm-6">
                     <h1 class="m-0 pl-2 text-dark">
                         DETAIL SKOR
+
+                        <?php
+                        // echo $modul['soal_5'];
+
+                        // if ($modul['soal_5'] != '') {
+                        //     echo 'wkwkjkwjwk';
+                        // } else {
+                        //     echo 'akdsjflkjaslfdkjaldsk';
+                        // }
+                        // $modul['soal_5'];
+                        ?>
                     </h1>
                 </div>
 
@@ -34,9 +149,455 @@ $skor  = $soal->D_Jawaban($jawaban_id, $room_id, $peserta_id)
                     <div class="card card-primary card-outline">
                         <div class="card-header">
                             <h5 class="card-title m-0 text-primary"><strong>Skor Info</strong></h5>
+
                         </div>
 
-                        <div class="card-body table-responsive">
+                        <div class="ml-4 mt-3">
+                            <button class="btn btn-success" id="btnAllSkor">Semua Skor</button>
+                            <button class="btn btn-info" hidden id="btnMsdt">MSDT</button>
+                            <button class="btn btn-info" hidden id="btnIst">IST</button>
+                            <button class="btn btn-info" hidden id="btnPapikostick">PAPIKOSTICK</button>
+                            <button class="btn btn-info" hidden id="btnHolland">HOLLAND</button>
+                            <button class="btn btn-info" hidden id="btnDisc">DISC</button>
+                        </div>
+
+
+                        <div id="msdt" class="m-5" hidden>
+                            <table class="table table-borderless text-center">
+                                <tbody>
+                                    <?php for ($row = 0; $row < sqrt(count($arrModul7)); $row++) {
+                                    ?>
+                                        <tr>
+                                            <?php for ($col = 0; $col < sqrt(count($arrModul7)); $col++) {
+                                                if ($jawabanPeserta7[$countSoal] != '') {
+                                            ?>
+                                                    <td style="background-color: #E7EAED !important;color: black;"> <?= $countSoal ?></td>
+                                                    <th scope="col"><?= $jawabanPeserta7[$countSoal] ?></th>
+                                                <?php
+                                                } else {
+                                                ?>
+                                                    <td> </td>
+                                                <?php
+                                                }
+                                                ?>
+
+                                            <?php
+                                                $countSoal++;
+                                            } ?>
+                                        </tr>
+
+                                    <?php
+                                    }
+                                    ?>
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                        <div id="papikostik" hidden>
+                            <div class="row">
+                                <div class="m-5 col-md-2">
+                                    <table class="table table-borderless text-center">
+                                        <tbody>
+                                            <?php
+                                            foreach ($jawabanPeserta6 as $key => $value) {
+                                            ?>
+                                                <tr>
+                                                    <td style="background-color: #E7EAED !important;color: black;"> <?= $key ?></td>
+                                                    <th scope="col"><?= $value ?></th>
+                                                </tr>
+
+                                            <?php
+
+                                                if ($key == 30) {
+                                                    break;
+                                                }
+                                            }
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="m-5 col-md-2">
+                                    <table class="table table-borderless text-center">
+                                        <tbody>
+                                            <?php
+                                            foreach ($jawabanPeserta6 as $key => $value) {
+                                                if ($key >= 31 && $key <= 60) {
+
+                                            ?>
+                                                    <tr>
+                                                        <td style="background-color: #E7EAED !important;color: black;"> <?= $key ?></td>
+                                                        <th scope="col"><?= $value ?></th>
+                                                    </tr>
+
+                                            <?php
+                                                }
+                                            }
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="m-5 col-md-2">
+                                    <table class="table table-borderless text-center">
+                                        <tbody>
+                                            <?php
+                                            foreach ($jawabanPeserta6 as $key => $value) {
+                                                if ($key > 60 && $key <= 90) {
+                                            ?>
+                                                    <tr>
+                                                        <td style="background-color: #E7EAED !important;color: black;"> <?= $key ?></td>
+                                                        <th scope="col"><?= $value ?></th>
+                                                    </tr>
+
+                                            <?php
+                                                }
+                                            }
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div id="holland" hidden>
+                            <div class="row">
+                                <div class="m-5 col-md-2">
+                                    <table class="table table-borderless text-center">
+                                        <tbody>
+                                            <?php
+                                            foreach ($jawabanPeserta9 as $key => $value) {
+                                            ?>
+                                                <tr>
+                                                    <td style="background-color: #E7EAED !important;color: black;"> <?= $key ?></td>
+                                                    <th scope="col"><?= $value ?></th>
+                                                </tr>
+
+                                            <?php
+                                                if ($key == 21) {
+                                                    break;
+                                                }
+                                            }
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="m-5 col-md-2">
+                                    <table class="table table-borderless text-center">
+                                        <tbody>
+                                            <?php
+                                            foreach ($jawabanPeserta9 as $key => $value) {
+                                                if ($key > 21 && $key <= 42) {
+                                            ?>
+                                                    <tr>
+                                                        <td style="background-color: #E7EAED !important;color: black;"> <?= $key ?></td>
+                                                        <th scope="col"><?= $value ?></th>
+                                                    </tr>
+                                            <?php
+                                                }
+                                            }
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div id="disc" hidden>
+                            <div class="row">
+                                <div class="m-5 col-md-2">
+                                    <table class="table table-borderless text-center">
+                                        <tbody>
+                                            <?php
+                                            foreach ($jawabanPeserta5 as $key => $value) {
+                                            ?>
+                                                <tr>
+                                                    <td style="background-color: #E7EAED !important;color: black;"> <?= $key ?></td>
+                                                    <th scope="col"><?= $value ?></th>
+                                                </tr>
+
+                                            <?php
+                                                if ($key == 12) {
+                                                    break;
+                                                }
+                                            }
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="m-5 col-md-2">
+                                    <table class="table table-borderless text-center">
+                                        <tbody>
+                                            <?php
+                                            foreach ($jawabanPeserta5 as $key => $value) {
+                                                if ($key > 12 && $key <= 24) {
+                                            ?>
+                                                    <tr>
+                                                        <td style="background-color: #E7EAED !important;color: black;"> <?= $key ?></td>
+                                                        <th scope="col"><?= $value ?></th>
+                                                    </tr>
+                                            <?php
+                                                }
+                                            }
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div id="ist" class="row" hidden>
+
+                            <div class="m-5 col-2">
+                                <h5 class="text-center ">SE</h5>
+                                <table class="table border table-borderless text-center">
+                                    <tbody>
+                                        <?php
+                                        $countSE = 0;
+                                        for ($row = 0; $row < count($arrModul10SE); $row++) {
+                                        ?>
+                                            <tr>
+                                                <?php
+                                                if ($jawabanPeserta10SE[$countSE] != '') {
+                                                ?>
+                                                    <td style="background-color: #E7EAED !important;color: black;"> <?= $countSE + 1 ?></td>
+                                                    <th scope="col"><?= $jawabanPeserta10SE[$countSE] ?></th>
+                                                <?php
+                                                } else {
+                                                ?>
+                                                    <td> </td>
+                                                <?php
+                                                } ?>
+                                            </tr>
+                                        <?php
+                                            $countSE++;
+                                        }
+                                        ?>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                            <div class="m-5 col-2">
+                                <h5 class="text-center ">WA</h5>
+                                <table class="table border table-borderless text-center">
+                                    <tbody>
+                                        <?php
+                                        $countWA = 20;
+                                        for ($row = 0; $row < count($arrModul10WA); $row++) {
+                                        ?>
+                                            <tr>
+                                                <?php
+                                                if ($jawabanPeserta10WA[$row] != '') {
+                                                ?>
+                                                    <td style="background-color: #E7EAED !important;color: black;"> <?= $countWA + 1 ?></td>
+                                                    <th scope="col"><?= $jawabanPeserta10WA[$row] ?></th>
+                                                <?php
+                                                } else {
+                                                ?>
+                                                    <td> </td>
+                                                <?php
+                                                } ?>
+                                            </tr>
+                                        <?php
+                                            $countWA++;
+                                        }
+                                        ?>
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+                            <div class="m-5 col-2">
+                                <h5 class="text-center ">AN</h5>
+                                <table class="table border table-borderless text-center">
+                                    <tbody>
+                                        <?php
+                                        $countAN = 40;
+                                        for ($row = 0; $row < count($arrModul10AN); $row++) {
+                                        ?>
+                                            <tr>
+                                                <?php
+                                                if ($jawabanPeserta10AN[$row] != '') {
+                                                ?>
+                                                    <td style="background-color: #E7EAED !important;color: black;"> <?= $countAN + 1 ?></td>
+                                                    <th scope="col"><?= $jawabanPeserta10AN[$row] ?></th>
+                                                <?php
+                                                } else {
+                                                ?>
+                                                    <td> </td>
+                                                <?php
+                                                } ?>
+                                            </tr>
+                                        <?php
+                                            $countAN++;
+                                        }
+                                        ?>
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+                            <div class="m-5 col-2">
+                                <h5 class="text-center ">GE</h5>
+                                <table class="table border table-borderless text-center">
+                                    <tbody>
+                                        <?php
+                                        $countGE = 60;
+                                        for ($row = 0; $row < count($arrModul10GE); $row++) {
+                                        ?>
+                                            <tr>
+                                                <?php
+                                                if ($jawabanPeserta10GE[$row] != '') {
+                                                ?>
+                                                    <td style="background-color: #E7EAED !important;color: black;"> <?= $countGE + 1 ?></td>
+                                                    <th scope="col"><?= $jawabanPeserta10GE[$row] ?></th>
+                                                <?php
+                                                } else {
+                                                ?>
+                                                    <td> </td>
+                                                <?php
+                                                } ?>
+                                            </tr>
+                                        <?php
+                                            $countGE++;
+                                        }
+                                        ?>
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+
+                            <div class="m-5 col-2">
+                                <h5 class="text-center ">RA</h5>
+                                <table class="table border table-borderless text-center">
+                                    <tbody>
+                                        <?php
+                                        $countRA = 76;
+                                        for ($row = 0; $row < count($arrModul10RA); $row++) {
+                                        ?>
+                                            <tr>
+                                                <?php
+                                                if ($jawabanPeserta10RA[$row] != '') {
+                                                ?>
+                                                    <td style="background-color: #E7EAED !important;color: black;"> <?= $countRA + 1 ?></td>
+                                                    <th scope="col"><?= $jawabanPeserta10RA[$row] ?></th>
+                                                <?php
+                                                } else {
+                                                ?>
+                                                    <td> </td>
+                                                <?php
+                                                } ?>
+                                            </tr>
+                                        <?php
+                                            $countRA++;
+                                        }
+                                        ?>
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+
+                            <div class="m-5 col-2">
+                                <h5 class="text-center ">ZR</h5>
+                                <table class="table border table-borderless text-center">
+                                    <tbody>
+                                        <?php
+                                        $countRA = 96;
+                                        for ($row = 0; $row < count($arrModul10RA); $row++) {
+                                        ?>
+                                            <tr>
+                                                <?php
+                                                if ($jawabanPeserta10RA[$row] != '') {
+                                                ?>
+                                                    <td style="background-color: #E7EAED !important;color: black;"> <?= $countRA + 1 ?></td>
+                                                    <th scope="col"><?= $jawabanPeserta10RA[$row] ?></th>
+                                                <?php
+                                                } else {
+                                                ?>
+                                                    <td> </td>
+                                                <?php
+                                                } ?>
+                                            </tr>
+                                        <?php
+                                            $countRA++;
+                                        }
+                                        ?>
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+                            <div class="m-5 col-2">
+                                <h5 class="text-center ">FA</h5>
+                                <table class="table border table-borderless text-center">
+                                    <tbody>
+                                        <?php
+                                        $countFA = 116;
+                                        for ($row = 0; $row < count($arrModul10FA); $row++) {
+                                        ?>
+                                            <tr>
+                                                <?php
+                                                if ($jawabanPeserta10FA[$row] != '') {
+                                                ?>
+                                                    <td style="background-color: #E7EAED !important;color: black;"> <?= $countFA + 1 ?></td>
+                                                    <th scope="col"><?= $jawabanPeserta10FA[$row] ?></th>
+                                                <?php
+                                                } else {
+                                                ?>
+                                                    <td> </td>
+                                                <?php
+                                                } ?>
+                                            </tr>
+                                        <?php
+                                            $countFA++;
+                                        }
+                                        ?>
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+                            <div class="m-5 col-2">
+                                <h5 class="text-center ">WU</h5>
+                                <table class="table border table-borderless text-center">
+                                    <tbody>
+                                        <?php
+                                        $countWU = 136;
+                                        for ($row = 0; $row < count($arrModul10WU); $row++) {
+                                        ?>
+                                            <tr>
+                                                <?php
+                                                if ($jawabanPeserta10WU[$row] != '') {
+                                                ?>
+                                                    <td style="background-color: #E7EAED !important;color: black;"> <?= $countWU + 1 ?></td>
+                                                    <th scope="col"><?= $jawabanPeserta10WU[$row] ?></th>
+                                                <?php
+                                                } else {
+                                                ?>
+                                                    <td> </td>
+                                                <?php
+                                                } ?>
+                                            </tr>
+                                        <?php
+                                            $countWU++;
+                                        }
+                                        ?>
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+                        </div>
+
+                        <div class="card-body table-responsive" id="allskor">
                             <div class="col-md-12">
                                 <table style="width: 300%;" id="rekapTaksasi" class="table table-bordered table-hover text-center">
                                     <thead>
@@ -331,8 +892,7 @@ $skor  = $soal->D_Jawaban($jawaban_id, $room_id, $peserta_id)
                                                     echo '<td style="text-align: justify; width:5%">Kosong</td>';
                                                 }
 
-                                                if(!empty($d_jawaban['soal_10_ge']))
-                                                {
+                                                if (!empty($d_jawaban['soal_10_ge'])) {
                                                     $soal_10_ge = explode(';', $d_jawaban['soal_10_ge']);
                                                     $count_10_ge  = 1;
                                                     echo '<td style="text-align: justify; width:5%;">';
@@ -346,13 +906,11 @@ $skor  = $soal->D_Jawaban($jawaban_id, $room_id, $peserta_id)
                                                         $count_10_ge++;
                                                     }
                                                     echo '</td>';
-                                                }
-                                                else{                                                    
+                                                } else {
                                                     echo '<td style="text-align: justify; width:5%">Kosong</td>';
                                                 }
 
-                                                if(!empty($d_jawaban['soal_10_fa']))
-                                                {
+                                                if (!empty($d_jawaban['soal_10_fa'])) {
                                                     $soal_10_fa = explode(';', $d_jawaban['soal_10_fa']);
                                                     $count_10_fa  = 1;
                                                     echo '<td style="text-align: justify; width:5%;">';
@@ -366,13 +924,11 @@ $skor  = $soal->D_Jawaban($jawaban_id, $room_id, $peserta_id)
                                                         $count_10_fa++;
                                                     }
                                                     echo '</td>';
-                                                }
-                                                else{                                                    
+                                                } else {
                                                     echo '<td style="text-align: justify; width:5%">Kosong</td>';
                                                 }
 
-                                                if(!empty($d_jawaban['soal_10_wu']))
-                                                {
+                                                if (!empty($d_jawaban['soal_10_wu'])) {
                                                     $soal_10_wu = explode(';', $d_jawaban['soal_10_wu']);
                                                     $count_10_wu  = 1;
                                                     echo '<td style="text-align: justify; width:5%;">';
@@ -386,8 +942,7 @@ $skor  = $soal->D_Jawaban($jawaban_id, $room_id, $peserta_id)
                                                         $count_10_wu++;
                                                     }
                                                     echo '</td>';
-                                                }
-                                                else{                                                    
+                                                } else {
                                                     echo '<td style="text-align: justify; width:5%">Kosong</td>';
                                                 }
 
@@ -470,11 +1025,154 @@ $skor  = $soal->D_Jawaban($jawaban_id, $room_id, $peserta_id)
             }
         }],
         info: false,
-        "columnDefs": [
-            {
-                "visible": true,
-                "targets": 3
-            }
-        ]
+        "columnDefs": [{
+            "visible": true,
+            "targets": 3
+        }]
     });
+
+    var status_peserta = '<?= $rowPeserta['jenis_tes_peserta'] ?>';
+
+    if (status_peserta == 'staff/asisten') {
+        $('#btnPapikostick').removeAttr('hidden');
+        $('#btnDisc').removeAttr('hidden');
+        $('#btnIst').removeAttr('hidden');
+    } else if (status_peserta == 'nonstaff') {
+        $('#btnHolland').removeAttr('hidden');
+        $('#btnPapikostick').removeAttr('hidden');
+        $('#btnDisc').removeAttr('hidden');
+    } else if (status_peserta == 'asmen-up') {
+        $('#btnMsdt').removeAttr('hidden');
+        $('#btnIst').removeAttr('hidden');
+        $('#btnPapikostick').removeAttr('hidden');
+    }
+
+    $('#btnMsdt').click(function() {
+        $('#allskor').attr('hidden', true);
+        $('#disc').attr('hidden', true);
+        $('#holland').attr('hidden', true);
+        $('#papikostik').attr('hidden', true);
+        $('#ist').attr('hidden', true);
+        $('#msdt').removeAttr('hidden');
+        $('#btnMsdt').removeAttr('class');
+        document.getElementById('btnMsdt').setAttribute("class", "btn btn-success");
+        $('#btnIst').removeAttr('class');
+        document.getElementById('btnIst').setAttribute("class", "btn btn-info");
+        $('#btnAllSkor').removeAttr('class');
+        document.getElementById('btnAllSkor').setAttribute("class", "btn btn-info");
+        $('#btnPapikostick').removeAttr('class');
+        document.getElementById('btnPapikostick').setAttribute("class", "btn btn-info");
+        $('#btnDisc').removeAttr('class');
+        document.getElementById('btnDisc').setAttribute("class", "btn btn-info");
+        $('#btnHolland').removeAttr('class');
+        document.getElementById('btnHolland').setAttribute("class", "btn btn-info");
+    })
+
+    $('#btnPapikostick').click(function() {
+        $('#allskor').attr('hidden', true);
+        $('#msdt').attr('hidden', true);
+        $('#ist').attr('hidden', true);
+        $('#holland').attr('hidden', true);
+        $('#disc').attr('hidden', true);
+        $('#papikostik').removeAttr('hidden');
+        $('#btnPapikostick').removeAttr('class');
+        document.getElementById('btnPapikostick').setAttribute("class", "btn btn-success");
+        $('#btnIst').removeAttr('class');
+        document.getElementById('btnIst').setAttribute("class", "btn btn-info");
+        $('#btnMsdt').removeAttr('class');
+        document.getElementById('btnMsdt').setAttribute("class", "btn btn-info");
+        $('#btnAllSkor').removeAttr('class');
+        document.getElementById('btnAllSkor').setAttribute("class", "btn btn-info");
+        $('#btnDisc').removeAttr('class');
+        document.getElementById('btnDisc').setAttribute("class", "btn btn-info");
+        $('#btnHolland').removeAttr('class');
+        document.getElementById('btnHolland').setAttribute("class", "btn btn-info");
+    })
+
+
+    $('#btnHolland').click(function() {
+        $('#allskor').attr('hidden', true);
+        $('#msdt').attr('hidden', true);
+        $('#ist').attr('hidden', true);
+        $('#papikostik').attr('hidden', true);
+        $('#disc').attr('hidden', true);
+        $('#holland').removeAttr('hidden');
+        $('#btnMsdt').removeAttr('class');
+        document.getElementById('btnHolland').setAttribute("class", "btn btn-success");
+        $('#btnIst').removeAttr('class');
+        document.getElementById('btnIst').setAttribute("class", "btn btn-info");
+        $('#btnMsdt').removeAttr('class');
+        document.getElementById('btnMsdt').setAttribute("class", "btn btn-info");
+        $('#btnAllSkor').removeAttr('class');
+        document.getElementById('btnAllSkor').setAttribute("class", "btn btn-info");
+        $('#btnDisc').removeAttr('class');
+        document.getElementById('btnDisc').setAttribute("class", "btn btn-info");
+        $('#btnPapikostick').removeAttr('class');
+        document.getElementById('btnPapikostick').setAttribute("class", "btn btn-info");
+    })
+
+    $('#btnDisc').click(function() {
+        $('#allskor').attr('hidden', true);
+        $('#msdt').attr('hidden', true);
+        $('#ist').attr('hidden', true);
+        $('#papikostik').attr('hidden', true);
+        $('#holland').attr('hidden', true);
+        $('#disc').removeAttr('hidden');
+        $('#btnMsdt').removeAttr('class');
+        document.getElementById('btnDisc').setAttribute("class", "btn btn-success");
+        $('#btnIst').removeAttr('class');
+        document.getElementById('btnIst').setAttribute("class", "btn btn-info");
+        $('#btnMsdt').removeAttr('class');
+        document.getElementById('btnMsdt').setAttribute("class", "btn btn-info");
+        $('#btnAllSkor').removeAttr('class');
+        document.getElementById('btnAllSkor').setAttribute("class", "btn btn-info");
+        $('#btnPapikostick').removeAttr('class');
+        document.getElementById('btnPapikostick').setAttribute("class", "btn btn-info");
+        $('#btnHolland').removeAttr('class');
+        document.getElementById('btnHolland').setAttribute("class", "btn btn-info");
+    })
+
+    $('#btnIst').click(function() {
+        $('#allskor').attr('hidden', true);
+        $('#msdt').attr('hidden', true);
+        $('#disc').attr('hidden', true);
+        $('#holland').attr('hidden', true);
+        $('#papikostik').attr('hidden', true);
+        $('#ist').removeAttr('hidden');
+        $('#btnIst').removeAttr('class');
+        document.getElementById('btnIst').setAttribute("class", "btn btn-success");
+        $('#btnAllSkor').removeAttr('class');
+        document.getElementById('btnAllSkor').setAttribute("class", "btn btn-info");
+        $('#btnMsdt').removeAttr('class');
+        document.getElementById('btnMsdt').setAttribute("class", "btn btn-info");
+        $('#btnDisc').removeAttr('class');
+        document.getElementById('btnDisc').setAttribute("class", "btn btn-info");
+        $('#btnPapikostik').removeAttr('class');
+        document.getElementById('btnPapikostik').setAttribute("class", "btn btn-info");
+        $('#btnHolland').removeAttr('class');
+        document.getElementById('btnHolland').setAttribute("class", "btn btn-info");
+    })
+
+    $('#btnAllSkor').click(function() {
+        $('#msdt').attr('hidden', true);
+        $('#ist').attr('hidden', true);
+        $('#papikostik').attr('hidden', true);
+        $('#disc').attr('hidden', true);
+        $('#holland').attr('hidden', true);
+        $('#allskor').attr('hidden', false);
+        $('#btnMsdt').removeAttr('class');
+        document.getElementById('btnMsdt').setAttribute("class", "btn btn-info");
+        $('#btnIst').removeAttr('class');
+        document.getElementById('btnIst').setAttribute("class", "btn btn-info");
+        $('#btnPapikostick').removeAttr('class');
+        document.getElementById('btnPapikostick').setAttribute("class", "btn btn-info");
+        $('#btnHolland').removeAttr('class');
+        document.getElementById('btnHolland').setAttribute("class", "btn btn-info");
+        $('#btnDisc').removeAttr('class');
+        document.getElementById('btnDisc').setAttribute("class", "btn btn-info");
+        $('#btnIst').removeAttr('class');
+        document.getElementById('btnIst').setAttribute("class", "btn btn-info");
+        $('#btnAllSkor').removeAttr('class');
+        document.getElementById('btnAllSkor').setAttribute("class", "btn btn-success");
+    })
 </script>
