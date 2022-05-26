@@ -128,7 +128,7 @@ $countSoal = 1;
 
                         <?php
 
-                        // echo $d_jawabanExcel['soal_6'];
+                        // echo $d_jawabanExcel['soal_5'];
                         // echo $modul['soal_5'];
 
                         // if ($modul['soal_5'] != '') {
@@ -726,9 +726,14 @@ $countSoal = 1;
                                                 ?>
                                                     <td>
                                                         <?php
-                                                        if ($i < 20) {
-                                                            $output = explode('=', $soal_4[$i]);
-                                                            echo $output[1];
+                                                        foreach ($soal_4 as  $value) {
+                                                            $split = explode('=', $value);
+                                                            $jawabansoal4[($split[0]) - 1] = $split[1];
+                                                        }
+                                                        // $soal->array_dump($jawabansoal4);
+                                                        if (!empty($jawabansoal4[$i])) {
+                                                            // $output = explode('=', $soal_5[$i]);
+                                                            echo $jawabansoal4[$i];
                                                         } else {
                                                             echo '';
                                                         }
@@ -819,9 +824,15 @@ $countSoal = 1;
                                                 ?>
                                                     <td>
                                                         <?php
-                                                        if ($i < 64) {
-                                                            $output = explode('=', $soal_7[$i]);
-                                                            echo $output[1];
+                                                        $jawabansoal7 = array();
+                                                        foreach ($soal_7 as  $value) {
+                                                            $split = explode('=', $value);
+                                                            $jawabansoal7[($split[0]) - 1] = $split[1];
+                                                        }
+                                                        // $soal->array_dump($jawabansoal7);
+                                                        if (!empty($jawabansoal7[$i])) {
+                                                            // $output = explode('=', $soal_5[$i]);
+                                                            echo $jawabansoal7[$i];
                                                         } else {
                                                             echo '';
                                                         }
