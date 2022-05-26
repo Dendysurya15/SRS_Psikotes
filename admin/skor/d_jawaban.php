@@ -13,6 +13,7 @@ $rowPeserta       = $resPeserta->fetch_assoc();
 $skor  = $soal->D_Jawaban($jawaban_id, $room_id, $peserta_id);
 $spesifikSkor  = $soal->D_Jawaban($jawaban_id, $room_id, $peserta_id);
 
+$d_jawabanExcel = $skor->fetch_assoc();
 $arrModul = array();
 $jawabanPeserta = array();
 $modul = $spesifikSkor->fetch_assoc();
@@ -126,6 +127,8 @@ $countSoal = 1;
                         DETAIL SKOR
 
                         <?php
+
+                        // echo $d_jawabanExcel['soal_6'];
                         // echo $modul['soal_5'];
 
                         // if ($modul['soal_5'] != '') {
@@ -152,14 +155,14 @@ $countSoal = 1;
 
                         </div>
 
-                        <div class="ml-4 mt-3">
+                        <!-- <div class="ml-4 mt-3">
                             <button class="btn btn-success" id="btnAllSkor">Semua Skor</button>
                             <button class="btn btn-info" hidden id="btnMsdt">MSDT</button>
                             <button class="btn btn-info" hidden id="btnIst">IST</button>
                             <button class="btn btn-info" hidden id="btnPapikostick">PAPIKOSTICK</button>
                             <button class="btn btn-info" hidden id="btnHolland">HOLLAND</button>
                             <button class="btn btn-info" hidden id="btnDisc">DISC</button>
-                        </div>
+                        </div> -->
 
 
                         <div id="msdt" class="m-5" hidden>
@@ -597,12 +600,15 @@ $countSoal = 1;
 
                         </div>
 
-                        <div class="card-body table-responsive" id="allskor">
+
+                        <div class="card-body table-responsive">
                             <div class="col-md-12">
-                                <table style="width: 300%;" id="rekapTaksasi" class="table table-bordered table-hover text-center">
+                                <table style="width: 300%;" id="rekapTaksasi" class=" table table-bordered table-hover text-center">
                                     <thead>
                                         <tr>
-                                            <th>Nama</th>
+                                            <th>
+                                                No Soal
+                                            </th>
                                             <th>Detail Jawaban Modul 1</th>
                                             <th>Detail Jawaban Modul 2</th>
                                             <th>Detail Jawaban Modul 3</th>
@@ -623,340 +629,551 @@ $countSoal = 1;
                                         </tr>
                                     </thead>
                                     <tbody>
+
                                         <?php
-                                        if ($skor->num_rows > 0) {
-                                            while ($d_jawaban = $skor->fetch_assoc()) {
-                                                echo '<tr>
-                                                            <td style="text-align: justify; width:2%">' . $_GET['nama_peserta'] . '</td>
-                                                    ';
-
-                                                if (!empty($d_jawaban['soal_1'])) {
-                                                    $soal_1 = explode(';', $d_jawaban['soal_1']);
-                                                    $count_1  = 1;
-                                                    echo '<td style="text-align: justify; width:5%">';
-                                                    foreach ($soal_1 as $value) {
-                                                        if ($count_1 < 5) {
-                                                            echo $value . ', ';
-                                                        } else {
-                                                            echo $value . ', <br>';
-                                                            $count_1 = 1;
-                                                        }
-                                                        $count_1++;
-                                                    }
-                                                    echo '</td>';
-                                                } else {
-                                                    echo '<td style="text-align: justify; width:5%">Kosong</td>';
-                                                }
-
-
-                                                if (!empty($d_jawaban['soal_2'])) {
-
-                                                    $soal_2 = explode(';', $d_jawaban['soal_2']);
-                                                    $count_2  = 1;
-                                                    echo '<td style="text-align: justify; width:5%;">';
-                                                    foreach ($soal_2 as $value) {
-                                                        if ($count_2 < 5) {
-                                                            echo $value . ', ';
-                                                        } else {
-                                                            echo $value . ', <br>';
-                                                            $count_2 = 1;
-                                                        }
-                                                        $count_2++;
-                                                    }
-                                                    echo '</td>';
-                                                } else {
-                                                    echo '<td style="text-align: justify; width:5%">Kosong</td>';
-                                                }
-
-
-                                                if (!empty($d_jawaban['soal_3'])) {
-                                                    $soal_3 = explode(';', $d_jawaban['soal_3']);
-                                                    $count_3  = 1;
-                                                    echo '<td style="text-align: justify; width:5%;">';
-                                                    foreach ($soal_3 as $value) {
-                                                        if ($count_3 < 5) {
-                                                            echo $value . ', ';
-                                                        } else {
-                                                            echo $value . ', <br>';
-                                                            $count_3 = 1;
-                                                        }
-                                                        $count_3++;
-                                                    }
-                                                    echo '</td>';
-                                                } else {
-                                                    echo '<td style="text-align: justify; width:5%">Kosong</td>';
-                                                }
-
-
-                                                if (!empty($d_jawaban['soal_4'])) {
-
-                                                    $soal_4 = explode(';', $d_jawaban['soal_4']);
-                                                    $count_4  = 1;
-                                                    echo '<td style="text-align: justify; width:5%;">';
-                                                    foreach ($soal_4 as $value) {
-                                                        if ($count_4 < 5) {
-                                                            echo $value . ', ';
-                                                        } else {
-                                                            echo $value . ', <br>';
-                                                            $count_4 = 1;
-                                                        }
-                                                        $count_4++;
-                                                    }
-                                                    echo '</td>';
-                                                } else {
-                                                    echo '<td style="text-align: justify; width:5%">Kosong</td>';
-                                                }
-
-                                                if (!empty($d_jawaban['soal_5'])) {
-                                                    $soal_5 = explode(';', $d_jawaban['soal_5']);
-                                                    $count_5  = 1;
-                                                    echo '<td style="text-align: justify; width:5%;">';
-                                                    foreach ($soal_5 as $value) {
-                                                        if ($count_5 < 5) {
-                                                            echo $value . ', ';
-                                                        } else {
-                                                            echo $value . ', <br>';
-                                                            $count_5 = 1;
-                                                        }
-                                                        $count_5++;
-                                                    }
-                                                    echo '</td>';
-                                                } else {
-                                                    echo '<td style="text-align: justify; width:5%">Kosong</td>';
-                                                }
-
-
-                                                if (!empty($d_jawaban['soal_6'])) {
-                                                    $soal_6 = explode(';', $d_jawaban['soal_6']);
-                                                    $count_6  = 1;
-                                                    echo '<td style="text-align: justify; width:5%;">';
-                                                    foreach ($soal_6 as $value) {
-                                                        if ($count_6 < 5) {
-                                                            echo $value . ', ';
-                                                        } else {
-                                                            echo $value . ', <br>';
-                                                            $count_6 = 1;
-                                                        }
-                                                        $count_6++;
-                                                    }
-                                                    echo '</td>';
-                                                } else {
-                                                    echo '<td style="text-align: justify; width:5%">Kosong</td>';
-                                                }
-
-
-                                                if (!empty($d_jawaban['soal_7'])) {
-                                                    $soal_7 = explode(';', $d_jawaban['soal_7']);
-                                                    $count_7  = 1;
-                                                    echo '<td style="text-align: justify; width:5%;">';
-                                                    foreach ($soal_7 as $value) {
-                                                        if ($count_7 < 5) {
-                                                            echo $value . ', ';
-                                                        } else {
-                                                            echo $value . ', <br>';
-                                                            $count_7 = 1;
-                                                        }
-                                                        $count_7++;
-                                                    }
-                                                    echo '</td>';
-                                                } else {
-                                                    echo '<td style="text-align: justify; width:5%">Kosong</td>';
-                                                }
-
-                                                if (!empty($d_jawaban['soal_8'])) {
-                                                    $soal_8 = explode(';', $d_jawaban['soal_8']);
-                                                    $count_8  = 1;
-                                                    echo '<td style="text-align: justify; width:5%;">';
-                                                    foreach ($soal_8 as $value) {
-                                                        if ($count_8 < 5) {
-                                                            echo $value . ', ';
-                                                        } else {
-                                                            echo $value . ', <br>';
-                                                            $count_8 = 1;
-                                                        }
-                                                        $count_8++;
-                                                    }
-                                                    echo '</td>';
-                                                } else {
-                                                    echo '<td style="text-align: justify; width:5%">Kosong</td>';
-                                                }
-
-                                                if (!empty($d_jawaban['soal_9'])) {
-
-                                                    $soal_9 = explode(';', $d_jawaban['soal_9']);
-                                                    $count_9  = 1;
-                                                    echo '<td style="text-align: justify; width:5%;">';
-                                                    foreach ($soal_9 as $value) {
-                                                        if ($count_9 < 5) {
-                                                            echo $value . ', ';
-                                                        } else {
-                                                            echo $value . ', <br>';
-                                                            $count_9 = 1;
-                                                        }
-                                                        $count_9++;
-                                                    }
-                                                    echo '</td>';
-                                                } else {
-                                                    echo '<td style="text-align: justify; width:5%">Kosong</td>';
-                                                }
-
-                                                if (!empty($d_jawaban['soal_10_se'])) {
-
-                                                    $soal_10_se = explode(';', $d_jawaban['soal_10_se']);
-                                                    $count_10_se  = 1;
-                                                    echo '<td style="text-align: justify; width:5%;">';
-                                                    foreach ($soal_10_se as $value) {
-                                                        if ($count_10_se < 5) {
-                                                            echo $value . ', ';
-                                                        } else {
-                                                            echo $value . ', <br>';
-                                                            $count_10_se = 1;
-                                                        }
-                                                        $count_10_se++;
-                                                    }
-                                                    echo '</td>';
-                                                } else {
-                                                    echo '<td style="text-align: justify; width:5%">Kosong</td>';
-                                                }
-
-                                                if (!empty($d_jawaban['soal_10_wa'])) {
-                                                    $soal_10_wa = explode(';', $d_jawaban['soal_10_wa']);
-                                                    $count_10_wa  = 1;
-                                                    echo '<td style="text-align: justify; width:5%;">';
-                                                    foreach ($soal_10_wa as $value) {
-                                                        if ($count_10_wa < 5) {
-                                                            echo $value . ', ';
-                                                        } else {
-                                                            echo $value . ', <br>';
-                                                            $count_10_wa = 1;
-                                                        }
-                                                        $count_10_wa++;
-                                                    }
-                                                    echo '</td>';
-                                                } else {
-                                                    echo '<td style="text-align: justify; width:5%">Kosong</td>';
-                                                }
-
-                                                if (!empty($d_jawaban['soal_10_an'])) {
-                                                    $soal_10_an = explode(';', $d_jawaban['soal_10_an']);
-                                                    $count_10_an  = 1;
-                                                    echo '<td style="text-align: justify; width:5%;">';
-                                                    foreach ($soal_10_an as $value) {
-                                                        if ($count_10_an < 5) {
-                                                            echo $value . ', ';
-                                                        } else {
-                                                            echo $value . ', <br>';
-                                                            $count_10_an = 1;
-                                                        }
-                                                        $count_10_an++;
-                                                    }
-                                                    echo '</td>';
-                                                } else {
-                                                    echo '<td style="text-align: justify; width:5%">Kosong</td>';
-                                                }
-
-
-                                                if (!empty($d_jawaban['soal_10_ra'])) {
-                                                    $soal_10_ra = explode(';', $d_jawaban['soal_10_ra']);
-                                                    $count_10_ra  = 1;
-                                                    echo '<td style="text-align: justify; width:5%;">';
-                                                    foreach ($soal_10_ra as $value) {
-                                                        if ($count_10_ra < 5) {
-                                                            echo $value . ', ';
-                                                        } else {
-                                                            echo $value . ', <br>';
-                                                            $count_10_ra = 1;
-                                                        }
-                                                        $count_10_ra++;
-                                                    }
-                                                    echo '</td>';
-                                                } else {
-                                                    echo '<td style="text-align: justify; width:5%">Kosong</td>';
-                                                }
-
-                                                if (!empty($d_jawaban['soal_10_zr'])) {
-                                                    $soal_10_zr = explode(';', $d_jawaban['soal_10_zr']);
-                                                    $count_10_zr  = 1;
-                                                    echo '<td style="text-align: justify; width:5%;">';
-                                                    foreach ($soal_10_zr as $value) {
-                                                        if ($count_10_zr < 5) {
-                                                            echo $value . ', ';
-                                                        } else {
-                                                            echo $value . ', <br>';
-                                                            $count_10_zr = 1;
-                                                        }
-                                                        $count_10_zr++;
-                                                    }
-                                                    echo '</td>';
-                                                } else {
-                                                    echo '<td style="text-align: justify; width:5%">Kosong</td>';
-                                                }
-
-                                                if (!empty($d_jawaban['soal_10_ge'])) {
-                                                    $soal_10_ge = explode(';', $d_jawaban['soal_10_ge']);
-                                                    $count_10_ge  = 1;
-                                                    echo '<td style="text-align: justify; width:5%;">';
-                                                    foreach ($soal_10_ge as $value) {
-                                                        if ($count_10_ge < 5) {
-                                                            echo $value . ', ';
-                                                        } else {
-                                                            echo $value . ', <br>';
-                                                            $count_10_ge = 1;
-                                                        }
-                                                        $count_10_ge++;
-                                                    }
-                                                    echo '</td>';
-                                                } else {
-                                                    echo '<td style="text-align: justify; width:5%">Kosong</td>';
-                                                }
-
-                                                if (!empty($d_jawaban['soal_10_fa'])) {
-                                                    $soal_10_fa = explode(';', $d_jawaban['soal_10_fa']);
-                                                    $count_10_fa  = 1;
-                                                    echo '<td style="text-align: justify; width:5%;">';
-                                                    foreach ($soal_10_fa as $value) {
-                                                        if ($count_10_fa < 5) {
-                                                            echo $value . ', ';
-                                                        } else {
-                                                            echo $value . ', <br>';
-                                                            $count_10_fa = 1;
-                                                        }
-                                                        $count_10_fa++;
-                                                    }
-                                                    echo '</td>';
-                                                } else {
-                                                    echo '<td style="text-align: justify; width:5%">Kosong</td>';
-                                                }
-
-                                                if (!empty($d_jawaban['soal_10_wu'])) {
-                                                    $soal_10_wu = explode(';', $d_jawaban['soal_10_wu']);
-                                                    $count_10_wu  = 1;
-                                                    echo '<td style="text-align: justify; width:5%;">';
-                                                    foreach ($soal_10_wu as $value) {
-                                                        if ($count_10_wu < 5) {
-                                                            echo $value . ', ';
-                                                        } else {
-                                                            echo $value . ', <br>';
-                                                            $count_10_wu = 1;
-                                                        }
-                                                        $count_10_wu++;
-                                                    }
-                                                    echo '</td>';
-                                                } else {
-                                                    echo '<td style="text-align: justify; width:5%">Kosong</td>';
-                                                }
-
-
-
-                                                echo '</tr>';
-                                            }
-                                        }
+                                        for ($i = 0; $i < 100; $i++) {
                                         ?>
+                                            <tr>
+                                                <td> <?= $i + 1 ?></td>
+                                                <?php
+                                                if (!empty($d_jawabanExcel['soal_1'])) {
+                                                    $soal_1 = explode(',', $d_jawabanExcel['soal_1']);
+                                                    // foreach ($soal_1 as  $value) {
+                                                    // echo $value;
+                                                ?>
+                                                    <td>
+                                                        <?php
+                                                        if ($i <= 20) {
+                                                            $output = explode('=', $soal_1[$i]);
+                                                            echo $output[1];
+                                                        } else {
+                                                            echo '';
+                                                        }
+                                                        ?>
+                                                    </td>
+                                                    <?php
+                                                    // }
+                                                    ?>
 
+                                                <?php
+
+                                                } else {
+                                                ?>
+                                                    <td></td>
+                                                <?php
+                                                }
+                                                ?>
+                                                <?php
+                                                if (!empty($d_jawabanExcel['soal_2'])) {
+                                                    $soal_2 = explode(',', $d_jawabanExcel['soal_2']);
+                                                    // foreach ($soal_2 as  $value) {
+                                                    // echo $value;
+                                                ?>
+                                                    <td>
+                                                        <?php
+                                                        if ($i < 20) {
+                                                            $output = explode('=', $soal_2[$i]);
+                                                            echo $output[1];
+                                                        } else {
+                                                            echo '';
+                                                        }
+                                                        ?>
+                                                    </td>
+                                                    <?php
+                                                    // }
+                                                    ?>
+
+                                                <?php
+
+                                                } else {
+                                                ?>
+                                                    <td></td>
+                                                <?php
+                                                }
+                                                ?>
+
+                                                <?php
+                                                if (!empty($d_jawabanExcel['soal_3'])) {
+                                                    $soal_3 = explode(',', $d_jawabanExcel['soal_3']);
+                                                    // foreach ($soal_3 as  $value) {
+                                                    // echo $value;
+                                                ?>
+                                                    <td>
+                                                        <?php
+
+                                                        $output = explode('=', $soal_3[$i]);
+                                                        echo $output[1];
+
+                                                        ?>
+                                                    </td>
+                                                    <?php
+                                                    // }
+                                                    ?>
+
+                                                <?php
+
+                                                } else {
+                                                ?>
+                                                    <td></td>
+                                                <?php
+                                                }
+                                                ?>
+                                                <?php
+                                                if (!empty($d_jawabanExcel['soal_4'])) {
+                                                    $soal_4 = explode(',', $d_jawabanExcel['soal_4']);
+                                                    // foreach ($soal_4 as  $value) {
+                                                    // echo $value;
+                                                ?>
+                                                    <td>
+                                                        <?php
+                                                        if ($i < 20) {
+                                                            $output = explode('=', $soal_4[$i]);
+                                                            echo $output[1];
+                                                        } else {
+                                                            echo '';
+                                                        }
+                                                        ?>
+                                                    </td>
+                                                    <?php
+                                                    // }
+                                                    ?>
+
+                                                <?php
+
+                                                } else {
+                                                ?>
+                                                    <td></td>
+                                                <?php
+                                                }
+                                                ?>
+
+                                                <?php
+                                                if (!empty($d_jawabanExcel['soal_5'])) {
+                                                    $soal_5 = explode(' ', $d_jawabanExcel['soal_5']);
+                                                ?>
+                                                    <td>
+                                                        <?php
+                                                        foreach ($soal_5 as  $value) {
+                                                            $split = explode('=', $value);
+                                                            $jawabansoal5[($split[0]) - 1] = $split[1];
+                                                        }
+                                                        // $soal->array_dump($jawabansoal5);
+                                                        if (!empty($jawabansoal5[$i])) {
+                                                            // $output = explode('=', $soal_5[$i]);
+                                                            echo $jawabansoal5[$i];
+                                                        } else {
+                                                            echo '';
+                                                        }
+                                                        ?>
+                                                    </td>
+                                                    <?php
+                                                    // }
+                                                    ?>
+
+                                                <?php
+
+                                                } else {
+                                                ?>
+                                                    <td></td>
+                                                <?php
+                                                }
+                                                ?>
+                                                <?php
+                                                if (!empty($d_jawabanExcel['soal_6'])) {
+                                                    $soal_6 = explode(',', $d_jawabanExcel['soal_6']);
+
+                                                ?>
+                                                    <td>
+                                                        <?php
+                                                        foreach ($soal_6 as  $value) {
+                                                            $split = explode('=', $value);
+                                                            $jawabansoal6[($split[0]) - 1] = $split[1];
+                                                        }
+                                                        // $soal->array_dump($jawabansoal6);
+                                                        if (!empty($jawabansoal6[$i])) {
+                                                            // $output = explode('=', $soal_5[$i]);
+                                                            echo $jawabansoal6[$i];
+                                                        } else {
+                                                            echo '';
+                                                        }
+                                                        ?>
+                                                    </td>
+                                                    <?php
+                                                    // }
+                                                    ?>
+
+                                                <?php
+
+                                                } else {
+                                                ?>
+                                                    <td></td>
+                                                <?php
+                                                }
+                                                ?>
+
+                                                <?php
+                                                if (!empty($d_jawabanExcel['soal_7'])) {
+                                                    $soal_7 = explode(',', $d_jawabanExcel['soal_7']);
+                                                    // foreach ($soal_7 as  $value) {
+                                                    // echo $value;
+                                                ?>
+                                                    <td>
+                                                        <?php
+                                                        if ($i < 64) {
+                                                            $output = explode('=', $soal_7[$i]);
+                                                            echo $output[1];
+                                                        } else {
+                                                            echo '';
+                                                        }
+                                                        ?>
+                                                    </td>
+                                                    <?php
+                                                    // }
+                                                    ?>
+
+                                                <?php
+
+                                                } else {
+                                                ?>
+                                                    <td></td>
+                                                <?php
+                                                }
+                                                ?>
+                                                <?php
+                                                if (!empty($d_jawabanExcel['soal_8'])) {
+                                                    $soal_8 = explode(',', $d_jawabanExcel['soal_8']);
+                                                    // foreach ($soal_8 as  $value) {
+                                                    // echo $value;
+                                                ?>
+                                                    <td>
+                                                        <?php
+                                                        if ($i < 90) {
+                                                            $output = explode('=', $soal_8[$i]);
+                                                            echo $output[1];
+                                                        } else {
+                                                            echo '';
+                                                        }
+                                                        ?>
+                                                    </td>
+                                                    <?php
+                                                    // }
+                                                    ?>
+
+                                                <?php
+
+                                                } else {
+                                                ?>
+                                                    <td></td>
+                                                <?php
+                                                }
+                                                ?>
+                                                <?php
+                                                if (!empty($d_jawabanExcel['soal_9'])) {
+                                                    $soal_9 = explode(',', $d_jawabanExcel['soal_9']);
+                                                    // foreach ($soal_9 as  $value) {
+                                                    // echo $value;
+                                                ?>
+                                                    <td>
+                                                        <?php
+                                                        if ($i < 42) {
+                                                            $output = explode('=', $soal_9[$i]);
+                                                            echo $output[1];
+                                                        } else {
+                                                            echo '';
+                                                        }
+                                                        ?>
+                                                    </td>
+                                                    <?php
+                                                    // }
+                                                    ?>
+
+                                                <?php
+
+                                                } else {
+                                                ?>
+                                                    <td></td>
+                                                <?php
+                                                }
+                                                ?>
+                                                <?php
+                                                if (!empty($d_jawabanExcel['soal_10_se'])) {
+                                                    $soal_10_se = explode(',', $d_jawabanExcel['soal_10_se']);
+                                                    // foreach ($soal_10_se as  $value) {
+                                                    // echo $value;
+                                                ?>
+                                                    <td>
+                                                        <?php
+                                                        $jawabansoal10se = array();
+                                                        foreach ($soal_10_se as  $value) {
+                                                            $split = explode('=', $value);
+                                                            $jawabansoal10se[($split[0]) - 1] = $split[1];
+                                                        }
+                                                        // $soal->array_dump($jawabansoal10se);
+                                                        if (!empty($jawabansoal10se[$i])) {
+                                                            // $output = explode('=', $soal_5[$i]);
+                                                            echo $jawabansoal10se[$i];
+                                                        } else {
+                                                            echo '';
+                                                        }
+                                                        ?>
+                                                    </td>
+                                                    <?php
+                                                    // }
+                                                    ?>
+
+                                                <?php
+
+                                                } else {
+                                                ?>
+                                                    <td></td>
+                                                <?php
+                                                }
+                                                ?>
+                                                <?php
+                                                if (!empty($d_jawabanExcel['soal_10_wa'])) {
+                                                    $soal_10_wa = explode(',', $d_jawabanExcel['soal_10_wa']);
+                                                ?>
+                                                    <td>
+                                                        <?php
+                                                        $jawabansoal10wa = array();
+                                                        foreach ($soal_10_wa as  $value) {
+                                                            $split = explode('=', $value);
+                                                            $jawabansoal10wa[($split[0]) - 1] = $split[1];
+                                                        }
+                                                        // $soal->array_dump($jawabansoal10wa);
+                                                        if (!empty($jawabansoal10wa[$i])) {
+                                                            // $output = explode('=', $soal_5[$i]);
+                                                            echo $jawabansoal10wa[$i];
+                                                        } else {
+                                                            echo '';
+                                                        }
+                                                        ?>
+                                                    </td>
+                                                    <?php
+                                                    // }
+                                                    ?>
+
+                                                <?php
+
+                                                } else {
+                                                ?>
+                                                    <td></td>
+                                                <?php
+                                                }
+                                                ?>
+                                                <?php
+                                                if (!empty($d_jawabanExcel['soal_10_an'])) {
+                                                    $soal_10_an = explode(',', $d_jawabanExcel['soal_10_an']);
+                                                ?>
+                                                    <td>
+                                                        <?php
+                                                        $jawabansoal10an = array();
+                                                        foreach ($soal_10_an as  $value) {
+                                                            $split = explode('=', $value);
+                                                            $jawabansoal10an[($split[0]) - 1] = $split[1];
+                                                        }
+                                                        // $soal->array_dump($jawabansoal10an);
+                                                        if (!empty($jawabansoal10an[$i])) {
+                                                            // $output = explode('=', $soal_5[$i]);
+                                                            echo $jawabansoal10an[$i];
+                                                        } else {
+                                                            echo '';
+                                                        }
+                                                        ?>
+                                                    </td>
+                                                    <?php
+                                                    // }
+                                                    ?>
+
+                                                <?php
+
+                                                } else {
+                                                ?>
+                                                    <td></td>
+                                                <?php
+                                                }
+                                                ?>
+                                                <?php
+                                                if (!empty($d_jawabanExcel['soal_10_ra'])) {
+                                                    $soal_10_ra = explode(',', $d_jawabanExcel['soal_10_ra']);
+                                                ?>
+                                                    <td>
+                                                        <?php
+                                                        $jawabansoal10ra = array();
+                                                        foreach ($soal_10_ra as  $value) {
+                                                            $split = explode('=', $value);
+                                                            $jawabansoal10ra[($split[0]) - 1] = $split[1];
+                                                        }
+                                                        // $soal->array_dump($jawabansoal10ra);
+                                                        if (!empty($jawabansoal10ra[$i])) {
+                                                            // $output = explode('=', $soal_5[$i]);
+                                                            echo $jawabansoal10ra[$i];
+                                                        } else {
+                                                            echo '';
+                                                        }
+                                                        ?>
+                                                    </td>
+                                                    <?php
+                                                    // }
+                                                    ?>
+
+                                                <?php
+
+                                                } else {
+                                                ?>
+                                                    <td></td>
+                                                <?php
+                                                }
+                                                ?>
+                                                <?php
+                                                if (!empty($d_jawabanExcel['soal_10_zr'])) {
+                                                    $soal_10_zr = explode(',', $d_jawabanExcel['soal_10_zr']);
+                                                ?>
+                                                    <td>
+                                                        <?php
+                                                        $jawabansoal10zr = array();
+                                                        foreach ($soal_10_zr as  $value) {
+                                                            $split = explode('=', $value);
+                                                            $jawabansoal10zr[($split[0]) - 1] = $split[1];
+                                                        }
+                                                        // $soal->array_dump($jawabansoal10zr);
+                                                        if (!empty($jawabansoal10zr[$i])) {
+                                                            // $output = explode('=', $soal_5[$i]);
+                                                            echo $jawabansoal10zr[$i];
+                                                        } else {
+                                                            echo '';
+                                                        }
+                                                        ?>
+                                                    </td>
+                                                    <?php
+                                                    // }
+                                                    ?>
+
+                                                <?php
+
+                                                } else {
+                                                ?>
+                                                    <td></td>
+                                                <?php
+                                                }
+                                                ?>
+                                                <?php
+                                                if (!empty($d_jawabanExcel['soal_10_ge'])) {
+                                                    $soal_10_ge = explode(',', $d_jawabanExcel['soal_10_ge']);
+                                                ?>
+                                                    <td>
+                                                        <?php
+                                                        $jawabansoal10ge = array();
+                                                        foreach ($soal_10_ge as  $value) {
+                                                            $split = explode('=', $value);
+                                                            $jawabansoal10ge[($split[0]) - 1] = $split[1];
+                                                        }
+                                                        // $soal->array_dump($jawabansoal10ge);
+                                                        if (!empty($jawabansoal10ge[$i])) {
+                                                            // $output = explode('=', $soal_5[$i]);
+                                                            echo $jawabansoal10ge[$i];
+                                                        } else {
+                                                            echo '';
+                                                        }
+                                                        ?>
+                                                    </td>
+                                                    <?php
+                                                    // }
+                                                    ?>
+
+                                                <?php
+
+                                                } else {
+                                                ?>
+                                                    <td></td>
+                                                <?php
+                                                }
+                                                ?>
+                                                <?php
+                                                if (!empty($d_jawabanExcel['soal_10_fa'])) {
+                                                    $soal_10_fa = explode(',', $d_jawabanExcel['soal_10_fa']);
+                                                    // $soal->arfay_dump($soal_10_fa);
+                                                    // foreach ($soal_10_fa as  $value) {
+
+                                                    // echo $value;
+                                                ?>
+                                                    <td>
+                                                        <?php
+                                                        $jawabansoal10fa = array();
+                                                        foreach ($soal_10_fa as  $value) {
+                                                            $split = explode('=', $value);
+                                                            $jawabansoal10fa[($split[0]) - 1] = $split[1];
+                                                        }
+                                                        // $soal->array_dump($jawabansoal10fa);
+                                                        if (!empty($jawabansoal10fa[$i])) {
+                                                            // $output = explode('=', $soal_5[$i]);
+                                                            echo $jawabansoal10fa[$i];
+                                                        } else {
+                                                            echo '';
+                                                        }
+                                                        ?>
+                                                    </td>
+                                                    <?php
+                                                    // }
+                                                    ?>
+
+                                                <?php
+
+                                                } else {
+                                                ?>
+                                                    <td></td>
+                                                <?php
+                                                }
+                                                ?>
+                                                <?php
+                                                if (!empty($d_jawabanExcel['soal_10_wu'])) {
+                                                    $soal_10_wu = explode(',', $d_jawabanExcel['soal_10_wu']);
+                                                    // $soal->arwuy_dump($soal_10_wu);
+                                                    // foreach ($soal_10_wu as  $value) {
+
+                                                    // echo $value;
+                                                ?>
+                                                    <td>
+                                                        <?php
+                                                        $jawabansoal10wu = array();
+                                                        foreach ($soal_10_wu as  $value) {
+                                                            $split = explode('=', $value);
+                                                            $jawabansoal10wu[($split[0]) - 1] = $split[1];
+                                                        }
+                                                        // $soal->array_dump($jawabansoal10wu);
+                                                        if (!empty($jawabansoal10wu[$i])) {
+                                                            // $output = explode('=', $soal_5[$i]);
+                                                            echo $jawabansoal10wu[$i];
+                                                        } else {
+                                                            echo '';
+                                                        }
+                                                        ?>
+                                                    </td>
+                                                    <?php
+                                                    // }
+                                                    ?>
+
+                                                <?php
+
+                                                } else {
+                                                ?>
+                                                    <td></td>
+                                                <?php
+                                                }
+                                                ?>
+
+                                            </tr>
+
+                                        <?php
+                                        }
+
+                                        ?>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
+
+
 
                     </div>
                 </div>
@@ -1015,8 +1232,11 @@ $countSoal = 1;
 
     $('#rekapTaksasi').DataTable({
         dom: 'Bfrtip',
+        "paging": false,
+        "searching": false,
         buttons: [{
             extend: "excelHtml5",
+            text: 'Export to excel',
             filename: function fred() {
                 return nama_user + ' psikotes';
             },
@@ -1029,6 +1249,7 @@ $countSoal = 1;
             "visible": true,
             "targets": 3
         }]
+
     });
 
     var status_peserta = '<?= $rowPeserta['jenis_tes_peserta'] ?>';
@@ -1047,132 +1268,132 @@ $countSoal = 1;
         $('#btnPapikostick').removeAttr('hidden');
     }
 
-    $('#btnMsdt').click(function() {
-        $('#allskor').attr('hidden', true);
-        $('#disc').attr('hidden', true);
-        $('#holland').attr('hidden', true);
-        $('#papikostik').attr('hidden', true);
-        $('#ist').attr('hidden', true);
-        $('#msdt').removeAttr('hidden');
-        $('#btnMsdt').removeAttr('class');
-        document.getElementById('btnMsdt').setAttribute("class", "btn btn-success");
-        $('#btnIst').removeAttr('class');
-        document.getElementById('btnIst').setAttribute("class", "btn btn-info");
-        $('#btnAllSkor').removeAttr('class');
-        document.getElementById('btnAllSkor').setAttribute("class", "btn btn-info");
-        $('#btnPapikostick').removeAttr('class');
-        document.getElementById('btnPapikostick').setAttribute("class", "btn btn-info");
-        $('#btnDisc').removeAttr('class');
-        document.getElementById('btnDisc').setAttribute("class", "btn btn-info");
-        $('#btnHolland').removeAttr('class');
-        document.getElementById('btnHolland').setAttribute("class", "btn btn-info");
-    })
+    // $('#btnMsdt').click(function() {
+    //     $('#allskor').attr('hidden', true);
+    //     $('#disc').attr('hidden', true);
+    //     $('#holland').attr('hidden', true);
+    //     $('#papikostik').attr('hidden', true);
+    //     $('#ist').attr('hidden', true);
+    //     $('#msdt').removeAttr('hidden');
+    //     $('#btnMsdt').removeAttr('class');
+    //     document.getElementById('btnMsdt').setAttribute("class", "btn btn-success");
+    //     $('#btnIst').removeAttr('class');
+    //     document.getElementById('btnIst').setAttribute("class", "btn btn-info");
+    //     $('#btnAllSkor').removeAttr('class');
+    //     document.getElementById('btnAllSkor').setAttribute("class", "btn btn-info");
+    //     $('#btnPapikostick').removeAttr('class');
+    //     document.getElementById('btnPapikostick').setAttribute("class", "btn btn-info");
+    //     $('#btnDisc').removeAttr('class');
+    //     document.getElementById('btnDisc').setAttribute("class", "btn btn-info");
+    //     $('#btnHolland').removeAttr('class');
+    //     document.getElementById('btnHolland').setAttribute("class", "btn btn-info");
+    // })
 
-    $('#btnPapikostick').click(function() {
-        $('#allskor').attr('hidden', true);
-        $('#msdt').attr('hidden', true);
-        $('#ist').attr('hidden', true);
-        $('#holland').attr('hidden', true);
-        $('#disc').attr('hidden', true);
-        $('#papikostik').removeAttr('hidden');
-        $('#btnPapikostick').removeAttr('class');
-        document.getElementById('btnPapikostick').setAttribute("class", "btn btn-success");
-        $('#btnIst').removeAttr('class');
-        document.getElementById('btnIst').setAttribute("class", "btn btn-info");
-        $('#btnMsdt').removeAttr('class');
-        document.getElementById('btnMsdt').setAttribute("class", "btn btn-info");
-        $('#btnAllSkor').removeAttr('class');
-        document.getElementById('btnAllSkor').setAttribute("class", "btn btn-info");
-        $('#btnDisc').removeAttr('class');
-        document.getElementById('btnDisc').setAttribute("class", "btn btn-info");
-        $('#btnHolland').removeAttr('class');
-        document.getElementById('btnHolland').setAttribute("class", "btn btn-info");
-    })
+    // $('#btnPapikostick').click(function() {
+    //     $('#allskor').attr('hidden', true);
+    //     $('#msdt').attr('hidden', true);
+    //     $('#ist').attr('hidden', true);
+    //     $('#holland').attr('hidden', true);
+    //     $('#disc').attr('hidden', true);
+    //     $('#papikostik').removeAttr('hidden');
+    //     $('#btnPapikostick').removeAttr('class');
+    //     document.getElementById('btnPapikostick').setAttribute("class", "btn btn-success");
+    //     $('#btnIst').removeAttr('class');
+    //     document.getElementById('btnIst').setAttribute("class", "btn btn-info");
+    //     $('#btnMsdt').removeAttr('class');
+    //     document.getElementById('btnMsdt').setAttribute("class", "btn btn-info");
+    //     $('#btnAllSkor').removeAttr('class');
+    //     document.getElementById('btnAllSkor').setAttribute("class", "btn btn-info");
+    //     $('#btnDisc').removeAttr('class');
+    //     document.getElementById('btnDisc').setAttribute("class", "btn btn-info");
+    //     $('#btnHolland').removeAttr('class');
+    //     document.getElementById('btnHolland').setAttribute("class", "btn btn-info");
+    // })
 
 
-    $('#btnHolland').click(function() {
-        $('#allskor').attr('hidden', true);
-        $('#msdt').attr('hidden', true);
-        $('#ist').attr('hidden', true);
-        $('#papikostik').attr('hidden', true);
-        $('#disc').attr('hidden', true);
-        $('#holland').removeAttr('hidden');
-        $('#btnMsdt').removeAttr('class');
-        document.getElementById('btnHolland').setAttribute("class", "btn btn-success");
-        $('#btnIst').removeAttr('class');
-        document.getElementById('btnIst').setAttribute("class", "btn btn-info");
-        $('#btnMsdt').removeAttr('class');
-        document.getElementById('btnMsdt').setAttribute("class", "btn btn-info");
-        $('#btnAllSkor').removeAttr('class');
-        document.getElementById('btnAllSkor').setAttribute("class", "btn btn-info");
-        $('#btnDisc').removeAttr('class');
-        document.getElementById('btnDisc').setAttribute("class", "btn btn-info");
-        $('#btnPapikostick').removeAttr('class');
-        document.getElementById('btnPapikostick').setAttribute("class", "btn btn-info");
-    })
+    // $('#btnHolland').click(function() {
+    //     $('#allskor').attr('hidden', true);
+    //     $('#msdt').attr('hidden', true);
+    //     $('#ist').attr('hidden', true);
+    //     $('#papikostik').attr('hidden', true);
+    //     $('#disc').attr('hidden', true);
+    //     $('#holland').removeAttr('hidden');
+    //     $('#btnMsdt').removeAttr('class');
+    //     document.getElementById('btnHolland').setAttribute("class", "btn btn-success");
+    //     $('#btnIst').removeAttr('class');
+    //     document.getElementById('btnIst').setAttribute("class", "btn btn-info");
+    //     $('#btnMsdt').removeAttr('class');
+    //     document.getElementById('btnMsdt').setAttribute("class", "btn btn-info");
+    //     $('#btnAllSkor').removeAttr('class');
+    //     document.getElementById('btnAllSkor').setAttribute("class", "btn btn-info");
+    //     $('#btnDisc').removeAttr('class');
+    //     document.getElementById('btnDisc').setAttribute("class", "btn btn-info");
+    //     $('#btnPapikostick').removeAttr('class');
+    //     document.getElementById('btnPapikostick').setAttribute("class", "btn btn-info");
+    // })
 
-    $('#btnDisc').click(function() {
-        $('#allskor').attr('hidden', true);
-        $('#msdt').attr('hidden', true);
-        $('#ist').attr('hidden', true);
-        $('#papikostik').attr('hidden', true);
-        $('#holland').attr('hidden', true);
-        $('#disc').removeAttr('hidden');
-        $('#btnMsdt').removeAttr('class');
-        document.getElementById('btnDisc').setAttribute("class", "btn btn-success");
-        $('#btnIst').removeAttr('class');
-        document.getElementById('btnIst').setAttribute("class", "btn btn-info");
-        $('#btnMsdt').removeAttr('class');
-        document.getElementById('btnMsdt').setAttribute("class", "btn btn-info");
-        $('#btnAllSkor').removeAttr('class');
-        document.getElementById('btnAllSkor').setAttribute("class", "btn btn-info");
-        $('#btnPapikostick').removeAttr('class');
-        document.getElementById('btnPapikostick').setAttribute("class", "btn btn-info");
-        $('#btnHolland').removeAttr('class');
-        document.getElementById('btnHolland').setAttribute("class", "btn btn-info");
-    })
+    // $('#btnDisc').click(function() {
+    //     $('#allskor').attr('hidden', true);
+    //     $('#msdt').attr('hidden', true);
+    //     $('#ist').attr('hidden', true);
+    //     $('#papikostik').attr('hidden', true);
+    //     $('#holland').attr('hidden', true);
+    //     $('#disc').removeAttr('hidden');
+    //     $('#btnMsdt').removeAttr('class');
+    //     document.getElementById('btnDisc').setAttribute("class", "btn btn-success");
+    //     $('#btnIst').removeAttr('class');
+    //     document.getElementById('btnIst').setAttribute("class", "btn btn-info");
+    //     $('#btnMsdt').removeAttr('class');
+    //     document.getElementById('btnMsdt').setAttribute("class", "btn btn-info");
+    //     $('#btnAllSkor').removeAttr('class');
+    //     document.getElementById('btnAllSkor').setAttribute("class", "btn btn-info");
+    //     $('#btnPapikostick').removeAttr('class');
+    //     document.getElementById('btnPapikostick').setAttribute("class", "btn btn-info");
+    //     $('#btnHolland').removeAttr('class');
+    //     document.getElementById('btnHolland').setAttribute("class", "btn btn-info");
+    // })
 
-    $('#btnIst').click(function() {
-        $('#allskor').attr('hidden', true);
-        $('#msdt').attr('hidden', true);
-        $('#disc').attr('hidden', true);
-        $('#holland').attr('hidden', true);
-        $('#papikostik').attr('hidden', true);
-        $('#ist').removeAttr('hidden');
-        $('#btnIst').removeAttr('class');
-        document.getElementById('btnIst').setAttribute("class", "btn btn-success");
-        $('#btnAllSkor').removeAttr('class');
-        document.getElementById('btnAllSkor').setAttribute("class", "btn btn-info");
-        $('#btnMsdt').removeAttr('class');
-        document.getElementById('btnMsdt').setAttribute("class", "btn btn-info");
-        $('#btnDisc').removeAttr('class');
-        document.getElementById('btnDisc').setAttribute("class", "btn btn-info");
-        $('#btnPapikostik').removeAttr('class');
-        document.getElementById('btnPapikostik').setAttribute("class", "btn btn-info");
-        $('#btnHolland').removeAttr('class');
-        document.getElementById('btnHolland').setAttribute("class", "btn btn-info");
-    })
+    // $('#btnIst').click(function() {
+    //     $('#allskor').attr('hidden', true);
+    //     $('#msdt').attr('hidden', true);
+    //     $('#disc').attr('hidden', true);
+    //     $('#holland').attr('hidden', true);
+    //     $('#papikostik').attr('hidden', true);
+    //     $('#ist').removeAttr('hidden');
+    //     $('#btnIst').removeAttr('class');
+    //     document.getElementById('btnIst').setAttribute("class", "btn btn-success");
+    //     $('#btnAllSkor').removeAttr('class');
+    //     document.getElementById('btnAllSkor').setAttribute("class", "btn btn-info");
+    //     $('#btnMsdt').removeAttr('class');
+    //     document.getElementById('btnMsdt').setAttribute("class", "btn btn-info");
+    //     $('#btnDisc').removeAttr('class');
+    //     document.getElementById('btnDisc').setAttribute("class", "btn btn-info");
+    //     $('#btnPapikostik').removeAttr('class');
+    //     document.getElementById('btnPapikostik').setAttribute("class", "btn btn-info");
+    //     $('#btnHolland').removeAttr('class');
+    //     document.getElementById('btnHolland').setAttribute("class", "btn btn-info");
+    // })
 
-    $('#btnAllSkor').click(function() {
-        $('#msdt').attr('hidden', true);
-        $('#ist').attr('hidden', true);
-        $('#papikostik').attr('hidden', true);
-        $('#disc').attr('hidden', true);
-        $('#holland').attr('hidden', true);
-        $('#allskor').attr('hidden', false);
-        $('#btnMsdt').removeAttr('class');
-        document.getElementById('btnMsdt').setAttribute("class", "btn btn-info");
-        $('#btnIst').removeAttr('class');
-        document.getElementById('btnIst').setAttribute("class", "btn btn-info");
-        $('#btnPapikostick').removeAttr('class');
-        document.getElementById('btnPapikostick').setAttribute("class", "btn btn-info");
-        $('#btnHolland').removeAttr('class');
-        document.getElementById('btnHolland').setAttribute("class", "btn btn-info");
-        $('#btnDisc').removeAttr('class');
-        document.getElementById('btnDisc').setAttribute("class", "btn btn-info");
-        $('#btnIst').removeAttr('class');
-        document.getElementById('btnIst').setAttribute("class", "btn btn-info");
-        $('#btnAllSkor').removeAttr('class');
-        document.getElementById('btnAllSkor').setAttribute("class", "btn btn-success");
-    })
+    // $('#btnAllSkor').click(function() {
+    //     $('#msdt').attr('hidden', true);
+    //     $('#ist').attr('hidden', true);
+    //     $('#papikostik').attr('hidden', true);
+    //     $('#disc').attr('hidden', true);
+    //     $('#holland').attr('hidden', true);
+    //     $('#allskor').attr('hidden', false);
+    //     $('#btnMsdt').removeAttr('class');
+    //     document.getElementById('btnMsdt').setAttribute("class", "btn btn-info");
+    //     $('#btnIst').removeAttr('class');
+    //     document.getElementById('btnIst').setAttribute("class", "btn btn-info");
+    //     $('#btnPapikostick').removeAttr('class');
+    //     document.getElementById('btnPapikostick').setAttribute("class", "btn btn-info");
+    //     $('#btnHolland').removeAttr('class');
+    //     document.getElementById('btnHolland').setAttribute("class", "btn btn-info");
+    //     $('#btnDisc').removeAttr('class');
+    //     document.getElementById('btnDisc').setAttribute("class", "btn btn-info");
+    //     $('#btnIst').removeAttr('class');
+    //     document.getElementById('btnIst').setAttribute("class", "btn btn-info");
+    //     $('#btnAllSkor').removeAttr('class');
+    //     document.getElementById('btnAllSkor').setAttribute("class", "btn btn-success");
+    // })
 </script>
